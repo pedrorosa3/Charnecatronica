@@ -93,7 +93,7 @@ const HomePage = () => {
         ></Typography>
       </Box>
 
-      {/*Box do grid com 2 linhas e 3 colunas*/}
+      {/*Box do grid com 2 linhas e 3 colunas */}
       <Box
         sx={{
           flex: 1,
