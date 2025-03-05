@@ -1,177 +1,185 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
   Typography,
   IconButton,
-  Slide,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  Box,
   TextField,
   InputAdornment,
+  Box,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link } from "react-router-dom";
 
 const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const menuRef = useRef(null);
-
-  const toggleMenu = () => {
-    setMenuOpen((prev) => !prev);
-  };
-
-  // Fecha o menu ao clicar fora
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false);
-      }
-    };
-
-    if (menuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [menuOpen]);
 
   return (
-    <>
-      <AppBar
-        position="fixed"
-        sx={{ backgroundColor: "#22221F", padding: "10px 0", zIndex: 1301 }}
+    <AppBar
+      position="fixed"
+      elevation={0}
+      sx={{
+        backgroundColor: "#F8F8F8",
+        padding: "10px 0",
+        borderBottom: "2px solid #E0E0E0",
+        width: "100vw",
+      }}
+    >
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+        }}
       >
-        <Toolbar
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {/* Ícone do menu lateral */}
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={toggleMenu}
-          >
-            <MenuIcon sx={{ color: "#FFFFFF" }} />
-          </IconButton>
-
-          {/* Nome da Loja */}
+        {/*Box com os elementos todos*/}
+        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
           <Typography
             variant="h6"
-            component="div"
-            sx={{ fontWeight: "bold", color: "#FFFFFF" }}
+            fontWeight="bold"
+            sx={{ color: "#000", marginLeft: "10px", paddingRight: "35px" }}
           >
             Charnecatrónica
           </Typography>
 
-          {/* Barra de Pesquisa Centralizada */}
+          {/*SearchBar*/}
+          <TextField
+            variant="outlined"
+            placeholder="Pesquisar"
+            size="small"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{
+              backgroundColor: "#E0E0E0",
+              borderRadius: "25px",
+              width: "50%",
+              minWidth: "250px",
+              maxWidth: "700px",
+              marginRight: "20px",
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "25px",
+                "& fieldset": {
+                  border: "none",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#AAA",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#000",
+                },
+                "& input": {
+                  padding: "10px 14px",
+                },
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon sx={{ color: "#777", cursor: "pointer" }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          {/*Box que contem a "navbar"*/}
           <Box
             sx={{
-              flexGrow: 1,
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              gap: "40px",
+              flexGrow: 1,
+              paddingLeft: "100px",
             }}
           >
-            <TextField
-              variant="outlined"
-              placeholder="Pesquisar..."
-              size="small"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              sx={{
-                backgroundColor: "#FFF",
-                borderRadius: "25px",
-                width: "50%", // Ajuste para alinhar com o título
-                minWidth: "400px", // Largura mínima para evitar distorções
-                maxWidth: "700px", // Largura máxima para manter proporção
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "25px",
-                  "& fieldset": {
-                    borderColor: "#CCC",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "#AAA",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#FFFFFF",
-                  },
-                },
+            <Link
+              to="/comprar"
+              style={{
+                textDecoration: "none",
+                color: "#000",
+                fontWeight: "600",
+                fontSize: "18px",
               }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "#888" }} />
-                  </InputAdornment>
-                ),
+            >
+              Comprar
+            </Link>
+            <Link
+              to="/vender"
+              style={{
+                textDecoration: "none",
+                color: "#000",
+                fontWeight: "600",
+                fontSize: "18px",
               }}
-            />
+            >
+              Vender
+            </Link>
+            <Link
+              to="/doar"
+              style={{
+                textDecoration: "none",
+                color: "#000",
+                fontWeight: "600",
+                fontSize: "18px",
+              }}
+            >
+              Doar
+            </Link>
+            <Link
+              to="/avarias"
+              style={{
+                textDecoration: "none",
+                color: "#000",
+                fontWeight: "600",
+                fontSize: "18px",
+              }}
+            >
+              Avarias
+            </Link>
+            <Link
+              to="/tracking"
+              style={{
+                textDecoration: "none",
+                color: "#000",
+                fontWeight: "600",
+                fontSize: "18px",
+              }}
+            >
+              Tracking
+            </Link>
+            <Link
+              to="/orcamento"
+              style={{
+                textDecoration: "none",
+                color: "#000",
+                fontWeight: "600",
+                fontSize: "18px",
+              }}
+            >
+              Pedido de orçamento
+            </Link>
           </Box>
 
-          {/* Ícones de Conta e Carrinho */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          {/*Box dos icones*/}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              marginRight: "30px",
+            }}
+          >
             <IconButton color="inherit">
-              <ShoppingCartIcon sx={{ color: "#FFFFFF" }} />
+              <AccountCircleIcon sx={{ color: "#000", fontSize: "30px" }} />
             </IconButton>
             <IconButton color="inherit">
-              <AccountCircleIcon sx={{ color: "#FFFFFF" }} />
+              <ShoppingCartIcon sx={{ color: "#000", fontSize: "30px" }} />
             </IconButton>
           </Box>
-        </Toolbar>
-      </AppBar>
-
-      {/* Espaço reservado para evitar sobreposição com o conteúdo */}
-      <Box sx={{ height: "64px" }} />
-
-      {/* Menu lateral que desliza suavemente */}
-      <Slide direction="down" in={menuOpen} mountOnEnter unmountOnExit>
-        <Paper
-          ref={menuRef}
-          elevation={4}
-          sx={{
-            position: "absolute",
-            top: "82px",
-            left: 0,
-            width: "250px",
-            backgroundColor: "#22221F",
-            zIndex: 1300,
-          }}
-        >
-          <List>
-            {["Início", "Comprar", "Vender", "Doar"].map((text, index) => (
-              <ListItem
-                button
-                key={index}
-                component={Link}
-                to={text.toLowerCase()}
-                onClick={() => setMenuOpen(false)}
-              >
-                <ListItemText
-                  primary={text}
-                  sx={{ color: "#FFFFFF", textAlign: "center" }}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Paper>
-      </Slide>
-    </>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 
