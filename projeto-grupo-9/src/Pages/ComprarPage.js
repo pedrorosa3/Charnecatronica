@@ -20,7 +20,7 @@ const produtos = [
     preco: "799,99",
     avaliacao: 4.5,
     reviews: "1.2k Reviews",
-    imagem: "/images/iphone16.png", // Substituir com imagem real
+    imagem: "/images/iphone16.png",
   },
   {
     nome: "Iphone 15",
@@ -28,7 +28,7 @@ const produtos = [
     preco: "699,99",
     avaliacao: 4.0,
     reviews: "1.2k Reviews",
-    imagem: "/images/iphone15.jpg", // Substituir com imagem real
+    imagem: "/images/iphone15.jpg",
   },
   {
     nome: "Iphone 15 Pro Max",
@@ -36,7 +36,7 @@ const produtos = [
     preco: "999,99",
     avaliacao: 5.0,
     reviews: "1.2k Reviews",
-    imagem: "/images/iphone15ProMax.jpg", // Substituir com imagem real
+    imagem: "/images/iphone15ProMax.jpg",
   },
   {
     nome: "MacBook Air",
@@ -44,7 +44,7 @@ const produtos = [
     preco: "1299,99",
     avaliacao: 4.5,
     reviews: "1.2k Reviews",
-    imagem: "/images/macBookAir.jpg", // Substituir com imagem real
+    imagem: "/images/macBookAir.jpg",
   },
   {
     nome: "Monitor AOC 240hz",
@@ -52,7 +52,7 @@ const produtos = [
     preco: "399,99",
     avaliacao: 3.0,
     reviews: "1.2k Reviews",
-    imagem: "/images/monitorAOC.jpg", // Substituir com imagem real
+    imagem: "/images/monitorAOC.jpg",
   },
   {
     nome: "Portátil ASUS",
@@ -60,30 +60,32 @@ const produtos = [
     preco: "1199,99",
     avaliacao: 5.0,
     reviews: "1.2k Reviews",
-    imagem: "/images/portatilASUS.jpg", // Substituir com imagem real
+    imagem: "/images/portatilASUS.jpg",
   },
 ];
 
 const ComprarPage = () => {
-  const [selectedCategories, setSelectedCategories] = useState([]); // Nenhuma categoria selecionada por padrão
-  const [preco, setPreco] = useState([0, 2000]); // Faixa de preço completa
-  const [selectedOfertas, setSelectedOfertas] = useState([]); // Nenhuma oferta selecionada
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [preco, setPreco] = useState([0, 2000]);
+  const [selectedOfertas, setSelectedOfertas] = useState([]);
 
+  // Verifica se algum filtro além do preço está ativo
+  const filtrosAtivos =
+    selectedCategories.length > 0 || selectedOfertas.length > 0;
+
+  // Filtragem dos produtos
   const produtosFiltrados = produtos.filter((produto) => {
-    // Corrigir erro na conversão do preço
-    const precoNumerico = parseFloat(
-      produto.preco.replace("€", "").replace(",", ".")
-    );
+    const precoNumerico = parseFloat(produto.preco.replace(",", "."));
 
     const categoriaMatch =
       selectedCategories.length === 0 ||
       selectedCategories.includes(produto.categoria);
+
+    // Por enquanto, não temos dados de "ofertas" nos produtos
     const precoMatch = precoNumerico >= preco[0] && precoNumerico <= preco[1];
 
     return categoriaMatch && precoMatch;
   });
-
-  console.log("Produtos filtrados:", produtosFiltrados);
 
   return (
     <Box
@@ -108,13 +110,14 @@ const ComprarPage = () => {
         />
         {/* Grid de Produtos */}
         <Box sx={{ flex: 1, padding: "20px" }}>
-          {produtosFiltrados.length === 0 ? (
+          {/* Se filtros estão ativos e não há produtos correspondentes */}
+          {filtrosAtivos && produtosFiltrados.length === 0 ? (
             <Typography
               variant="h6"
               textAlign="center"
               sx={{ mt: 5, color: "#000" }}
             >
-              Nenhum produto encontrado.
+              Nenhum produto encontrado com os filtros selecionados.
             </Typography>
           ) : (
             <Grid
@@ -186,6 +189,8 @@ const ComprarPage = () => {
                         </Typography>
                       </Box>
                       <Typography variant="h6">{produto.preco}€</Typography>
+
+                      {/* Botão Adicionar ao Carrinho */}
                       <Button
                         variant="contained"
                         fullWidth
