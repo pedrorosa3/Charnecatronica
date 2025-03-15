@@ -20,7 +20,7 @@ const SidebarComprar = ({
   selectedOfertas,
   setSelectedOfertas,
 }) => {
-  // Estados locais para garantir que, por padrão, nenhum filtro esteja ativo
+  // Estados locais para garantir que, por padrão, nenhum filtro esteja ativo.
   const [localCategories, setLocalCategories] = useState(
     selectedCategories || []
   );
