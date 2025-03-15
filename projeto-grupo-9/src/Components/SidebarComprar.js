@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Typography,
@@ -20,37 +20,13 @@ const SidebarComprar = ({
   selectedOfertas,
   setSelectedOfertas,
 }) => {
-  // Estados locais para garantir que, por padrão, nenhum filtro esteja ativo.
-  const [localCategories, setLocalCategories] = useState(
-    selectedCategories || []
-  );
-  const [localOfertas, setLocalOfertas] = useState(selectedOfertas || []);
-  const [localPreco, setLocalPreco] = useState(preco || [0, 2000]);
-
   // Atualiza categorias selecionadas
   const handleCategoryChange = (categoria) => {
-    const updatedCategories = localCategories.includes(categoria)
-      ? localCategories.filter((c) => c !== categoria)
-      : [...localCategories, categoria];
-
-    setLocalCategories(updatedCategories);
-    if (setSelectedCategories) setSelectedCategories(updatedCategories);
-  };
-
-  // Atualiza ofertas selecionadas
-  const handleOfertasChange = (oferta) => {
-    const updatedOfertas = localOfertas.includes(oferta)
-      ? localOfertas.filter((o) => o !== oferta)
-      : [...localOfertas, oferta];
-
-    setLocalOfertas(updatedOfertas);
-    if (setSelectedOfertas) setSelectedOfertas(updatedOfertas);
-  };
-
-  // Atualiza faixa de preço
-  const handlePrecoChange = (event, newValue) => {
-    setLocalPreco(newValue);
-    if (setPreco) setPreco(newValue);
+    setSelectedCategories((prev) =>
+      prev.includes(categoria)
+        ? prev.filter((c) => c !== categoria)
+        : [...prev, categoria]
+    );
   };
 
   return (
@@ -73,7 +49,7 @@ const SidebarComprar = ({
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={localCategories.includes(categoria)}
+                  checked={selectedCategories.includes(categoria)}
                   onChange={() => handleCategoryChange(categoria)}
                 />
               }
@@ -92,8 +68,8 @@ const SidebarComprar = ({
         Faixa de Preço
       </Typography>
       <Slider
-        value={localPreco}
-        onChange={handlePrecoChange}
+        value={preco}
+        onChange={(event, newValue) => setPreco(newValue)}
         valueLabelDisplay="auto"
         min={0}
         max={2000}
@@ -114,8 +90,14 @@ const SidebarComprar = ({
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={localOfertas.includes(oferta)}
-                  onChange={() => handleOfertasChange(oferta)}
+                  checked={selectedOfertas.includes(oferta)}
+                  onChange={() =>
+                    setSelectedOfertas((prev) =>
+                      prev.includes(oferta)
+                        ? prev.filter((o) => o !== oferta)
+                        : [...prev, oferta]
+                    )
+                  }
                 />
               }
               label={oferta}
