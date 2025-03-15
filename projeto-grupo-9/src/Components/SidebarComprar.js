@@ -4,12 +4,13 @@ import {
   Typography,
   Checkbox,
   FormControlLabel,
+  TextField,
   Slider,
   List,
   ListItem,
 } from "@mui/material";
 
-const categorias = ["Telemóveis", "Portáteis", "Monitores"];
+const categorias = ["Telemóveis", "Portáteis", "Monitores", "Tablets"];
 const ofertas = ["Novidades", "Mais Vendidos", "Promoções"];
 
 const SidebarComprar = ({
@@ -27,6 +28,19 @@ const SidebarComprar = ({
         ? prev.filter((c) => c !== categoria)
         : [...prev, categoria]
     );
+  };
+
+  // Atualiza faixa de preço via Slider
+  const handleSliderChange = (event, newValue) => {
+    setPreco(newValue);
+  };
+
+  // Atualiza faixa de preço via inputs manuais
+  const handleInputChange = (event, index) => {
+    const newPreco = [...preco];
+    newPreco[index] =
+      event.target.value === "" ? "" : Number(event.target.value);
+    setPreco(newPreco);
   };
 
   return (
@@ -65,16 +79,35 @@ const SidebarComprar = ({
         fontWeight="bold"
         sx={{ marginTop: "20px", marginBottom: "10px" }}
       >
-        Faixa de Preço
+        Preço
       </Typography>
       <Slider
         value={preco}
-        onChange={(event, newValue) => setPreco(newValue)}
+        onChange={handleSliderChange}
         valueLabelDisplay="auto"
         min={0}
-        max={2000}
-        sx={{ width: "90%" }}
+        max={4000}
+        sx={{ width: "90%", marginTop: "10px" }}
       />
+      <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
+        <TextField
+          type="number"
+          value={preco[0]}
+          onChange={(event) => handleInputChange(event, 0)}
+          variant="outlined"
+          size="small"
+          sx={{ width: "80px" }}
+        />
+        <Typography>-</Typography>
+        <TextField
+          type="number"
+          value={preco[1]}
+          onChange={(event) => handleInputChange(event, 1)}
+          variant="outlined"
+          size="small"
+          sx={{ width: "85px" }}
+        />
+      </Box>
 
       {/* Filtro de Ofertas */}
       <Typography
