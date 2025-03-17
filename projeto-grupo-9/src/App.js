@@ -5,6 +5,7 @@ import theme from "./theme";
 import HomePage from "./Pages/HomePage";
 import ComprarPage from "./Pages/ComprarPage";
 import VenderPage from "./Pages/VenderPage";
+import ProjetosPage from "./Pages/ProjetosPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/comprar" element={<ComprarPage />} />
           <Route path="/vender" element={<VenderPage />} />
+          <Route path="/projetos-beneficiencia" element={<ProjetosPage />} />
         </Routes>
       </Router>
     </ThemeProvider>
