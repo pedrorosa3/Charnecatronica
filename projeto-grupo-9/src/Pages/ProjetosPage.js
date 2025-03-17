@@ -36,9 +36,9 @@ const ProjetosPage = () => {
     },
     {
       id: 3,
-      title: "Projeto C",
-      description: "Descrição breve do projeto C",
-      imagem: "https://via.placeholder.com/300", 
+      title: "Requalificação Digital para Trabalhadores Desempregados",
+      description: "Apoiar trabalhadores desempregados ou em transição de carreira a adquirirem novas competências digitais, aumentando suas oportunidades no mercado de trabalho.",
+      imagem: "/images/requalificacao-trabalhadores.png", 
     },
   ];
 
@@ -55,7 +55,7 @@ const ProjetosPage = () => {
       
       <Container sx={{ flex: 1, paddingTop: "80px", paddingBottom: "40px" }}>
         {/* Título da seção */}
-        <Typography variant="h4" sx={{ marginBottom: "20px", fontWeight: 600 }}>
+        <Typography variant="h4" sx={{ marginBottom: "50px",marginTop: "50px", fontWeight: 600, textAlign: "center"}}>
           Projetos de Beneficência
         </Typography>
 
