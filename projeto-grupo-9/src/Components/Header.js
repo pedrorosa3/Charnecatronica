@@ -37,13 +37,15 @@ const Header = () => {
       >
         {/*Box com os elementos todos*/}
         <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            sx={{ color: "#000", marginLeft: "10px", paddingRight: "35px" }}
-          >
-            Charnecatrónica
-          </Typography>
+          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              sx={{ color: "#000", marginLeft: "10px", paddingRight: "35px" }}
+            >
+              Charnecatrónica
+            </Typography>
+          </Link>
 
           {/*SearchBar*/}
           <TextField
