@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Box, Container, TextField, Button, Typography, Card, CardContent, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Box, Container, TextField, Button, Typography, Card, CardContent, Select, MenuItem, FormControl, InputLabel, IconButton } from "@mui/material";
 import { styled } from "@mui/system"; // Mantenha o styled importado
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import { Close as CloseIcon } from "@mui/icons-material"; // Importar o ícone de fechar
 
 const Input = styled("input")({
   display: "none",
@@ -43,7 +44,7 @@ const VenderPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Enviando dados para avaliação:", formData);
+    console.log("Dados do formulário enviados para avaliação:", formData);
     alert("Produto enviado para avaliação!");
   };
 
@@ -58,9 +59,57 @@ const VenderPage = () => {
     >
       <Header /> {/* Cabeçalho */}
 
-      <Box sx={{ display: "flex", flex: 1, paddingTop: "80px" }}>
+      {/* Seção de introdução antes do formulário */}
+      <Box
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative", // Necessário para a sobreposição funcionar
+    backgroundImage: "url(/images/vendas.jpeg)", // URL da imagem de fundo
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    color: "black",
+    height: "50vh", // altura da seção
+    textAlign: "center",
+    padding: "20px",
+    overflow: "hidden",
+  }}
+>
+  {/* Camada de desfoque sobre a imagem */}
+  <Box
+    sx={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundImage: "url(/images/vendas.jpeg)", // Mesma imagem para sobreposição
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      filter: "blur(5px)", // Aplica o desfoque à imagem
+      opacity: 0.5, // Torna o efeito mais suave
+      zIndex: 1, // Camada abaixo do texto
+    }}
+  />
+
+  {/* Texto sobre a imagem */}
+  <Typography variant="h4" sx={{ fontWeight: "bold", marginBottom: "10px", zIndex: 2, position: "relative" }}>
+    Demonstre o desejo de vender o seu produto, e nós entraremos em contacto com mais informações.
+  </Typography>
+  <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: "20px", zIndex: 2, position: "relative" }}>
+    A nossa plataforma oferece uma maneira simples e segura de vender o seu equipamento com facilidade.
+  </Typography>
+  <Typography variant="body1" sx={{ fontWeight: "bold", zIndex: 2, position: "relative" }}>
+    Preencha o formulário abaixo e nossa equipe entrará em contacto para orientá-lo em todo o processo.
+  </Typography>
+</Box>
+
+
+      <Box sx={{ display: "flex", flex: 1, paddingTop: "20px" }}>
         {/* Container para o Formulário */}
-        <Container maxWidth="sm" sx={{ flex: 1, padding: "20px" }}>
+        <Container maxWidth="md" sx={{ flex: 1, padding: "20px" }}>
           <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "10px", padding: "20px" }}>
             <CardContent>
               <Typography variant="h5" gutterBottom align="center" sx={{ fontWeight: "bold" }}>
@@ -133,35 +182,65 @@ const VenderPage = () => {
                   }}
                 />
 
-                <label htmlFor="image-upload">
-                  <Input
-                    accept="image/*"
-                    id="image-upload"
-                    multiple
-                    type="file"
-                    onChange={handleImageUpload}
-                  />
-                  <Button
-                    variant="contained"
-                    component="span"
-                    sx={{
-                      mt: 2,
-                      backgroundColor: "#000", // cor de fundo preta
-                      color: "#fff", // cor do texto branca
-                      "&:hover": {
-                        backgroundColor: "#333", // cor de fundo no hover
-                      },
-                    }}
-                  >
-                    Upload de Fotos
-                  </Button>
-                </label>
+                {/* Upload de Fotos - Novo Layout */}
+                <Box
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    border: "2px solid #E0E0E0", // Borda cinza clara, igual aos outros campos
+    borderRadius: "10px",
+    padding: "30px", // Maior padding para aumentar a caixa
+    marginTop: "20px",
+    cursor: "pointer",
+    minHeight: "100px", // Caixa maior
+    position: "relative",
+    overflow: "hidden",
+    backgroundColor: "#FFF", // Fundo branco para destaque
+  }}
+>
+  
+ 
 
-                {formData.images.length > 0 && (
-                  <Typography sx={{ mt: 1 }}>
-                    {formData.images.length} imagem(ns) selecionada(s)
-                  </Typography>
-                )}
+  {/* Área de Upload de Imagem */}
+  
+    <label htmlFor="image-upload">
+      <Input
+        accept="image/*"
+        id="image-upload"
+        multiple
+        type="file"
+        onChange={handleImageUpload}
+      />
+      <Button
+        variant="contained"
+        component="span"
+        sx={{
+          mt: 2,
+          py:2,  
+          backgroundColor: "#000", // Cor preta para o botão
+          color: "#FFF",
+          "&:hover": {
+            backgroundColor: "#333", // Cinza escuro no hover
+          },
+        }}
+      >
+        Adicionar Fotografias
+      </Button>
+    </label>
+  
+
+  {/* Quantidade de imagens selecionadas */}
+  {formData.images.length > 0 && (
+    <Typography sx={{ mt: 2, color: "#000" }}>
+      {formData.images.length} {formData.images.length === 1 ? "imagem selecionada" : "imagens selecionadas"}
+    </Typography>
+  )}
+</Box>
+
+
+
 
                 <Button
                   type="submit"
@@ -170,7 +249,8 @@ const VenderPage = () => {
                   sx={{
                     mt: 3,
                     backgroundColor: "#000", // cor de fundo preta
-                    color: "#fff", // cor do texto branca
+                    color: "#fff",
+                    py: 1, 
                     "&:hover": {
                       backgroundColor: "#333", // cor de fundo no hover
                     },
@@ -190,6 +270,10 @@ const VenderPage = () => {
 };
 
 export default VenderPage;
+
+
+
+
 
 
 
