@@ -10,7 +10,7 @@ const Navbar = () => {
           <Link to="/" style={{ textDecoration: "none", color: "#E9C46A", fontWeight: "bold" }}>Início</Link>
           <Link to="/comprar" style={{ textDecoration: "none", color: "#E9C46A", fontWeight: "bold" }}>Comprar</Link>
           <Link to="/vender" style={{ textDecoration: "none", color: "#E9C46A", fontWeight: "bold" }}>Vender</Link>
-          <Link to="/doar" style={{ textDecoration: "none", color: "#E9C46A", fontWeight: "bold" }}>Doar</Link>
+          <Link to="/projetos-beneficiencia" style={{ textDecoration: "none", color: "#E9C46A", fontWeight: "bold" }}>Doar</Link>
         </Box>
       </Toolbar>
     </AppBar>
