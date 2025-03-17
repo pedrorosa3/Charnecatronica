@@ -1,19 +1,8 @@
 import React, { useState } from "react";
-import { styled } from "@mui/system";
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Chip,
-} from "@mui/material";
+import { Box, Container, TextField, Button, Typography, Card, CardContent, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { styled } from "@mui/system"; // Mantenha o styled importado
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import SidebarComprar from "../Components/SidebarComprar";
 
 const Input = styled("input")({
   display: "none",
@@ -24,11 +13,27 @@ const VenderPage = () => {
     name: "",
     description: "",
     price: "",
+    category: "", // Categoria do produto
     images: [],
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handlePriceChange = (e) => {
+    let value = e.target.value;
+
+    // Impedir que o valor contenha mais de duas casas decimais
+    const regex = /^(\d*\.?\d{0,2})/;
+    let formattedValue = value.match(regex) ? value.match(regex)[0] : "";
+
+    // Prevenir valores negativos
+    if (formattedValue === "" || parseFloat(formattedValue) < 0) {
+      formattedValue = "";
+    }
+
+    setFormData({ ...formData, price: formattedValue });
   };
 
   const handleImageUpload = (e) => {
@@ -52,21 +57,13 @@ const VenderPage = () => {
       }}
     >
       <Header /> {/* Cabeçalho */}
+
       <Box sx={{ display: "flex", flex: 1, paddingTop: "80px" }}>
-        {/* Sidebar */}
-        <SidebarComprar
-          selectedCategories={[]}
-          setSelectedCategories={() => {}}
-          preco={[0, 2000]}
-          setPreco={() => {}}
-          selectedOfertas={[]}
-          setSelectedOfertas={() => {}}
-        />
-        {/* Conteúdo de Venda */}
-        <Box sx={{ flex: 1, padding: "20px" }}>
-          <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "15px", padding: "20px" }}>
+        {/* Container para o Formulário */}
+        <Container maxWidth="sm" sx={{ flex: 1, padding: "20px" }}>
+          <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "10px", padding: "20px" }}>
             <CardContent>
-              <Typography variant="h5" gutterBottom>
+              <Typography variant="h5" gutterBottom align="center" sx={{ fontWeight: "bold" }}>
                 Venda Seu Equipamento
               </Typography>
               <form onSubmit={handleSubmit}>
@@ -78,7 +75,33 @@ const VenderPage = () => {
                   onChange={handleChange}
                   margin="normal"
                   required
+                  sx={{
+                    backgroundColor: "#F5F5F5", // fundo de campo de entrada
+                    borderRadius: "5px",
+                  }}
                 />
+                
+                {/* Categoria */}
+                <FormControl fullWidth margin="normal" required>
+                  <InputLabel id="category-label">Categoria</InputLabel>
+                  <Select
+                    labelId="category-label"
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    sx={{
+                      backgroundColor: "#F5F5F5", // fundo de campo de entrada
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <MenuItem value="Telemóveis">Telemóveis</MenuItem>
+                    <MenuItem value="Portáteis">Portáteis</MenuItem>
+                    <MenuItem value="Monitores">Monitores</MenuItem>
+                    <MenuItem value="Tablets">Tablets</MenuItem>
+                  </Select>
+                </FormControl>
+
                 <TextField
                   fullWidth
                   label="Descrição"
@@ -89,17 +112,27 @@ const VenderPage = () => {
                   multiline
                   rows={4}
                   required
+                  sx={{
+                    backgroundColor: "#F5F5F5", // fundo de campo de entrada
+                    borderRadius: "5px",
+                  }}
                 />
                 <TextField
                   fullWidth
                   label="Preço"
                   name="price"
-                  type="number"
+                  type="text"
                   value={formData.price}
-                  onChange={handleChange}
+                  onChange={handlePriceChange}
                   margin="normal"
                   required
+                  placeholder="0,00€" // Valor inicial como placeholder
+                  sx={{
+                    backgroundColor: "#F5F5F5", // fundo de campo de entrada
+                    borderRadius: "5px",
+                  }}
                 />
+
                 <label htmlFor="image-upload">
                   <Input
                     accept="image/*"
@@ -108,22 +141,47 @@ const VenderPage = () => {
                     type="file"
                     onChange={handleImageUpload}
                   />
-                  <Button variant="contained" component="span" sx={{ mt: 2 }}>
+                  <Button
+                    variant="contained"
+                    component="span"
+                    sx={{
+                      mt: 2,
+                      backgroundColor: "#000", // cor de fundo preta
+                      color: "#fff", // cor do texto branca
+                      "&:hover": {
+                        backgroundColor: "#333", // cor de fundo no hover
+                      },
+                    }}
+                  >
                     Upload de Fotos
                   </Button>
                 </label>
+
                 {formData.images.length > 0 && (
                   <Typography sx={{ mt: 1 }}>
                     {formData.images.length} imagem(ns) selecionada(s)
                   </Typography>
                 )}
-                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 3 }}>
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    mt: 3,
+                    backgroundColor: "#000", // cor de fundo preta
+                    color: "#fff", // cor do texto branca
+                    "&:hover": {
+                      backgroundColor: "#333", // cor de fundo no hover
+                    },
+                  }}
+                >
                   Submeter
                 </Button>
               </form>
             </CardContent>
           </Card>
-        </Box>
+        </Container>
       </Box>
 
       <Footer /> {/* Rodapé */}
@@ -132,3 +190,6 @@ const VenderPage = () => {
 };
 
 export default VenderPage;
+
+
+
