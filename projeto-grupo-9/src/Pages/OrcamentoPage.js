@@ -54,8 +54,8 @@ const OrcamentoPage = () => {
         <Box
           sx={{
             width: "80%",
-            height: "82.5%", // Altere a altura para ajustar a proporção
-            backgroundImage: "url(/images/orcamento2.jpg)",
+            height: "82.7%", // Altere a altura para ajustar a proporção
+            backgroundImage: "url(/images/)",
             backgroundSize: "cover", // Faz a imagem cobrir a área disponível
             backgroundPosition: "center bottom", // A imagem vai ser mais centralizada para baixo
             backgroundRepeat: "no-repeat",
