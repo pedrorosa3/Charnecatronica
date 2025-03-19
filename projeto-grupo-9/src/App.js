@@ -17,7 +17,7 @@ function App() {
           <Route path="/comprar" element={<ComprarPage />} />
           <Route path="/vender" element={<VenderPage />} />
           <Route path="/orcamento" element={<OrcamentoPage />} />
-          <Route path="/projetos-beneficiencia" element={<ProjetosPage />} />
+          <Route path="/doar" element={<ProjetosPage />} />
         </Routes>
       </Router>
     </ThemeProvider>
