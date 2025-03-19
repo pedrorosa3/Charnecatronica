@@ -6,6 +6,7 @@ import HomePage from "./Pages/HomePage";
 import ComprarPage from "./Pages/ComprarPage";
 import VenderPage from "./Pages/VenderPage";
 import OrcamentoPage from "./Pages/OrcamentoPage";
+import ProjetosPage from "./Pages/ProjetosPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/comprar" element={<ComprarPage />} />
           <Route path="/vender" element={<VenderPage />} />
           <Route path="/orcamento" element={<OrcamentoPage />} />
+          <Route path="/projetos-beneficiencia" element={<ProjetosPage />} />
         </Routes>
       </Router>
     </ThemeProvider>
