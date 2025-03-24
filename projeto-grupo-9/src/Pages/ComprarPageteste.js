@@ -14,7 +14,7 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import SidebarComprar from "../Components/SidebarComprar";
 
-const ComprarPage = () => {
+const ComprarPageteste = () => {
   const [equipamentos, setEquipamentos] = useState([]); // Estado para armazenar produtos
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [preco, setPreco] = useState([0, 2000]);
@@ -24,7 +24,10 @@ const ComprarPage = () => {
   useEffect(() => {
     fetch("http://localhost:9000/equipamentos")
       .then((res) => res.json())
-      .then((data) => setEquipamentos(data))
+      .then((data) => {
+        console.log(data); // Verifique se os dados estão corretos
+        setEquipamentos(data);
+      })
       .catch((err) => console.error("Erro ao buscar produtos:", err));
   }, []);
 
@@ -151,4 +154,4 @@ const ComprarPage = () => {
   );
 };
 
-export default ComprarPage;
+export default ComprarPageteste;

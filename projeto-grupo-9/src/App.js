@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import HomePage from "./Pages/HomePage";
-import ComprarPage from "./Pages/ComprarPage";
+import ComprarPageteste from "./Pages/ComprarPageteste";
 import VenderPage from "./Pages/VenderPage";
 import ProjetosPage from "./Pages/ProjetosPage";
 
