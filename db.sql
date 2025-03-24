@@ -1,3 +1,166 @@
+
+/*
+CREATE TABLE Morada (
+    ID SERIAL PRIMARY KEY,
+    Pais VARCHAR(100),
+    Localidade VARCHAR(100),
+    Latitude FLOAT,
+    Longitude FLOAT,
+    Freguesia VARCHAR(100),
+    Rua VARCHAR(255),
+    CodigoPostal VARCHAR(20),
+    Concelho VARCHAR(100),
+    Numero INT,
+    Distrito VARCHAR(100)
+);
+
+CREATE TABLE Pessoa (
+    ID SERIAL PRIMARY KEY,
+    NIF INT UNIQUE,
+    NIC INT UNIQUE,
+    Nome VARCHAR(255),
+    Genero VARCHAR(20) CHECK (Genero IN ('Masculino', 'Feminino', 'Outro')),
+    Telemovel INT UNIQUE,
+    Email VARCHAR(255) UNIQUE,
+    Password VARCHAR(255),
+    DataDeNascimento DATE,
+    MoradaID INT REFERENCES Morada(ID)
+);
+
+CREATE TABLE Loja (
+    NIPC BIGINT PRIMARY KEY,
+    Nome VARCHAR(255),
+    NumeroTelefone INT,
+    Email VARCHAR(255) UNIQUE,
+    MoradaID INT REFERENCES Morada(ID)
+);
+
+CREATE TABLE Cliente (
+    ID SERIAL PRIMARY KEY,
+    PessoaID INT REFERENCES Pessoa(ID)
+);
+
+CREATE TABLE Empregado (
+    NumInterno SERIAL PRIMARY KEY,
+    LojaNIPC BIGINT REFERENCES Loja(NIPC),
+    PessoaID INT REFERENCES Pessoa(ID)
+);
+
+CREATE TABLE Doador (
+    ID SERIAL PRIMARY KEY,
+    PessoaID INT REFERENCES Pessoa(ID)
+);
+
+CREATE TABLE Organizador (
+    ID SERIAL PRIMARY KEY,
+    PessoaID INT REFERENCES Pessoa(ID)
+);
+
+CREATE TABLE Pecas (
+    ID SERIAL PRIMARY KEY,
+    Tipo VARCHAR(255),
+    Preco FLOAT
+);
+
+CREATE TABLE Ficha_de_Equipamento (
+    Cod_barras VARCHAR(50) PRIMARY KEY,
+    Marca VARCHAR(100),
+    Modelo VARCHAR(100),
+    Tipo VARCHAR(100),
+    Preco_base FLOAT,
+    Ano_lancamento INT,
+    PecasID INT REFERENCES Pecas(ID)
+);
+
+CREATE TABLE Equipamento (
+    ID SERIAL PRIMARY KEY,
+    Estado VARCHAR(50),
+    Preco FLOAT,
+    Num_sequencia_loja INT,
+    Disp_venda DATE,
+    LojaNIPC BIGINT REFERENCES Loja(NIPC),
+    FichaEquipamentoCodBarras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras)
+);
+
+
+
+CREATE TABLE Compra (
+    ID SERIAL PRIMARY KEY,
+    Data DATE,
+    Preco FLOAT,
+    ClienteID INT REFERENCES Cliente(ID),
+    EmpregadoID INT REFERENCES Empregado(NumInterno),
+    LojaNIPC BIGINT REFERENCES Loja(NIPC),
+    EquipamentoID INT REFERENCES Equipamento(ID)
+);
+
+CREATE TABLE Venda (
+    NumeroVenda SERIAL PRIMARY KEY,
+    Data DATE,
+    Tipo VARCHAR(50),
+    CustoTransporte FLOAT,
+    LojaNIPC BIGINT REFERENCES Loja(NIPC),
+    ClienteID INT REFERENCES Cliente(ID),
+    EmpregadoID INT REFERENCES Empregado(NumInterno),
+    EquipamentoID INT REFERENCES Equipamento(ID)
+);
+
+CREATE TABLE Doacao (
+    IDDoacao SERIAL PRIMARY KEY,
+    Data DATE,
+    DoadorID INT REFERENCES Doador(ID),
+    LojaNIPC BIGINT REFERENCES Loja(NIPC),
+    EmpregadoID INT REFERENCES Empregado(NumInterno),
+    EquipamentoID INT REFERENCES Equipamento(ID),
+    ProjetoBeneficenciaID INT,
+    CompraID INT REFERENCES Compra(ID)
+);
+
+CREATE TABLE Reparacao (
+    ID SERIAL PRIMARY KEY,
+    DataEntregaAoCliente DATE,
+    NumPedidoOrcamento FLOAT,
+    DescNaoFunciona TEXT,
+    OrcamentoReparacao FLOAT,
+    ClienteID INT REFERENCES Cliente(ID),
+    EmpregadoID INT REFERENCES Empregado(NumInterno),
+    EquipamentoID INT REFERENCES Equipamento(ID),
+    LojaNIPC BIGINT REFERENCES Loja(NIPC),
+    CompraID INT REFERENCES Compra(ID)
+);
+
+CREATE TABLE ProjetoBeneficencia (
+    ID SERIAL PRIMARY KEY,
+    Nome VARCHAR(255),
+    Descricao TEXT,
+    DataLimite DATE,
+    QuantidadeEquipamentos INT,
+    OrganizadorID INT REFERENCES Organizador(ID),
+    LojaNIPC BIGINT REFERENCES Loja(NIPC),
+    FichaEquipamentoCodBarras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras)
+);
+
+CREATE TABLE Interesse (
+    ID SERIAL PRIMARY KEY,
+    Data DATE,
+    ClienteID INT REFERENCES Cliente(ID),
+    FichaEquipamentoCodBarras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras),
+    LojaNIPC BIGINT REFERENCES Loja(NIPC)
+);
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
 CREATE TABLE equipamentos (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
