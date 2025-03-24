@@ -29,7 +29,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/comprar" element={<ComprarPage />} />
+          <Route path="/comprar" element={<ComprarPageteste />} />
           <Route path="/vender" element={<VenderPage />} />
           <Route path="/projetos-beneficiencia" element={<ProjetosPage />} />
         </Routes>
