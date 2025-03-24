@@ -8,16 +8,21 @@ import VenderPage from "./Pages/VenderPage";
 import ProjetosPage from "./Pages/ProjetosPage";
 
 function App() {
-  // Definindo o estado para a mensagem
-  const [message, setMessage] = useState('');
+    // Estado para armazenar a resposta da API
+    const [apiResponse, setApiResponse] = useState("");
 
-  // Usando o hook useEffect para fazer a requisição à API
-  useEffect(() => {
-    fetch('http://localhost:8000/api/')
-      .then(response => response.json())
-      .then(data => setMessage(data.message))  // Atualiza o estado com a resposta da API
-      .catch(error => console.log(error));
-  }, []); // O array vazio [] garante que a requisição só aconteça uma vez, na montagem do componente
+    // Função para chamar a API
+    const callAPI = () => {
+      fetch("http://localhost:9000/testAPI")
+        .then((res) => res.text())
+        .then((res) => setApiResponse(res))
+        .catch((err) => console.error("Erro ao chamar API:", err));
+    };
+  
+    // useEffect para chamar a API ao montar o componente
+    useEffect(() => {
+      callAPI();
+    }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -29,11 +34,6 @@ function App() {
           <Route path="/projetos-beneficiencia" element={<ProjetosPage />} />
         </Routes>
       </Router>
-
-      {/* Exibe a mensagem recebida da API */}
-      <div>
-        <h1>{message}</h1>
-      </div>
     </ThemeProvider>
   );
 }
