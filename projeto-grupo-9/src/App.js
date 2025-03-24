@@ -9,21 +9,21 @@ import OrcamentoPage from "./Pages/OrcamentoPage";
 import ProjetosPage from "./Pages/ProjetosPage";
 
 function App() {
-    // Estado para armazenar a resposta da API
-    const [apiResponse, setApiResponse] = useState("");
+  // Estado para armazenar a resposta da API
+  const [apiResponse, setApiResponse] = useState("");
 
-    // Função para chamar a API
-    const callAPI = () => {
-      fetch("http://localhost:9000/testAPI")
-        .then((res) => res.text())
-        .then((res) => setApiResponse(res))
-        .catch((err) => console.error("Erro ao chamar API:", err));
-    };
-  
-    // useEffect para chamar a API ao montar o componente
-    useEffect(() => {
-      callAPI();
-    }, []);
+  // Função para chamar a API
+  const callAPI = () => {
+    fetch("http://localhost:9000/testAPI")
+      .then((res) => res.text())
+      .then((res) => setApiResponse(res))
+      .catch((err) => console.error("Erro ao chamar API:", err));
+  };
+
+  // useEffect para chamar a API ao montar o componente
+  useEffect(() => {
+    callAPI();
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -13,187 +13,27 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import SidebarComprar from "../Components/SidebarComprar";
 
-const produtos = [
-  {
-    nome: "Iphone 16",
-    categoria: "Telemóveis",
-    preco: "799,99",
-    avaliacao: 4.5,
-    reviews: "1.2k Reviews",
-    imagem: "/images/iphone16.png",
-  },
-  {
-    nome: "Iphone 15",
-    categoria: "Telemóveis",
-    preco: "699,99",
-    avaliacao: 4.0,
-    reviews: "1.2k Reviews",
-    imagem: "/images/iphone15.jpg",
-  },
-  {
-    nome: "Iphone 15 Pro Max",
-    categoria: "Telemóveis",
-    preco: "999,99",
-    avaliacao: 5.0,
-    reviews: "1.2k Reviews",
-    imagem: "/images/iphone15ProMax.jpg",
-  },
-  {
-    nome: "MacBook Air",
-    categoria: "Portáteis",
-    preco: "1299,99",
-    avaliacao: 4.5,
-    reviews: "1.2k Reviews",
-    imagem: "/images/macBookAir.jpg",
-  },
-  {
-    nome: "Monitor AOC 240hz",
-    categoria: "Monitores",
-    preco: "399,99",
-    avaliacao: 3.0,
-    reviews: "1.2k Reviews",
-    imagem: "/images/monitorAOC.jpg",
-  },
-  {
-    nome: "Portátil ASUS",
-    categoria: "Portáteis",
-    preco: "1199,99",
-    avaliacao: 5.0,
-    reviews: "1.2k Reviews",
-    imagem: "/images/portatilASUS.jpg",
-  },
-  {
-    nome: "Samsung Galaxy S23",
-    categoria: "Telemóveis",
-    preco: "849,99",
-    avaliacao: 4.7,
-    reviews: "900 Reviews",
-    imagem: "/images/galaxyS23.jpg",
-  },
-  {
-    nome: "Google Pixel 7",
-    categoria: "Telemóveis",
-    preco: "799,99",
-    avaliacao: 4.6,
-    reviews: "850 Reviews",
-    imagem: "/images/pixel7.jpg",
-  },
-  {
-    nome: "Xiaomi 13 Pro",
-    categoria: "Telemóveis",
-    preco: "699,99",
-    avaliacao: 4.3,
-    reviews: "700 Reviews",
-    imagem: "/images/xiaomi13Pro.jpg",
-  },
-  {
-    nome: "Dell XPS 15",
-    categoria: "Portáteis",
-    preco: "1799,99",
-    avaliacao: 4.8,
-    reviews: "2.1k Reviews",
-    imagem: "/images/dellXPS15.jpg",
-  },
-  {
-    nome: "HP Spectre x360",
-    categoria: "Portáteis",
-    preco: "1399,99",
-    avaliacao: 4.6,
-    reviews: "1.5k Reviews",
-    imagem: "/images/hpSpectre.jpg",
-  },
-  {
-    nome: "Lenovo ThinkPad X1 Carbon",
-    categoria: "Portáteis",
-    preco: "1599,99",
-    avaliacao: 4.7,
-    reviews: "1.8k Reviews",
-    imagem: "/images/lenovoThinkPad.jpg",
-  },
-  {
-    nome: "Samsung Smart Monitor M7",
-    categoria: "Monitores",
-    preco: "499,99",
-    avaliacao: 4.4,
-    reviews: "600 Reviews",
-    imagem: "/images/samsungM7.jpg",
-  },
-  {
-    nome: "LG UltraFine 5K",
-    categoria: "Monitores",
-    preco: "1299,99",
-    avaliacao: 4.5,
-    reviews: "500 Reviews",
-    imagem: "/images/lgUltraFine.jpg",
-  },
-  {
-    nome: "BenQ EX3501R",
-    categoria: "Monitores",
-    preco: "799,99",
-    avaliacao: 4.3,
-    reviews: "700 Reviews",
-    imagem: "/images/benQEX3501R.jpg",
-  },
-  {
-    nome: "Asus ROG Swift PG259QN",
-    categoria: "Monitores",
-    preco: "699,99",
-    avaliacao: 4.9,
-    reviews: "850 Reviews",
-    imagem: "/images/asusROGSwift.jpg",
-  },
-  {
-    nome: "Apple iPad Pro 12.9",
-    categoria: "Tablets",
-    preco: "1199,99",
-    avaliacao: 4.8,
-    reviews: "2k Reviews",
-    imagem: "/images/ipadPro12.jpeg",
-  },
-  {
-    nome: "Samsung Galaxy Tab S8",
-    categoria: "Tablets",
-    preco: "899,99",
-    avaliacao: 4.5,
-    reviews: "1.4k Reviews",
-    imagem: "/images/galaxyTabS8.jpg",
-  },
-  {
-    nome: "Microsoft Surface Pro 9",
-    categoria: "Tablets",
-    preco: "1099,99",
-    avaliacao: 4.7,
-    reviews: "1.3k Reviews",
-    imagem: "/images/surfacePro9.jpg",
-  },
-  {
-    nome: "Amazon Fire HD 10",
-    categoria: "Tablets",
-    preco: "199,99",
-    avaliacao: 4.1,
-    reviews: "1k Reviews",
-    imagem: "/images/amazonFireHD.jpg",
-  },
-];
-
 const ComprarPage = () => {
+  const [equipamentos, setEquipamentos] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [preco, setPreco] = useState([0, 2000]);
   const [selectedOfertas, setSelectedOfertas] = useState([]);
 
-  // Verifica se algum filtro além do preço está ativo
-  const filtrosAtivos =
-    selectedCategories.length > 0 || selectedOfertas.length > 0;
+  useEffect(() => {
+    fetch("http://localhost:9000/equipamentos")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setEquipamentos(data);
+      })
+      .catch((err) => console.error("Erro ao buscar produtos:", err));
+  }, []);
 
-  // Filtragem dos produtos
-  const produtosFiltrados = produtos.filter((produto) => {
-    const precoNumerico = parseFloat(produto.preco.replace(",", "."));
-
+  const produtosFiltrados = equipamentos.filter((produto) => {
+    const precoNumerico = parseFloat(produto.preco);
     const categoriaMatch =
       selectedCategories.length === 0 ||
       selectedCategories.includes(produto.categoria);
-
-    // Por enquanto, não temos dados de "ofertas" nos produtos
     const precoMatch = precoNumerico >= preco[0] && precoNumerico <= preco[1];
 
     return categoriaMatch && precoMatch;
@@ -211,7 +51,6 @@ const ComprarPage = () => {
       <Header />
 
       <Box sx={{ display: "flex", flex: 1, paddingTop: "80px" }}>
-        {/* Sidebar */}
         <SidebarComprar
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
@@ -220,10 +59,9 @@ const ComprarPage = () => {
           selectedOfertas={selectedOfertas}
           setSelectedOfertas={setSelectedOfertas}
         />
-        {/* Grid de Produtos */}
+
         <Box sx={{ flex: 1, padding: "20px" }}>
-          {/* Se filtros estão ativos e não há produtos correspondentes */}
-          {filtrosAtivos && produtosFiltrados.length === 0 ? (
+          {produtosFiltrados.length === 0 ? (
             <Typography
               variant="h6"
               textAlign="center"
@@ -262,7 +100,11 @@ const ComprarPage = () => {
                       />
                     </Box>
                     <Box
-                      sx={{ display: "flex", justifyContent: "center", mb: 2 }}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        mb: 2,
+                      }}
                     >
                       <img
                         src={produto.imagem}
@@ -301,8 +143,6 @@ const ComprarPage = () => {
                         </Typography>
                       </Box>
                       <Typography variant="h6">{produto.preco}€</Typography>
-
-                      {/* Botão Adicionar ao Carrinho */}
                       <Button
                         variant="contained"
                         fullWidth
@@ -313,9 +153,7 @@ const ComprarPage = () => {
                           textTransform: "none",
                           fontWeight: "bold",
                           marginTop: "15px",
-                          "&:hover": {
-                            backgroundColor: "#333",
-                          },
+                          "&:hover": { backgroundColor: "#333" },
                         }}
                       >
                         Adicionar ao Carrinho
