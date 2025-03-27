@@ -189,3 +189,19 @@ INSERT INTO equipamentos (nome, categoria, preco, avaliacao, reviews, imagem) VA
 ('Samsung Galaxy Tab S8', 'Tablets', 899.99, 4.5, '1.4k Reviews', '/images/galaxyTabS8.jpg'),
 ('Microsoft Surface Pro 9', 'Tablets', 1099.99, 4.7, '1.3k Reviews', '/images/surfacePro9.jpg'),
 ('Amazon Fire HD 10', 'Tablets', 199.99, 4.1, '1k Reviews', '/images/amazonFireHD.jpg');
+
+
+
+/*
+INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) 
+VALUES ('Portugal', 'Lisboa', 38.7169, -9.1399, 'Santa Maria Maior', 'Rua Augusta', '1100-053', 'Lisboa', 10, 'Lisboa') 
+RETURNING ID;
+
+
+
+INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID)
+VALUES 
+(123456789, 987654321, 'João Silva', 'Masculino', 912345678, 'joao.silva@gmail.com', 'DB_PASSWORD_REMOVED', '1990-05-15', 1);
+
+
+*/

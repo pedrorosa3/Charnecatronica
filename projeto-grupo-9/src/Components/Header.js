@@ -172,9 +172,12 @@ const Header = () => {
               marginRight: "30px",
             }}
           >
-            <IconButton color="inherit">
-              <AccountCircleIcon sx={{ color: "#000", fontSize: "30px" }} />
-            </IconButton>
+            {/* Link envolve o IconButton para redirecionar para a página de login */}
+            <Link to="/login" style={{ textDecoration: "none" }}>
+              <IconButton color="inherit">
+                <AccountCircleIcon sx={{ color: "#000", fontSize: "30px" }} />
+              </IconButton>
+            </Link>
             <IconButton color="inherit">
               <ShoppingCartIcon sx={{ color: "#000", fontSize: "30px" }} />
             </IconButton>
