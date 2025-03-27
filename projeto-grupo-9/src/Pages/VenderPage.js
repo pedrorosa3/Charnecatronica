@@ -12,7 +12,6 @@ const VenderPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    price: "",
     category: "",
     images: [],
   });
@@ -21,31 +20,43 @@ const VenderPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handlePriceChange = (e) => {
-    let value = e.target.value;
-    const regex = /^(\d*\.?\d{0,2})/;
-    let formattedValue = value.match(regex) ? value.match(regex)[0] : "";
-    if (formattedValue === "" || parseFloat(formattedValue) < 0) {
-      formattedValue = "";
-    }
-    setFormData({ ...formData, price: formattedValue });
-  };
-
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setFormData({ ...formData, images: [...formData.images, ...files] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dados do formulário enviados para avaliação:", formData);
-    alert("Produto enviado para avaliação!");
+    
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("category", formData.category);
+    formData.images.forEach((image, index) => {
+      formDataToSend.append(`images`, image);
+    });
+    
+    try {
+      const response = await fetch("http://localhost:9000/vendas", {
+        method: "POST",
+        body: formDataToSend,
+      });
+      
+      if (response.ok) {
+        alert("Produto enviado para avaliação!");
+        setFormData({ name: "", description: "", category: "", images: [] });
+      } else {
+        alert("Erro ao enviar produto.");
+      }
+    } catch (error) {
+      console.error("Erro ao enviar produto:", error);
+      alert("Erro ao conectar-se ao servidor.");
+    }
   };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
       <Header />
-
       <Box sx={{ display: "flex", flexDirection: "row", height: "50vh", backgroundColor: "black" }}>
         <Box sx={{ width: "40%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", padding: "20px", color: "white", backgroundColor: "rgba(0, 0, 0, 0.6)" }}>
           <Typography variant="h4" sx={{ fontWeight: "bold", marginBottom: "10px" }}>
@@ -72,7 +83,6 @@ const VenderPage = () => {
           />
         </Box>
       </Box>
-
       <Box sx={{ display: "flex", flex: 1, paddingTop: "20px" }}>
         <Container maxWidth="md" sx={{ flex: 1, padding: "20px" }}>
           <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "10px", padding: "20px" }}>
@@ -92,7 +102,6 @@ const VenderPage = () => {
                   </Select>
                 </FormControl>
                 <TextField fullWidth label="Descrição" name="description" value={formData.description} onChange={handleChange} margin="normal" multiline rows={4} required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }} />
-                <TextField fullWidth label="Preço" name="price" type="text" value={formData.price} onChange={handlePriceChange} margin="normal" required placeholder="0,00€" sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }} />
                 <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", border: "2px solid #E0E0E0", borderRadius: "10px", padding: "30px", marginTop: "20px", cursor: "pointer", minHeight: "100px", backgroundColor: "#FFF" }}>
                   <label htmlFor="image-upload">
                     <Input accept="image/*" id="image-upload" multiple type="file" onChange={handleImageUpload} />
@@ -114,7 +123,6 @@ const VenderPage = () => {
 };
 
 export default VenderPage;
-
 
 
 
