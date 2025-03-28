@@ -18,7 +18,7 @@ const getlogin = async (req, res) => {
       // Comparar a senha fornecida com a senha armazenada (não criptografada)
       if (password === user.password) {
         console.log("Login bem-sucedido");
-        return res.status(200).json({ success: true, message: "Login bem-sucedido" });
+        return res.status(201).json({ success: true, message: "Login bem-sucedido" });
       } else {
         console.log("Senha incorreta");
         return res.status(401).json({ success: false, message: "Senha incorreta" });

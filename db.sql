@@ -72,14 +72,14 @@ CREATE TABLE Ficha_de_Equipamento (
     PecasID INT REFERENCES Pecas(ID)
 );
 
-CREATE TABLE Equipamento (
-    ID SERIAL PRIMARY KEY,
-    Estado VARCHAR(50),
-    Preco FLOAT,
-    Num_sequencia_loja INT,
-    Disp_venda DATE,
-    LojaNIPC BIGINT REFERENCES Loja(NIPC),
-    FichaEquipamentoCodBarras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras)
+CREATE TABLE equipamentos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    categoria VARCHAR(100),
+    preco DECIMAL(10,2),
+    avaliacao FLOAT,
+    reviews VARCHAR(50),
+    imagem VARCHAR(255)
 );
 
 
@@ -91,7 +91,7 @@ CREATE TABLE Compra (
     ClienteID INT REFERENCES Cliente(ID),
     EmpregadoID INT REFERENCES Empregado(NumInterno),
     LojaNIPC BIGINT REFERENCES Loja(NIPC),
-    EquipamentoID INT REFERENCES Equipamento(ID)
+    EquipamentoID INT REFERENCES equipamentos(ID)
 );
 
 CREATE TABLE Venda (
@@ -153,14 +153,6 @@ CREATE TABLE Interesse (
 
 
 
-
-
-
-
-
-
-
-
 CREATE TABLE equipamentos (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
@@ -190,6 +182,72 @@ INSERT INTO equipamentos (nome, categoria, preco, avaliacao, reviews, imagem) VA
 ('Microsoft Surface Pro 9', 'Tablets', 1099.99, 4.7, '1.3k Reviews', '/images/surfacePro9.jpg'),
 ('Amazon Fire HD 10', 'Tablets', 199.99, 4.1, '1k Reviews', '/images/amazonFireHD.jpg');
 
+INSERT INTO Loja (NIPC, Nome, NumeroTelefone, Email, MoradaID)
+VALUES 
+(12345678901234, 'Loja Exemplo Lisboa', 213456789, 'loja.lisboa@exemplo.com', 1),
+(98765432109876, 'Loja Exemplo Porto', 228765432, 'loja.porto@exemplo.com', 2);
+
+INSERT INTO Cliente (PessoaID)
+VALUES 
+(1),
+(2);
+
+INSERT INTO Empregado (LojaNIPC, PessoaID)
+VALUES 
+(12345678901234, 1),
+(98765432109876, 2);
+
+INSERT INTO Doador (PessoaID)
+VALUES 
+(1),
+(2);
+
+INSERT INTO Organizador (PessoaID)
+VALUES 
+(1),
+(2);
+
+INSERT INTO Pecas (Tipo, Preco)
+VALUES 
+('Bateria', 50.0),
+('Tela', 100.0);
+
+INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID)
+VALUES 
+('12345', 'Apple', 'iPhone 12', 'Smartphone', 999.99, 2020, 1),
+('67890', 'Samsung', 'Galaxy S21', 'Smartphone', 899.99, 2021, 2);
+
+
+INSERT INTO Compra (Data, Preco, ClienteID, EmpregadoID, LojaNIPC, EquipamentoID)
+VALUES 
+('2021-11-01', 999.99, 1, 1, 12345678901234, 1),
+('2021-11-10', 799.99, 2, 2, 98765432109876, 2);
+
+INSERT INTO Venda (Data, Tipo, CustoTransporte, LojaNIPC, ClienteID, EmpregadoID, EquipamentoID)
+VALUES 
+('2021-12-01', 'Venda Direta', 10.0, 12345678901234, 1, 1, 1),
+('2021-12-10', 'Venda Direta', 15.0, 98765432109876, 2, 2, 2);
+
+INSERT INTO Doacao (Data, DoadorID, LojaNIPC, EmpregadoID, EquipamentoID, ProjetoBeneficenciaID, CompraID)
+VALUES 
+('2021-11-05', 1, 12345678901234, 1, 1, 1, 1),
+('2021-11-12', 2, 98765432109876, 2, 2, 2, 2);
+
+INSERT INTO Reparacao (DataEntregaAoCliente, NumPedidoOrcamento, DescNaoFunciona, OrcamentoReparacao, ClienteID, EmpregadoID, EquipamentoID, LojaNIPC, CompraID)
+VALUES 
+('2021-11-20', 1001, 'Tela rachada', 120.0, 1, 1, 1, 12345678901234, 1),
+('2021-12-01', 1002, 'Bateria descarregada', 50.0, 2, 2, 2, 98765432109876, 2);
+
+
+INSERT INTO ProjetoBeneficencia (Nome, Descricao, DataLimite, QuantidadeEquipamentos, OrganizadorID, LojaNIPC, FichaEquipamentoCodBarras)
+VALUES 
+('Projeto A', 'Doação de equipamentos para escolas', '2022-12-31', 100, 1, 12345678901234, '12345'),
+('Projeto B', 'Reparação de equipamentos para ONGs', '2023-06-30', 50, 2, 98765432109876, '67890');
+
+INSERT INTO Interesse (Data, ClienteID, FichaEquipamentoCodBarras, LojaNIPC)
+VALUES 
+('2021-11-01', 1, '12345', 12345678901234),
+('2021-11-05', 2, '67890', 98765432109876);
 
 
 /*
@@ -198,10 +256,8 @@ VALUES ('Portugal', 'Lisboa', 38.7169, -9.1399, 'Santa Maria Maior', 'Rua August
 RETURNING ID;
 
 
-
 INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID)
 VALUES 
 (123456789, 987654321, 'João Silva', 'Masculino', 912345678, 'joao.silva@gmail.com', 'DB_PASSWORD_REMOVED', '1990-05-15', 1);
-
 
 */
