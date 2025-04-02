@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -7,6 +7,8 @@ import {
   Button,
   IconButton,
   Paper,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
 import Header from "../Components/Header";
@@ -15,12 +17,23 @@ import { useCarrinho } from "../Context/CarrinhoContext";
 export default function Carrinho() {
   const { carrinho, atualizarQuantidade } = useCarrinho();
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleAtualizarQuantidade = (id, novaQuantidade) => {
+    if (novaQuantidade <= 0) {
+      setSnackbarMessage("Produto removido do carrinho");
+      setSnackbarOpen(true);
+    }
+    atualizarQuantidade(id, novaQuantidade);
+  };
+
   const subtotal = carrinho.reduce((total, item) => {
     return total + item.preco * item.quantidade;
   }, 0);
 
-  const tax = subtotal * 0.1; // exemplo: 10% de imposto
-  const total = subtotal + tax;
+  const tax = subtotal * (23 / 123); // IVA já incluído
+  const total = subtotal;
 
   return (
     <>
@@ -35,70 +48,123 @@ export default function Carrinho() {
             O seu carrinho está vazio.
           </Typography>
         ) : (
-          carrinho.map((item) => (
-            <Paper key={item.id} sx={{ mb: 2, p: 2 }}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={2}>
-                  <img
-                    src={item.imagem || "/placeholder.png"}
-                    alt={item.modelo}
-                    style={{ width: "100%", borderRadius: "8px" }}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography fontWeight="bold">
-                    {item.marca} {item.modelo || item.nome}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Tipo: {item.tipo || item.categoria}
-                  </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                  <Typography>{item.preco.toFixed(2)} €</Typography>
-                </Grid>
-                <Grid item xs={2}>
-                  <Box display="flex" alignItems="center">
-                    <IconButton
-                      onClick={() =>
-                        atualizarQuantidade(
-                          item.id,
-                          Math.max(1, item.quantidade - 1)
-                        )
-                      }
+          <>
+            {/* Cabeçalho das colunas */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                px: 3,
+                py: 1.5,
+                fontWeight: "bold",
+                backgroundColor: "#f4f4f4",
+                borderRadius: "8px",
+                mb: 2,
+              }}
+            >
+              <Box sx={{ width: "50%" }}>
+                <Typography variant="subtitle1">Produto</Typography>
+              </Box>
+              <Box sx={{ width: "15%", textAlign: "center" }}>
+                <Typography variant="subtitle1">Preço</Typography>
+              </Box>
+              <Box sx={{ width: "20%", textAlign: "center" }}>
+                <Typography variant="subtitle1">Quantidade</Typography>
+              </Box>
+              <Box sx={{ width: "15%", textAlign: "right" }}>
+                <Typography variant="subtitle1">Total</Typography>
+              </Box>
+            </Box>
+
+            {/* Produtos do carrinho */}
+            {carrinho.map((item) => (
+              <Paper
+                key={item.id}
+                sx={{ mb: 2, p: 2, minHeight: "160px" }}
+                elevation={2}
+              >
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={2}>
+                    <Box
+                      sx={{
+                        width: "100%",
+                        height: "140px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
                     >
-                      <Remove />
-                    </IconButton>
-                    <Typography>{item.quantidade}</Typography>
-                    <IconButton
-                      onClick={() =>
-                        atualizarQuantidade(item.id, item.quantidade + 1)
-                      }
+                      <img
+                        src={item.imagem || "/placeholder.png"}
+                        alt={item.modelo}
+                        style={{
+                          maxHeight: "100%",
+                          maxWidth: "100%",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Typography fontWeight="bold">
+                      {item.marca} {item.modelo || item.nome}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Tipo: {item.tipo || item.categoria}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Typography textAlign="center">
+                      {item.preco.toFixed(2)} €
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
                     >
-                      <Add />
-                    </IconButton>
-                  </Box>
+                      <IconButton
+                        onClick={() =>
+                          handleAtualizarQuantidade(
+                            item.id,
+                            item.quantidade - 1
+                          )
+                        }
+                      >
+                        <Remove />
+                      </IconButton>
+                      <Typography>{item.quantidade}</Typography>
+                      <IconButton
+                        onClick={() =>
+                          atualizarQuantidade(item.id, item.quantidade + 1)
+                        }
+                      >
+                        <Add />
+                      </IconButton>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Typography fontWeight="bold" textAlign="right">
+                      {(item.preco * item.quantidade).toFixed(2)} €
+                    </Typography>
+                  </Grid>
                 </Grid>
-                <Grid item xs={2}>
-                  <Typography fontWeight="bold">
-                    {(item.preco * item.quantidade).toFixed(2)} €
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Paper>
-          ))
+              </Paper>
+            ))}
+          </>
         )}
 
         {carrinho.length > 0 && (
           <>
             <Divider sx={{ my: 4 }} />
             <Box display="flex" flexDirection="column" alignItems="flex-end">
-              <Typography>Subtotal: {subtotal.toFixed(2)} €</Typography>
-              <Typography>Taxa (10%): {tax.toFixed(2)} €</Typography>
+              <Typography>IVA (23%) : {tax.toFixed(2)} €</Typography>
               <Typography variant="h6" mt={2} fontWeight="bold">
                 Total: {total.toFixed(2)} €
               </Typography>
               <Typography variant="body2" color="green" mt={1}>
-                Parabéns, tem direito a envio gratuito.
+                Tem direito a envio gratuito.
               </Typography>
               <Button variant="contained" sx={{ mt: 2, px: 4 }}>
                 Finalizar Compra
@@ -107,6 +173,21 @@ export default function Carrinho() {
           </>
         )}
       </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity="info"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

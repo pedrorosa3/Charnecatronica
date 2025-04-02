@@ -22,13 +22,16 @@ export const CarrinhoProvider = ({ children }) => {
   };
 
   const atualizarQuantidade = (id, novaQuantidade) => {
-    setCarrinho((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantidade: Math.max(1, novaQuantidade) }
-          : item
-      )
-    );
+    setCarrinho((prev) => {
+      if (novaQuantidade <= 0) {
+        // Remove do carrinho
+        return prev.filter((item) => item.id !== id);
+      }
+      // Atualiza quantidade
+      return prev.map((item) =>
+        item.id === id ? { ...item, quantidade: novaQuantidade } : item
+      );
+    });
   };
 
   const removerDoCarrinho = (id) => {
