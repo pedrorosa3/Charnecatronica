@@ -12,12 +12,14 @@ import {
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import SidebarComprar from "../Components/SidebarComprar";
+import { useCarrinho } from "../Context/CarrinhoContext";
 
 const ComprarPage = () => {
   const [equipamentos, setEquipamentos] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [preco, setPreco] = useState([0, 2000]);
   const [selectedOfertas, setSelectedOfertas] = useState([]);
+  const { adicionarAoCarrinho } = useCarrinho();
 
   useEffect(() => {
     fetch("http://localhost:9000/equipamentos")
@@ -146,6 +148,7 @@ const ComprarPage = () => {
                       <Button
                         variant="contained"
                         fullWidth
+                        onClick={() => adicionarAoCarrinho(produto)}
                         sx={{
                           backgroundColor: "#000",
                           color: "#FFFFFF",

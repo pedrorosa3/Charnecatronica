@@ -178,9 +178,11 @@ const Header = () => {
                 <AccountCircleIcon sx={{ color: "#000", fontSize: "30px" }} />
               </IconButton>
             </Link>
-            <IconButton color="inherit">
-              <ShoppingCartIcon sx={{ color: "#000", fontSize: "30px" }} />
-            </IconButton>
+            <Link to="/carrinho" style={{ textDecoration: "none" }}>
+              <IconButton color="inherit">
+                <ShoppingCartIcon sx={{ color: "#000", fontSize: "30px" }} />
+              </IconButton>
+            </Link>
           </Box>
         </Box>
       </Toolbar>

@@ -9,6 +9,7 @@ import OrcamentoPage from "./Pages/OrcamentoPage";
 import ProjetosPage from "./Pages/ProjetosPage";
 import VendasPage from "./Pages/VendasPage";
 import LoginPage from "./Pages/LoginPage";
+import Carrinho from "./Pages/Carrinho";
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -38,6 +39,7 @@ function App() {
           <Route path="/doar" element={<ProjetosPage />} />
           <Route path="/compraslista" element={<VendasPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/carrinho" element={<Carrinho />} />
         </Routes>
       </Router>
     </ThemeProvider>
