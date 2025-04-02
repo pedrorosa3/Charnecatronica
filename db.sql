@@ -137,7 +137,8 @@ CREATE TABLE ProjetoBeneficencia (
     QuantidadeEquipamentos INT,
     OrganizadorID INT REFERENCES Organizador(ID),
     LojaNIPC BIGINT REFERENCES Loja(NIPC),
-    FichaEquipamentoCodBarras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras)
+    FichaEquipamentoCodBarras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras),
+    Imagem VARCHAR(500) 
 );
 
 CREATE TABLE Interesse (
@@ -239,10 +240,23 @@ VALUES
 ('2021-12-01', 1002, 'Bateria descarregada', 50.0, 2, 2, 2, 98765432109876, 2);
 
 
-INSERT INTO ProjetoBeneficencia (Nome, Descricao, DataLimite, QuantidadeEquipamentos, OrganizadorID, LojaNIPC, FichaEquipamentoCodBarras)
-VALUES 
-('Projeto A', 'Doação de equipamentos para escolas', '2022-12-31', 100, 1, 12345678901234, '12345'),
-('Projeto B', 'Reparação de equipamentos para ONGs', '2023-06-30', 50, 2, 98765432109876, '67890');
+INSERT INTO ProjetoBeneficencia 
+(Nome, Descricao, DataLimite, QuantidadeEquipamentos, OrganizadorID, LojaNIPC, FichaEquipamentoCodBarras, Imagem) 
+VALUES
+('Doação de Computadores para Escolas e Instituições Carenciadas', 
+ 'A loja pode recolher computadores usados, recondicioná-los e doá-los para escolas, bibliotecas ou centros comunitários que atendem crianças e jovens de baixa renda. Isso ajuda a reduzir a exclusão digital e a fornecer acesso à tecnologia para fins educacionais.', 
+ '2022-12-31', 100, 1, 12345678901234, '12345', '/images/Instituicao-ensino.jpg'),
+
+('Recolha e Reciclagem de Resíduos Eletrônicos', 
+ 'A loja pode criar um ponto de recolha de equipamentos eletrônicos antigos (teclados, monitores, baterias, etc.), garantindo que sejam reciclados de forma ambientalmente responsável. Parte dos equipamentos pode ser recondicionada e doada.', 
+ '2023-06-30', 50, 2, 98765432109876, '67890', '/images/residuos-eletronicos.jpg'),
+
+('Requalificação Digital para Trabalhadores Desempregados', 
+ 'Apoiar trabalhadores desempregados ou em transição de carreira a adquirirem novas competências digitais, aumentando suas oportunidades no mercado de trabalho.', 
+ '2023-06-30', 50, 2, 98765432109876, '67890', '/images/requalificacao-trabalhadores.png');
+
+('Inclusão Digital para Idosos', 'Oferecer cursos e suporte para idosos aprenderem a utilizar computadores e smartphones, promovendo a inclusão digital e melhorando sua qualidade de vida.', 
+    '2024-12-31', 30, 3, 12345678901234, '98765', '/images/inclusao-digital-idosos.png');
 
 INSERT INTO Interesse (Data, ClienteID, FichaEquipamentoCodBarras, LojaNIPC)
 VALUES 
