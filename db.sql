@@ -136,7 +136,8 @@ CREATE TABLE ProjetoBeneficencia (
     QuantidadeEquipamentos INT,
     OrganizadorID INT REFERENCES Organizador(ID),
     LojaNIPC BIGINT REFERENCES Loja(NIPC),
-    FichaEquipamentoCodBarras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras)
+    FichaEquipamentoCodBarras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras),
+    Imagem VARCHAR(500) 
 );
 
 CREATE TABLE Interesse (
@@ -223,3 +224,95 @@ INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, A
 INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('2421024994713', 'Sá', 'Modelo 7', 'Portátil', 1400.77, 2023, 1);
 INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('4648877190651', 'Amaral', 'Modelo 8', 'Portátil', 1661.42, 2022, 3);
 INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('1399049027871', 'Coelho', 'Modelo 9', 'Monitor', 608.71, 2013, 5);
+INSERT INTO Loja (NIPC, Nome, NumeroTelefone, Email, MoradaID)
+VALUES 
+(12345678901234, 'Loja Exemplo Lisboa', 213456789, 'loja.lisboa@exemplo.com', 1),
+(98765432109876, 'Loja Exemplo Porto', 228765432, 'loja.porto@exemplo.com', 2);
+
+INSERT INTO Cliente (PessoaID)
+VALUES 
+(1),
+(2);
+
+INSERT INTO Empregado (LojaNIPC, PessoaID)
+VALUES 
+(12345678901234, 1),
+(98765432109876, 2);
+
+INSERT INTO Doador (PessoaID)
+VALUES 
+(1),
+(2);
+
+INSERT INTO Organizador (PessoaID)
+VALUES 
+(1),
+(2);
+
+INSERT INTO Pecas (Tipo, Preco)
+VALUES 
+('Bateria', 50.0),
+('Tela', 100.0);
+
+INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID)
+VALUES 
+('12345', 'Apple', 'iPhone 12', 'Smartphone', 999.99, 2020, 1),
+('67890', 'Samsung', 'Galaxy S21', 'Smartphone', 899.99, 2021, 2);
+
+
+INSERT INTO Compra (Data, Preco, ClienteID, EmpregadoID, LojaNIPC, EquipamentoID)
+VALUES 
+('2021-11-01', 999.99, 1, 1, 12345678901234, 1),
+('2021-11-10', 799.99, 2, 2, 98765432109876, 2);
+
+INSERT INTO Venda (Data, Tipo, CustoTransporte, LojaNIPC, ClienteID, EmpregadoID, EquipamentoID)
+VALUES 
+('2021-12-01', 'Venda Direta', 10.0, 12345678901234, 1, 1, 1),
+('2021-12-10', 'Venda Direta', 15.0, 98765432109876, 2, 2, 2);
+
+INSERT INTO Doacao (Data, DoadorID, LojaNIPC, EmpregadoID, EquipamentoID, ProjetoBeneficenciaID, CompraID)
+VALUES 
+('2021-11-05', 1, 12345678901234, 1, 1, 1, 1),
+('2021-11-12', 2, 98765432109876, 2, 2, 2, 2);
+
+INSERT INTO Reparacao (DataEntregaAoCliente, NumPedidoOrcamento, DescNaoFunciona, OrcamentoReparacao, ClienteID, EmpregadoID, EquipamentoID, LojaNIPC, CompraID)
+VALUES 
+('2021-11-20', 1001, 'Tela rachada', 120.0, 1, 1, 1, 12345678901234, 1),
+('2021-12-01', 1002, 'Bateria descarregada', 50.0, 2, 2, 2, 98765432109876, 2);
+
+
+INSERT INTO ProjetoBeneficencia 
+(Nome, Descricao, DataLimite, QuantidadeEquipamentos, OrganizadorID, LojaNIPC, FichaEquipamentoCodBarras, Imagem) 
+VALUES
+('Doação de Computadores para Escolas e Instituições Carenciadas', 
+ 'A loja pode recolher computadores usados, recondicioná-los e doá-los para escolas, bibliotecas ou centros comunitários que atendem crianças e jovens de baixa renda. Isso ajuda a reduzir a exclusão digital e a fornecer acesso à tecnologia para fins educacionais.', 
+ '2022-12-31', 100, 1, 12345678901234, '12345', '/images/Instituicao-ensino.jpg'),
+
+('Recolha e Reciclagem de Resíduos Eletrônicos', 
+ 'A loja pode criar um ponto de recolha de equipamentos eletrônicos antigos (teclados, monitores, baterias, etc.), garantindo que sejam reciclados de forma ambientalmente responsável. Parte dos equipamentos pode ser recondicionada e doada.', 
+ '2023-06-30', 50, 2, 98765432109876, '67890', '/images/residuos-eletronicos.jpg'),
+
+('Requalificação Digital para Trabalhadores Desempregados', 
+ 'Apoiar trabalhadores desempregados ou em transição de carreira a adquirirem novas competências digitais, aumentando suas oportunidades no mercado de trabalho.', 
+ '2023-06-30', 50, 2, 98765432109876, '67890', '/images/requalificacao-trabalhadores.png');
+
+('Inclusão Digital para Idosos', 'Oferecer cursos e suporte para idosos aprenderem a utilizar computadores e smartphones, promovendo a inclusão digital e melhorando sua qualidade de vida.', 
+    '2024-12-31', 30, 3, 12345678901234, '98765', '/images/inclusao-digital-idosos.png');
+
+INSERT INTO Interesse (Data, ClienteID, FichaEquipamentoCodBarras, LojaNIPC)
+VALUES 
+('2021-11-01', 1, '12345', 12345678901234),
+('2021-11-05', 2, '67890', 98765432109876);
+
+
+/*
+INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) 
+VALUES ('Portugal', 'Lisboa', 38.7169, -9.1399, 'Santa Maria Maior', 'Rua Augusta', '1100-053', 'Lisboa', 10, 'Lisboa') 
+RETURNING ID;
+
+
+INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID)
+VALUES 
+(123456789, 987654321, 'João Silva', 'Masculino', 912345678, 'joao.silva@gmail.com', 'DB_PASSWORD_REMOVED', '1990-05-15', 1);
+
+*/
