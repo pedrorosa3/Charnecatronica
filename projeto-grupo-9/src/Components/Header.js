@@ -7,14 +7,18 @@ import {
   TextField,
   InputAdornment,
   Box,
+  Badge,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link } from "react-router-dom";
+import { useCarrinho } from "../Context/CarrinhoContext";
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { carrinho } = useCarrinho();
+  const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
 
   return (
     <AppBar
@@ -178,9 +182,18 @@ const Header = () => {
                 <AccountCircleIcon sx={{ color: "#000", fontSize: "30px" }} />
               </IconButton>
             </Link>
-            <IconButton color="inherit">
-              <ShoppingCartIcon sx={{ color: "#000", fontSize: "30px" }} />
-            </IconButton>
+            <Link to="/carrinho" style={{ textDecoration: "none" }}>
+              <IconButton color="inherit">
+                <Badge
+                  badgeContent={totalItens}
+                  color="error"
+                  overlap="circular"
+                  invisible={totalItens === 0}
+                >
+                  <ShoppingCartIcon sx={{ color: "#000", fontSize: "30px" }} />
+                </Badge>
+              </IconButton>
+            </Link>
           </Box>
         </Box>
       </Toolbar>
