@@ -201,7 +201,7 @@ const ComprarPage = () => {
           severity="success"
           sx={{ width: "100%" }}
         >
-          Produto adicionado ao carrinho
+          Produto adicionado ao carrinho.
         </Alert>
       </Snackbar>
       <Footer />
