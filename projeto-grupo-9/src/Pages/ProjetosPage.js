@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import SidebarComprar from "../Components/SidebarComprar";
 
 // Estilo para o botão de upload de imagem
 const Input = styled("input")({
