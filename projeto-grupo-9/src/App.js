@@ -12,6 +12,7 @@ import LoginPage from "./Pages/LoginPage";
 import Carrinho from "./Pages/Carrinho";
 import ProjetosPageFuncionario from "./Pages/ProjetosPageFuncionário";
 import AddProjetoPage from "./Pages/AddProjetoPage";
+import DetalhesProduto from "./Pages/DetalhesProduto";
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -42,8 +43,12 @@ function App() {
           <Route path="/compraslista" element={<VendasPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/carrinho" element={<Carrinho />} />
-          <Route path="/doarFuncionario" element={<ProjetosPageFuncionario />} />
+          <Route
+            path="/doarFuncionario"
+            element={<ProjetosPageFuncionario />}
+          />
           <Route path="/adicionar-projeto" element={<AddProjetoPage />} />
+          <Route path="/produto/:id" element={<DetalhesProduto />} />
         </Routes>
       </Router>
     </ThemeProvider>

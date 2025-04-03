@@ -9,9 +9,7 @@ const Footer = () => {
         color: "#FFFFFF",
         textAlign: "center",
         padding: "15px 0",
-        position: "relative",
-        bottom: 0,
-        width: "100%",
+        mt: "auto",
       }}
     >
       <Typography variant="body2">© 2025 Charnecatrónica</Typography>
