@@ -1,3 +1,20 @@
+DROP TABLE IF EXISTS Interesse;
+DROP TABLE IF EXISTS ProjetoBeneficencia;
+DROP TABLE IF EXISTS Reparacao;
+DROP TABLE IF EXISTS Doacao;
+DROP TABLE IF EXISTS Venda;
+DROP TABLE IF EXISTS Compra;
+DROP TABLE IF EXISTS equipamentos;
+DROP TABLE IF EXISTS Ficha_de_Equipamento;
+DROP TABLE IF EXISTS Pecas;
+DROP TABLE IF EXISTS Organizador;
+DROP TABLE IF EXISTS Doador;
+DROP TABLE IF EXISTS Empregado;
+DROP TABLE IF EXISTS Cliente;
+DROP TABLE IF EXISTS Loja;
+DROP TABLE IF EXISTS Pessoa;
+DROP TABLE IF EXISTS Morada;
+
 CREATE TABLE Morada (
     ID SERIAL PRIMARY KEY,
     Pais VARCHAR(100),
@@ -148,6 +165,12 @@ CREATE TABLE Interesse (
     LojaNIPC BIGINT REFERENCES Loja(NIPC)
 );
 
+CREATE TABLE imagens_equipamento (
+  id SERIAL PRIMARY KEY,
+  equipamento_id INTEGER REFERENCES equipamentos(id) ON DELETE CASCADE,
+  url TEXT NOT NULL
+);
+
 INSERT INTO equipamentos (nome, categoria, preco, avaliacao, reviews, imagem) VALUES
 ('Iphone 15', 'Telemóveis', 699.99, 4.0, '1.2k Reviews', '/images/iphone15.jpg'),
 ('Iphone 15 Pro Max', 'Telemóveis', 999.99, 5.0, '1.2k Reviews', '/images/iphone15ProMax.jpg'),
@@ -280,6 +303,11 @@ VALUES
 ('2021-11-20', 1001, 'Tela rachada', 120.0, 1, 1, 1, 12345678901234, 1),
 ('2021-12-01', 1002, 'Bateria descarregada', 50.0, 2, 2, 2, 98765432109876, 2);
 
+INSERT INTO imagens_equipamento (equipamento_id, url)
+VALUES 
+  (1, '/images/iphone15.jpg'),
+  (1, '/images/iphone15.jpg'),
+  (1, '/images/iphone15.jpg');
 
 INSERT INTO ProjetoBeneficencia 
 (Nome, Descricao, DataLimite, QuantidadeEquipamentos, OrganizadorID, LojaNIPC, FichaEquipamentoCodBarras, Imagem) 
