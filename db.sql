@@ -171,6 +171,14 @@ CREATE TABLE imagens_equipamento (
   url TEXT NOT NULL
 );
 
+CREATE TABLE especificacoes (
+  id SERIAL PRIMARY KEY,
+  equipamento_id INTEGER REFERENCES equipamentos(id) ON DELETE CASCADE,
+  titulo TEXT,
+  destaque BOOLEAN DEFAULT FALSE    
+);
+
+
 INSERT INTO equipamentos (nome, categoria, preco, avaliacao, reviews, imagem) VALUES
 ('Iphone 15', 'Telemóveis', 699.99, 4.0, '1.2k Reviews', '/images/iphone15.jpg'),
 ('Iphone 15 Pro Max', 'Telemóveis', 999.99, 5.0, '1.2k Reviews', '/images/iphone15ProMax.jpg'),
@@ -306,8 +314,20 @@ VALUES
 INSERT INTO imagens_equipamento (equipamento_id, url)
 VALUES 
   (1, '/images/iphone15.jpg'),
-  (1, '/images/iphone15.jpg'),
-  (1, '/images/iphone15.jpg');
+  (1, '/images/iphone15_2.jpeg'),
+  (1, '/images/iphone15_3.jpeg'),
+  (1, '/images/iphone15_4.jpeg'),
+  (1, '/images/iphone15_5.jpeg');
+
+INSERT INTO especificacoes (equipamento_id, titulo, destaque) VALUES
+(1, '15,5 cm (6.1\") 2556 x 1179 pixels Ceramic Shield', false),
+(1, 'Apple A18', false),
+(1, '256 GB', false),
+(1, '5G Dual SIM NanoSIM + eSIM', false),
+(1, 'Wi-Fi 7 (802.11be) Bluetooth 5.3 Near Field Communication (NFC)', false),
+(1, 'Câmara dupla 48 MP 12 MP', false),
+(1, 'Íão-lítio Carregamento wireless', false),
+(1, 'iOS 18', false);
 
 INSERT INTO ProjetoBeneficencia 
 (Nome, Descricao, DataLimite, QuantidadeEquipamentos, OrganizadorID, LojaNIPC, FichaEquipamentoCodBarras, Imagem) 
