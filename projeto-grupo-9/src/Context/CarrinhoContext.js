@@ -7,17 +7,22 @@ export const CarrinhoProvider = ({ children }) => {
   const [carrinho, setCarrinho] = useState([]);
 
   const adicionarAoCarrinho = (produto) => {
-    setCarrinho((prev) => {
-      const existente = prev.find((p) => p.id === produto.id);
-      const precoNum = parseFloat(produto.preco) || 0;
+    const produtoFormatado = {
+      ...produto,
+      preco: Number(produto.preco),
+      quantidade: produto.quantidade || 1,
+    };
 
+    setCarrinho((prev) => {
+      const existente = prev.find((p) => p.id === produtoFormatado.id);
       if (existente) {
         return prev.map((p) =>
-          p.id === produto.id ? { ...p, quantidade: p.quantidade + 1 } : p
+          p.id === produtoFormatado.id
+            ? { ...p, quantidade: p.quantidade + produtoFormatado.quantidade }
+            : p
         );
       }
-
-      return [...prev, { ...produto, quantidade: 1, preco: precoNum }];
+      return [...prev, produtoFormatado];
     });
   };
 
