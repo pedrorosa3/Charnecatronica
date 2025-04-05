@@ -18,6 +18,7 @@ import Footer from "../Components/Footer";
 import SidebarComprar from "../Components/SidebarComprar";
 import { useCarrinho } from "../Context/CarrinhoContext";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const ComprarPage = () => {
   const [equipamentos, setEquipamentos] = useState([]);
