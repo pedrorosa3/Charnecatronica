@@ -17,37 +17,65 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import SidebarComprar from "../Components/SidebarComprar";
 import { useCarrinho } from "../Context/CarrinhoContext";
+import { useNavigate } from "react-router-dom";
 
 const ComprarPage = () => {
   const [equipamentos, setEquipamentos] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [preco, setPreco] = useState([0, 2000]);
-  const [selectedOfertas, setSelectedOfertas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [ordenacao, setOrdenacao] = useState("recentes");
 
   const { adicionarAoCarrinho } = useCarrinho();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:9000/equipamentos")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setEquipamentos(data);
+        const dadosCorrigidos = data.map((item) => ({
+          ...item,
+          dataDeDisponibilizacao: item.datadedisponibilizacao, // corrige o nome
+        }));
+
+        console.log("Equipamentos corrigidos:", dadosCorrigidos);
+        setEquipamentos(dadosCorrigidos);
       })
       .catch((err) => console.error("Erro ao buscar produtos:", err))
       .finally(() => setLoading(false));
   }, []);
 
-  const produtosFiltrados = equipamentos.filter((produto) => {
-    const precoNumerico = parseFloat(produto.preco);
-    const categoriaMatch =
-      selectedCategories.length === 0 ||
-      selectedCategories.includes(produto.categoria);
-    const precoMatch = precoNumerico >= preco[0] && precoNumerico <= preco[1];
+  const produtosFiltrados = React.useMemo(() => {
+    if (!equipamentos || equipamentos.length === 0) return [];
 
-    return categoriaMatch && precoMatch;
-  });
+    let filtrados = equipamentos.filter((produto) => {
+      const precoNumerico = parseFloat(produto.preco);
+      const categoriaMatch =
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(produto.categoria);
+      const precoMatch = precoNumerico >= preco[0] && precoNumerico <= preco[1];
+      return categoriaMatch && precoMatch;
+    });
+
+    if (ordenacao === "recentes") {
+      filtrados.sort((a, b) => {
+        const dateA = new Date(a.dataDeDisponibilizacao || 0);
+        const dateB = new Date(b.dataDeDisponibilizacao || 0);
+        return dateB - dateA;
+      });
+    } else if (ordenacao === "preco_asc") {
+      filtrados.sort((a, b) => parseFloat(a.preco) - parseFloat(b.preco));
+    } else if (ordenacao === "preco_desc") {
+      filtrados.sort((a, b) => parseFloat(b.preco) - parseFloat(a.preco));
+    }
+    console.log(
+      "Ordenados:",
+      filtrados.map((p) => `${p.nome} - ${p.dataDeDisponibilizacao}`)
+    );
+
+    return filtrados;
+  }, [equipamentos, selectedCategories, preco, ordenacao]);
 
   return (
     <Box
@@ -59,15 +87,14 @@ const ComprarPage = () => {
       }}
     >
       <Header />
-
       <Box sx={{ display: "flex", flex: 1, paddingTop: "80px" }}>
         <SidebarComprar
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
           preco={preco}
           setPreco={setPreco}
-          selectedOfertas={selectedOfertas}
-          setSelectedOfertas={setSelectedOfertas}
+          ordenacao={ordenacao}
+          setOrdenacao={setOrdenacao}
         />
 
         <Box sx={{ flex: 1, padding: "20px" }}>
@@ -84,21 +111,22 @@ const ComprarPage = () => {
               Nenhum produto encontrado com os filtros selecionados.
             </Typography>
           ) : (
-            <Grid
-              container
-              spacing={3}
-              sx={{ width: "100%", maxWidth: "100%", margin: "0 auto" }}
-            >
+            <Grid container spacing={3}>
               {produtosFiltrados.map((produto, index) => (
-                <Grow in={true} timeout={400 + index * 100} key={index}>
+                <Grow in={true} timeout={400 + index * 100} key={produto.id}>
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <Card
+                      onClick={() => navigate(`/produto/${produto.id}`)}
                       sx={{
                         backgroundColor: "#FFFFFF",
                         borderRadius: "15px",
                         padding: "20px",
                         textAlign: "center",
                         position: "relative",
+                        cursor: "pointer",
+                        "&:hover": {
+                          boxShadow: 4,
+                        },
                       }}
                     >
                       <Box
@@ -165,7 +193,8 @@ const ComprarPage = () => {
                         <Button
                           variant="contained"
                           fullWidth
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             adicionarAoCarrinho(produto);
                             setSnackbarOpen(true);
                           }}
@@ -190,6 +219,7 @@ const ComprarPage = () => {
           )}
         </Box>
       </Box>
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
@@ -204,6 +234,7 @@ const ComprarPage = () => {
           Produto adicionado ao carrinho.
         </Alert>
       </Snackbar>
+
       <Footer />
     </Box>
   );
