@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS especificacoes;
+DROP TABLE IF EXISTS imagens_equipamento;
 DROP TABLE IF EXISTS Interesse;
 DROP TABLE IF EXISTS ProjetoBeneficencia;
 DROP TABLE IF EXISTS Reparacao;
@@ -87,7 +89,6 @@ CREATE TABLE Ficha_de_Equipamento (
     PecasID INT REFERENCES Pecas(ID)
 );
 
--- Tabela principal de equipamentos
 CREATE TABLE equipamentos (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
@@ -95,10 +96,10 @@ CREATE TABLE equipamentos (
     preco DECIMAL(10,2),
     avaliacao FLOAT,
     reviews VARCHAR(50),
-    imagem VARCHAR(255)
+    imagem VARCHAR(255),
+    dataDeDisponibilizacao DATE
 );
 
--- Tabelas que referenciam corretamente 'equipamentos'
 
 CREATE TABLE Compra (
     ID SERIAL PRIMARY KEY,
@@ -179,24 +180,25 @@ CREATE TABLE especificacoes (
 );
 
 
-INSERT INTO equipamentos (nome, categoria, preco, avaliacao, reviews, imagem) VALUES
-('Iphone 15', 'Telemóveis', 699.99, 4.0, '1.2k Reviews', '/images/iphone15.jpg'),
-('Iphone 15 Pro Max', 'Telemóveis', 999.99, 5.0, '1.2k Reviews', '/images/iphone15ProMax.jpg'),
-('Monitor AOC 240hz', 'Monitores', 399.99, 3.0, '1.2k Reviews', '/images/monitorAOC.jpg'),
-('Portátil ASUS', 'Portáteis', 1199.99, 5.0, '1.2k Reviews', '/images/portatilASUS.jpg'),
-('Google Pixel 7', 'Telemóveis', 799.99, 4.6, '850 Reviews', '/images/pixel7.jpg'),
-('Xiaomi 13 Pro', 'Telemóveis', 699.99, 4.3, '700 Reviews', '/images/xiaomi13Pro.jpg'),
-('Dell XPS 15', 'Portáteis', 1799.99, 4.8, '2.1k Reviews', '/images/dellXPS15.jpg'),
-('HP Spectre x360', 'Portáteis', 1399.99, 4.6, '1.5k Reviews', '/images/hpSpectre.jpg'),
-('Lenovo ThinkPad X1 Carbon', 'Portáteis', 1599.99, 4.7, '1.8k Reviews', '/images/lenovoThinkPad.jpg'),
-('Samsung Smart Monitor M7', 'Monitores', 499.99, 4.4, '600 Reviews', '/images/samsungM7.jpg'),
-('LG UltraFine 5K', 'Monitores', 1299.99, 4.5, '500 Reviews', '/images/lgUltraFine.jpg'),
-('BenQ EX3501R', 'Monitores', 799.99, 4.3, '700 Reviews', '/images/benQEX3501R.jpg'),
-('Asus ROG Swift PG259QN', 'Monitores', 699.99, 4.9, '850 Reviews', '/images/asusROGSwift.jpg'),
-('Apple iPad Pro 12.9', 'Tablets', 1199.99, 4.8, '2k Reviews', '/images/ipadPro12.jpeg'),
-('Samsung Galaxy Tab S8', 'Tablets', 899.99, 4.5, '1.4k Reviews', '/images/galaxyTabS8.jpg'),
-('Microsoft Surface Pro 9', 'Tablets', 1099.99, 4.7, '1.3k Reviews', '/images/surfacePro9.jpg'),
-('Amazon Fire HD 10', 'Tablets', 199.99, 4.1, '1k Reviews', '/images/amazonFireHD.jpg');
+INSERT INTO equipamentos (nome, categoria, preco, avaliacao, reviews, imagem, dataDeDisponibilizacao) VALUES
+('Iphone 15', 'Telemóveis', 699.99, 4.0, '1.2k Reviews', '/images/iphone15.jpg', '2024-03-01'),
+('Iphone 15 Pro Max', 'Telemóveis', 999.99, 5.0, '1.2k Reviews', '/images/iphone15ProMax.jpg', '2024-02-25'),
+('Monitor AOC 240hz', 'Monitores', 399.99, 3.0, '1.2k Reviews', '/images/monitorAOC.jpg', '2024-01-10'),
+('Portátil ASUS', 'Portáteis', 1199.99, 5.0, '1.2k Reviews', '/images/portatilASUS.jpg', '2024-01-05'),
+('Google Pixel 7', 'Telemóveis', 799.99, 4.6, '850 Reviews', '/images/pixel7.jpg', '2024-03-10'),
+('Xiaomi 13 Pro', 'Telemóveis', 699.99, 4.3, '700 Reviews', '/images/xiaomi13Pro.jpg', '2024-03-12'),
+('Dell XPS 15', 'Portáteis', 1799.99, 4.8, '2.1k Reviews', '/images/dellXPS15.jpg', '2024-02-15'),
+('HP Spectre x360', 'Portáteis', 1399.99, 4.6, '1.5k Reviews', '/images/hpSpectre.jpg', '2024-02-20'),
+('Lenovo ThinkPad X1 Carbon', 'Portáteis', 1599.99, 4.7, '1.8k Reviews', '/images/lenovoThinkPad.jpg', '2024-02-28'),
+('Samsung Smart Monitor M7', 'Monitores', 499.99, 4.4, '600 Reviews', '/images/samsungM7.jpg', '2024-03-05'),
+('LG UltraFine 5K', 'Monitores', 1299.99, 4.5, '500 Reviews', '/images/lgUltraFine.jpg', '2024-01-22'),
+('BenQ EX3501R', 'Monitores', 799.99, 4.3, '700 Reviews', '/images/benQEX3501R.jpg', '2024-01-28'),
+('Asus ROG Swift PG259QN', 'Monitores', 699.99, 4.9, '850 Reviews', '/images/asusROGSwift.jpg', '2024-02-02'),
+('Apple iPad Pro 12.9', 'Tablets', 1199.99, 4.8, '2k Reviews', '/images/ipadPro12.jpeg', '2024-03-15'),
+('Samsung Galaxy Tab S8', 'Tablets', 899.99, 4.5, '1.4k Reviews', '/images/galaxyTabS8.jpg', '2024-03-07'),
+('Microsoft Surface Pro 9', 'Tablets', 1099.99, 4.7, '1.3k Reviews', '/images/surfacePro9.jpg', '2024-03-09'),
+('Amazon Fire HD 10', 'Tablets', 199.99, 4.1, '1k Reviews', '/images/amazonFireHD.jpg', '2024-01-18');
+
 
 INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Almeirim', -16.172379, -48.524686, 'Ville', 'Avenida Mia Vicente', '9600-133', 'Vila Real', 58, 'Vila Nova de Famalicão');
 INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Leiria', 30.5836345, 136.359605, 'Ville', 'R. Tavares', '5423-511', 'Chaves', 13, 'Pombal');

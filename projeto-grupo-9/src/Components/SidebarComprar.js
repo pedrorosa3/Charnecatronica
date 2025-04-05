@@ -8,20 +8,20 @@ import {
   Slider,
   List,
   ListItem,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 
 const categorias = ["Telemóveis", "Portáteis", "Monitores", "Tablets"];
-const ofertas = ["Novidades", "Mais Vendidos", "Promoções"];
 
 const SidebarComprar = ({
   selectedCategories,
   setSelectedCategories,
   preco,
   setPreco,
-  selectedOfertas,
-  setSelectedOfertas,
+  ordenacao,
+  setOrdenacao,
 }) => {
-  // Atualiza categorias selecionadas
   const handleCategoryChange = (categoria) => {
     setSelectedCategories((prev) =>
       prev.includes(categoria)
@@ -30,12 +30,10 @@ const SidebarComprar = ({
     );
   };
 
-  // Atualiza faixa de preço via Slider
-  const handleSliderChange = (event, newValue) => {
+  const handleSliderChange = (_, newValue) => {
     setPreco(newValue);
   };
 
-  // Atualiza faixa de preço via inputs manuais
   const handleInputChange = (event, index) => {
     const newPreco = [...preco];
     newPreco[index] =
@@ -53,7 +51,7 @@ const SidebarComprar = ({
         backgroundColor: "#FFFFFF",
       }}
     >
-      {/* Filtro de Categoria */}
+      {/* Categorias */}
       <Typography variant="h6" fontWeight="bold" sx={{ marginBottom: "10px" }}>
         Categorias
       </Typography>
@@ -73,7 +71,7 @@ const SidebarComprar = ({
         ))}
       </List>
 
-      {/* Filtro de Preço */}
+      {/* Preço */}
       <Typography
         variant="h6"
         fontWeight="bold"
@@ -109,35 +107,34 @@ const SidebarComprar = ({
         />
       </Box>
 
-      {/* Filtro de Ofertas */}
+      {/* Ordenar por */}
       <Typography
         variant="h6"
         fontWeight="bold"
         sx={{ marginTop: "20px", marginBottom: "10px" }}
       >
-        Ofertas
+        Ordenar por
       </Typography>
-      <List>
-        {ofertas.map((oferta) => (
-          <ListItem key={oferta} disablePadding>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={selectedOfertas.includes(oferta)}
-                  onChange={() =>
-                    setSelectedOfertas((prev) =>
-                      prev.includes(oferta)
-                        ? prev.filter((o) => o !== oferta)
-                        : [...prev, oferta]
-                    )
-                  }
-                />
-              }
-              label={oferta}
-            />
-          </ListItem>
-        ))}
-      </List>
+      <RadioGroup
+        value={ordenacao}
+        onChange={(e) => setOrdenacao(e.target.value)}
+      >
+        <FormControlLabel
+          value="recentes"
+          control={<Radio />}
+          label="Mais recentes"
+        />
+        <FormControlLabel
+          value="preco_asc"
+          control={<Radio />}
+          label="Preço (ascendente)"
+        />
+        <FormControlLabel
+          value="preco_desc"
+          control={<Radio />}
+          label="Preço (descendente)"
+        />
+      </RadioGroup>
     </Box>
   );
 };
