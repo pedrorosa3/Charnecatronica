@@ -29,10 +29,10 @@ export default function Carrinho() {
   };
 
   const subtotal = carrinho.reduce((total, item) => {
-    return total + item.preco * item.quantidade;
+    return total + parseFloat(item.preco) * item.quantidade;
   }, 0);
 
-  const tax = subtotal * (23 / 123); // IVA já incluído
+  const tax = subtotal * (23 / 123); // IVA incluído
   const total = subtotal;
 
   return (
@@ -49,7 +49,6 @@ export default function Carrinho() {
           </Typography>
         ) : (
           <>
-            {/* Cabeçalho das colunas */}
             <Box
               sx={{
                 display: "flex",
@@ -76,7 +75,6 @@ export default function Carrinho() {
               </Box>
             </Box>
 
-            {/* Produtos do carrinho */}
             {carrinho.map((item) => (
               <Paper
                 key={item.id}
@@ -115,7 +113,7 @@ export default function Carrinho() {
                   </Grid>
                   <Grid item xs={2}>
                     <Typography textAlign="center">
-                      {item.preco.toFixed(2)} €
+                      {parseFloat(item.preco).toFixed(2)} €
                     </Typography>
                   </Grid>
                   <Grid item xs={2}>
@@ -146,7 +144,7 @@ export default function Carrinho() {
                   </Grid>
                   <Grid item xs={2}>
                     <Typography fontWeight="bold" textAlign="right">
-                      {(item.preco * item.quantidade).toFixed(2)} €
+                      {(parseFloat(item.preco) * item.quantidade).toFixed(2)} €
                     </Typography>
                   </Grid>
                 </Grid>

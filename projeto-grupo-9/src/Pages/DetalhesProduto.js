@@ -25,8 +25,9 @@ const DetalhesProduto = () => {
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [loading, setLoading] = useState(true);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const { adicionarAoCarrinho } = useCarrinho();
   const [quantidade, setQuantidade] = useState(1);
+
+  const { adicionarAoCarrinho } = useCarrinho();
 
   useEffect(() => {
     fetch(`http://localhost:9000/equipamentos/${id}`)
@@ -47,7 +48,19 @@ const DetalhesProduto = () => {
   };
 
   const handleAdicionar = () => {
-    const produtoComQuantidade = { ...produto, quantidade };
+    if (!produto) return;
+
+    const produtoComQuantidade = {
+      id: produto.id,
+      nome: produto.nome,
+      modelo: produto.modelo,
+      tipo: produto.tipo,
+      marca: produto.marca,
+      preco: Number(produto.preco),
+      imagem: produto.imagens?.[0] || "/placeholder.png",
+      quantidade: Number(quantidade),
+    };
+
     adicionarAoCarrinho(produtoComQuantidade);
     setOpenSnackbar(true);
   };
@@ -173,7 +186,9 @@ const DetalhesProduto = () => {
                       <li key={index}>
                         <Typography
                           variant="body2"
-                          sx={{ fontWeight: esp.destaque ? "bold" : "normal" }}
+                          sx={{
+                            fontWeight: esp.destaque ? "bold" : "normal",
+                          }}
                         >
                           {esp.titulo}
                         </Typography>
@@ -194,13 +209,14 @@ const DetalhesProduto = () => {
                   Garantia de 2 anos • Devolução em 30 dias
                 </Typography>
               </Box>
+
               <Box sx={{ mt: -11 }}>
                 <Typography
                   variant="h6"
                   color="black"
                   sx={{ textAlign: "right" }}
                 >
-                  {produto.preco}€
+                  {Number(produto.preco).toFixed(2)}€
                 </Typography>
 
                 <Box
@@ -214,7 +230,7 @@ const DetalhesProduto = () => {
                 >
                   <Select
                     value={quantidade}
-                    onChange={(e) => setQuantidade(e.target.value)}
+                    onChange={(e) => setQuantidade(Number(e.target.value))}
                     size="medium"
                     sx={{
                       width: 70,
