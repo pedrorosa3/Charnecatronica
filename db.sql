@@ -85,21 +85,18 @@ CREATE TABLE Ficha_de_Equipamento (
     Modelo VARCHAR(100),
     Tipo VARCHAR(100),
     Preco_base FLOAT,
-    Ano_lancamento INT,
-    PecasID INT REFERENCES Pecas(ID)
+    Ano_lancamento INT
 );
 
 CREATE TABLE equipamentos (
     id SERIAL PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    categoria VARCHAR(100),
+    estado VARCHAR(50),
     preco DECIMAL(10,2),
-    avaliacao FLOAT,
-    reviews VARCHAR(50),
-    imagem VARCHAR(255),
-    dataDeDisponibilizacao DATE
+    numero_sequencia_loja VARCHAR(100),         -- identificação interna da loja
+    loja_nipc BIGINT REFERENCES Loja(NIPC),      -- referência à tabela Loja
+    dataDeDisponibilizacao DATE,
+    Cod_barras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras)
 );
-
 
 CREATE TABLE Compra (
     ID SERIAL PRIMARY KEY,
@@ -168,37 +165,37 @@ CREATE TABLE Interesse (
 
 CREATE TABLE imagens_equipamento (
   id SERIAL PRIMARY KEY,
-  equipamento_id INTEGER REFERENCES equipamentos(id) ON DELETE CASCADE,
+  cod_barras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras) ON DELETE CASCADE,
   url TEXT NOT NULL
 );
 
 CREATE TABLE especificacoes (
   id SERIAL PRIMARY KEY,
-  equipamento_id INTEGER REFERENCES equipamentos(id) ON DELETE CASCADE,
+  cod_barras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras) ON DELETE CASCADE,
   titulo TEXT,
   destaque BOOLEAN DEFAULT FALSE    
 );
 
 
-INSERT INTO equipamentos (nome, categoria, preco, avaliacao, reviews, imagem, dataDeDisponibilizacao) VALUES
-('Iphone 15', 'Telemóveis', 699.99, 4.0, '1.2k Reviews', '/images/iphone15.jpg', '2024-03-01'),
-('Iphone 15 Pro Max', 'Telemóveis', 999.99, 5.0, '1.2k Reviews', '/images/iphone15ProMax.jpg', '2024-02-25'),
-('Monitor AOC 240hz', 'Monitores', 399.99, 3.0, '1.2k Reviews', '/images/monitorAOC.jpg', '2024-01-10'),
-('Portátil ASUS', 'Portáteis', 1199.99, 5.0, '1.2k Reviews', '/images/portatilASUS.jpg', '2024-01-05'),
-('Google Pixel 7', 'Telemóveis', 799.99, 4.6, '850 Reviews', '/images/pixel7.jpg', '2024-03-10'),
-('Xiaomi 13 Pro', 'Telemóveis', 699.99, 4.3, '700 Reviews', '/images/xiaomi13Pro.jpg', '2024-03-12'),
-('Dell XPS 15', 'Portáteis', 1799.99, 4.8, '2.1k Reviews', '/images/dellXPS15.jpg', '2024-02-15'),
-('HP Spectre x360', 'Portáteis', 1399.99, 4.6, '1.5k Reviews', '/images/hpSpectre.jpg', '2024-02-20'),
-('Lenovo ThinkPad X1 Carbon', 'Portáteis', 1599.99, 4.7, '1.8k Reviews', '/images/lenovoThinkPad.jpg', '2024-02-28'),
-('Samsung Smart Monitor M7', 'Monitores', 499.99, 4.4, '600 Reviews', '/images/samsungM7.jpg', '2024-03-05'),
-('LG UltraFine 5K', 'Monitores', 1299.99, 4.5, '500 Reviews', '/images/lgUltraFine.jpg', '2024-01-22'),
-('BenQ EX3501R', 'Monitores', 799.99, 4.3, '700 Reviews', '/images/benQEX3501R.jpg', '2024-01-28'),
-('Asus ROG Swift PG259QN', 'Monitores', 699.99, 4.9, '850 Reviews', '/images/asusROGSwift.jpg', '2024-02-02'),
-('Apple iPad Pro 12.9', 'Tablets', 1199.99, 4.8, '2k Reviews', '/images/ipadPro12.jpeg', '2024-03-15'),
-('Samsung Galaxy Tab S8', 'Tablets', 899.99, 4.5, '1.4k Reviews', '/images/galaxyTabS8.jpg', '2024-03-07'),
-('Microsoft Surface Pro 9', 'Tablets', 1099.99, 4.7, '1.3k Reviews', '/images/surfacePro9.jpg', '2024-03-09'),
-('Amazon Fire HD 10', 'Tablets', 199.99, 4.1, '1k Reviews', '/images/amazonFireHD.jpg', '2024-01-18');
-
+INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento)
+VALUES 
+('1111111111111', 'Apple', 'iPhone 15', 'Telemóveis', 699.99, 2023),
+('1111111111112', 'Apple', 'iPhone 15 Pro Max', 'Telemóveis', 999.99, 2023),
+('1111111111113', 'AOC', '240hz', 'Monitores', 399.99, 2022),
+('1111111111114', 'ASUS', 'Portátil ASUS', 'Portáteis', 1199.99, 2021),
+('1111111111115', 'Google', 'Pixel 7', 'Telemóveis', 799.99, 2023),
+('1111111111116', 'Xiaomi', '13 Pro', 'Telemóveis', 699.99, 2023),
+('1111111111117', 'Dell', 'XPS 15', 'Portáteis', 1799.99, 2022),
+('1111111111118', 'HP', 'Spectre x360', 'Portáteis', 1399.99, 2022),
+('1111111111119', 'Lenovo', 'ThinkPad X1 Carbon', 'Portáteis', 1599.99, 2022),
+('1111111111120', 'Samsung', 'Smart Monitor M7', 'Monitores', 499.99, 2023),
+('1111111111121', 'LG', 'UltraFine 5K', 'Monitores', 1299.99, 2021),
+('1111111111122', 'BenQ', 'EX3501R', 'Monitores', 799.99, 2021),
+('1111111111123', 'Asus', 'ROG Swift PG259QN', 'Monitores', 699.99, 2021),
+('1111111111124', 'Apple', 'iPad Pro 12.9', 'Tablets', 1199.99, 2023),
+('1111111111125', 'Samsung', 'Galaxy Tab S8', 'Tablets', 899.99, 2023),
+('1111111111126', 'Microsoft', 'Surface Pro 9', 'Tablets', 1099.99, 2022),
+('1111111111127', 'Amazon', 'Fire HD 10', 'Tablets', 199.99, 2020);
 
 INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Almeirim', -16.172379, -48.524686, 'Ville', 'Avenida Mia Vicente', '9600-133', 'Vila Real', 58, 'Vila Nova de Famalicão');
 INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Leiria', 30.5836345, 136.359605, 'Ville', 'R. Tavares', '5423-511', 'Chaves', 13, 'Pombal');
@@ -210,6 +207,8 @@ INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, Codig
 INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Fiães', 54.788454, 104.731459, 'Ville', 'Praça de Alves', '5430-391', 'Tarouca', 280, 'Vendas Novas');
 INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Esmoriz', 87.1005125, 75.165283, 'Ville', 'Alameda de Cunha', '4657-871', 'Lisboa', 45, 'Peso da Régua');
 INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Vila Nova de Gaia', -28.229047, 135.916382, 'Ville', 'Avenida Teixeira', '3105-183', 'Tarouca', 217, 'Vila Franca de Xira');
+
+
 INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID) VALUES (242068763, 86644106, 'Luciana-Érica Monteiro', 'Masculino', 964190206, 'eduardobarbosa@sapo.pt', 'p6aN%flo^R_1', '1960-11-29', 1);
 INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID) VALUES (154318806, 97529405, 'Alexandra Baptista-Faria', 'Masculino', 921160949, 'nmorais@sapo.pt', 'a7kLJwzT!29M', '2005-02-24', 4);
 INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID) VALUES (436730606, 17672593, 'Nuno Morais', 'Masculino', 943745717, 'nascimentodinis@araujo.net', '&1&aTS7hB7)Z', '1985-06-08', 9);
@@ -225,38 +224,60 @@ INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNa
 INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID) VALUES (904258674, 82399599, 'Ivo Domingues', 'Feminino', 953630431, 'amaralmartim@alves.net', 'T4diVWd(m#7@', '1981-03-29', 2);
 INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID) VALUES (867741192, 36619372, 'Paulo Sá', 'Masculino', 965738718, 'tavaresvioleta@sousa.com', 'JFPDrm*x)n0L', '1996-02-29', 7);
 INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID) VALUES (967797300, 82232344, 'Luana Matias', 'Masculino', 965414110, 'marcos14@sapo.pt', 'b7OSOEt8WrT$', '1987-07-01', 6);
+
+
 INSERT INTO Loja (NIPC, Nome, NumeroTelefone, Email, MoradaID) VALUES (696115913, 'Loja 1', 242255732, 'trodrigues@melo.com', 6);
 INSERT INTO Loja (NIPC, Nome, NumeroTelefone, Email, MoradaID) VALUES (199915275, 'Loja 2', 249491631, 'aliciasa@goncalves.pt', 10);
 INSERT INTO Loja (NIPC, Nome, NumeroTelefone, Email, MoradaID) VALUES (694287057, 'Loja 3', 281259135, 'anita85@tavares.pt', 5);
+
+INSERT INTO equipamentos (estado, preco, numero_sequencia_loja, loja_nipc, dataDeDisponibilizacao, Cod_barras)
+VALUES
+('novo', 699.99, '0001', 696115913, '2024-03-16', '1111111111111'),
+('novo', 999.99, '0002', 199915275, '2024-02-25', '1111111111112'),
+('novo', 399.99, '0003', 694287057, '2024-01-10', '1111111111113'),
+('usado', 1199.99, '0004', 696115913, '2024-01-05', '1111111111114'),
+('novo', 799.99, '0005', 199915275, '2024-03-10', '1111111111115'),
+('novo', 699.99, '0006', 694287057, '2024-03-12', '1111111111116'),
+('usado', 1799.99, '0007', 696115913, '2024-02-15', '1111111111117'),
+('usado', 1399.99, '0008', 199915275, '2024-02-20', '1111111111118'),
+('usado', 1599.99, '0009', 694287057, '2024-02-28', '1111111111119'),
+('novo', 499.99, '0010', 696115913, '2024-03-05', '1111111111120'),
+('usado', 1299.99, '0011', 199915275, '2024-01-22', '1111111111121'),
+('novo', 799.99, '0012', 694287057, '2024-01-28', '1111111111122'),
+('novo', 699.99, '0013', 696115913, '2024-02-02', '1111111111123'),
+('novo', 1199.99, '0014', 199915275, '2024-03-15', '1111111111124'),
+('novo', 899.99, '0015', 694287057, '2024-03-07', '1111111111125'),
+('novo', 1099.99, '0016', 696115913, '2024-03-09', '1111111111126'),
+('usado', 199.99, '0017', 199915275, '2024-01-18', '1111111111127');
+
 INSERT INTO Cliente (PessoaID) VALUES (1);
 INSERT INTO Cliente (PessoaID) VALUES (2);
 INSERT INTO Cliente (PessoaID) VALUES (3);
 INSERT INTO Cliente (PessoaID) VALUES (4);
 INSERT INTO Cliente (PessoaID) VALUES (5);
+
+
 INSERT INTO Empregado (PessoaID, LojaNIPC) VALUES (6, 696115913);
 INSERT INTO Empregado (PessoaID, LojaNIPC) VALUES (7, 199915275);
 INSERT INTO Empregado (PessoaID, LojaNIPC) VALUES (8, 694287057);
 INSERT INTO Empregado (PessoaID, LojaNIPC) VALUES (9, 696115913);
 INSERT INTO Empregado (PessoaID, LojaNIPC) VALUES (10, 199915275);
+
+
 INSERT INTO Doador (PessoaID) VALUES (11);
 INSERT INTO Doador (PessoaID) VALUES (12);
+
+
 INSERT INTO Organizador (PessoaID) VALUES (13);
 INSERT INTO Organizador (PessoaID) VALUES (14);
+
+
 INSERT INTO Pecas (Tipo, Preco) VALUES ('fugit', 163.35);
 INSERT INTO Pecas (Tipo, Preco) VALUES ('inventore', 148.65);
 INSERT INTO Pecas (Tipo, Preco) VALUES ('explicabo', 111.88);
 INSERT INTO Pecas (Tipo, Preco) VALUES ('eveniet', 194.89);
+
 INSERT INTO Pecas (Tipo, Preco) VALUES ('cumque', 81.92);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('3518233749896', 'Barbosa', 'Modelo 0', 'Tablet', 1675.87, 2019, 3);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('3435240824005', 'Tavares', 'Modelo 1', 'Portátil', 1438.69, 2010, 2);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('2710947775203', 'Morais', 'Modelo 2', 'Tablet', 1971.92, 2023, 2);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('1167190229419', 'Borges Pacheco e Filhos', 'Modelo 3', 'Telemóvel', 822.24, 2017, 3);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('9993867749643', 'Ramos S/A', 'Modelo 4', 'Portátil', 803.34, 2013, 3);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('3341232812069', 'Sá', 'Modelo 5', 'Telemóvel', 1257.35, 2012, 5);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('9740344713495', 'Martins Batista S.A.', 'Modelo 6', 'Portátil', 410.46, 2016, 3);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('2421024994713', 'Sá', 'Modelo 7', 'Portátil', 1400.77, 2023, 1);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('4648877190651', 'Amaral', 'Modelo 8', 'Portátil', 1661.42, 2022, 3);
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID) VALUES ('1399049027871', 'Coelho', 'Modelo 9', 'Monitor', 608.71, 2013, 5);
 INSERT INTO Loja (NIPC, Nome, NumeroTelefone, Email, MoradaID)
 VALUES 
 (12345678901234, 'Loja Exemplo Lisboa', 213456789, 'loja.lisboa@exemplo.com', 1),
@@ -287,12 +308,6 @@ VALUES
 ('Bateria', 50.0),
 ('Tela', 100.0);
 
-INSERT INTO Ficha_de_Equipamento (Cod_barras, Marca, Modelo, Tipo, Preco_base, Ano_lancamento, PecasID)
-VALUES 
-('12345', 'Apple', 'iPhone 12', 'Smartphone', 999.99, 2020, 1),
-('67890', 'Samsung', 'Galaxy S21', 'Smartphone', 899.99, 2021, 2);
-
-
 INSERT INTO Compra (Data, Preco, ClienteID, EmpregadoID, LojaNIPC, EquipamentoID)
 VALUES 
 ('2021-11-01', 999.99, 1, 1, 12345678901234, 1),
@@ -313,24 +328,173 @@ VALUES
 ('2021-11-20', 1001, 'Tela rachada', 120.0, 1, 1, 1, 12345678901234, 1),
 ('2021-12-01', 1002, 'Bateria descarregada', 50.0, 2, 2, 2, 98765432109876, 2);
 
-INSERT INTO imagens_equipamento (equipamento_id, url)
+INSERT INTO imagens_equipamento (cod_barras, url)
 VALUES 
-  (1, '/images/iphone15.jpg'),
-  (1, '/images/iphone15_2.jpeg'),
-  (1, '/images/iphone15_3.jpeg'),
-  (1, '/images/iphone15_4.jpeg'),
-  (1, '/images/iphone15_5.jpeg');
+  ('1111111111111', '/images/iphone15.jpg'),
+  ('1111111111111', '/images/iphone15_2.jpeg'),
+  ('1111111111111', '/images/iphone15_3.jpeg'),
+  ('1111111111111', '/images/iphone15_4.jpeg'),
+  ('1111111111111', '/images/iphone15_5.jpeg'),
+  ('1111111111112', '/images/iphone15ProMax.jpg'),
+  ('1111111111113', '/images/monitorAOC.jpg'),
+  ('1111111111114', '/images/portatilASUS.jpg'),
+    ('1111111111115', '/images/pixel7.jpg'),
+    ('1111111111116', '/images/xiaomi13Pro.jpg'),
+    ('1111111111117', '/images/dellXPS15.jpg'),
+    ('1111111111118', '/images/hpSpectre.jpg'),
+    ('1111111111119', '/images/lenovoThinkPad.jpg'),
+    ('1111111111120', '/images/samsungM7.jpg'),
+    ('1111111111121', '/images/lgUltraFine.jpg'),
+    ('1111111111122', '/images/benQEX3501R.jpg'),
+    ('1111111111123', '/images/asusROGSwift.jpg'),
+    ('1111111111124', '/images/ipadPro12.jpeg'),
+    ('1111111111125', '/images/galaxyTabS8.jpg'),
+    ('1111111111126', '/images/surfacePro9.jpg'),
+    ('1111111111127', '/images/amazonFireHD.jpg');
 
-INSERT INTO especificacoes (equipamento_id, titulo, destaque) VALUES
-(1, '15,5 cm (6.1\") 2556 x 1179 pixels Ceramic Shield', false),
-(1, 'Apple A18', false),
-(1, '256 GB', false),
-(1, '5G Dual SIM NanoSIM + eSIM', false),
-(1, 'Wi-Fi 7 (802.11be) Bluetooth 5.3 Near Field Communication (NFC)', false),
-(1, 'Câmara dupla 48 MP 12 MP', false),
-(1, 'Íão-lítio Carregamento wireless', false),
-(1, 'iOS 18', false);
 
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111111', '15,5 cm (6.1") 2556 x 1179 pixels Ceramic Shield', false),
+('1111111111111', 'Apple A18', false),
+('1111111111111', '256 GB', false),
+('1111111111111', '5G Dual SIM NanoSIM + eSIM', false),
+('1111111111111', 'Wi-Fi 7 (802.11be) Bluetooth 5.3 Near Field Communication (NFC)', false),
+('1111111111111', 'Câmara dupla 48 MP 12 MP', false),
+('1111111111111', 'Íão-lítio Carregamento wireless', false),
+('1111111111111', 'iOS 18', false);
+
+
+-- ESPECIFICAÇÕES DE TELEMÓVEIS
+
+-- iPhone 15
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111111', 'Ecrã 6.1" Super Retina XDR OLED', true),
+('1111111111111', 'Apple A16 Bionic', false),
+('1111111111111', '256 GB Armazenamento', false),
+('1111111111111', 'Sistema de Câmara Dupla 48MP + 12MP', false),
+('1111111111111', 'Face ID, 5G, iOS 17', false);
+
+-- iPhone 15 Pro Max
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111112', 'Ecrã 6.7" ProMotion OLED 120Hz', true),
+('1111111111112', 'Apple A17 Pro', false),
+('1111111111112', '512 GB Armazenamento', false),
+('1111111111112', 'Câmara tripla com zoom ótico 5x', false),
+('1111111111112', 'Titanium Frame, iOS 17', false);
+
+-- Google Pixel 7
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111115', 'Ecrã OLED 6.3" FHD+ 90Hz', true),
+('1111111111115', 'Google Tensor G2', false),
+('1111111111115', '128 GB Armazenamento', false),
+('1111111111115', 'Câmara dupla 50MP + 12MP', false),
+('1111111111115', 'Android 13, IP68', false);
+
+-- Xiaomi 13 Pro
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111116', 'Ecrã AMOLED 6.73" WQHD+ 120Hz', true),
+('1111111111116', 'Snapdragon 8 Gen 2', false),
+('1111111111116', '256 GB + 12 GB RAM', false),
+('1111111111116', 'Câmara tripla Leica 50MP', false),
+('1111111111116', 'Carga rápida 120W', false);
+
+-- PORTÁTEIS
+
+-- ASUS Portátil
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111114', 'Ecrã 15.6" Full HD', true),
+('1111111111114', 'Intel Core i7 11ª Gen', false),
+('1111111111114', '16 GB RAM / 512 GB SSD', false),
+('1111111111114', 'GPU NVIDIA GeForce MX450', false),
+('1111111111114', 'Windows 11', false);
+
+-- Dell XPS 15
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111117', 'Ecrã 15.6" 4K+ InfinityEdge', true),
+('1111111111117', 'Intel Core i9', false),
+('1111111111117', '32 GB RAM / 1 TB SSD', false),
+('1111111111117', 'NVIDIA RTX 3050 Ti', false),
+('1111111111117', 'Windows 11 Pro', false);
+
+-- HP Spectre x360
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111118', 'Ecrã Touch 13.5" OLED', true),
+('1111111111118', 'Intel Evo i7 12ª Gen', false),
+('1111111111118', '16 GB RAM / 1 TB SSD', false),
+('1111111111118', 'Modo Tablet 360°', false),
+('1111111111118', 'Windows 11 Home', false);
+
+-- Lenovo ThinkPad X1 Carbon
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111119', 'Ecrã 14" IPS WUXGA', true),
+('1111111111119', 'Intel vPro i7 12ª Gen', false),
+('1111111111119', '16 GB RAM / 512 GB SSD', false),
+('1111111111119', 'Teclado resistente a derrames', false),
+('1111111111119', 'Windows 11 Pro', false);
+
+-- MONITORES
+
+-- AOC 240Hz
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111113', '24" FHD IPS 240Hz 0.5ms', true),
+('1111111111113', 'Tecnologia G-Sync e FreeSync', false),
+('1111111111113', 'Entrada DisplayPort + HDMI', false);
+
+-- Samsung Smart Monitor M7
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111120', '32" 4K UHD Smart Monitor', true),
+('1111111111120', 'Tizen OS com apps integradas', false),
+('1111111111120', 'Compatível com DeX e AirPlay', false);
+
+-- LG UltraFine 5K
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111121', '27" 5K Retina Display', true),
+('1111111111121', 'Thunderbolt 3 + USB-C', false),
+('1111111111121', '99% DCI-P3 Color Gamut', false);
+
+-- BenQ EX3501R
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111122', '35" UltraWide Curvo QHD', true),
+('1111111111122', 'HDR10, 100Hz', false),
+('1111111111122', 'Tecnologia Eye-Care', false);
+
+-- Asus ROG Swift PG259QN
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111123', '24.5" Full HD 360Hz 1ms', true),
+('1111111111123', 'G-Sync Premium', false),
+('1111111111123', 'Design gaming ergonómico', false);
+
+-- TABLETS
+
+-- iPad Pro 12.9
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111124', 'Ecrã Liquid Retina XDR 12.9"', true),
+('1111111111124', 'Chip Apple M2', false),
+('1111111111124', 'Apple Pencil 2ª Geração', false),
+('1111111111124', '512 GB Armazenamento', false);
+
+-- Galaxy Tab S8
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111125', 'Ecrã LTPS LCD 11" 120Hz', true),
+('1111111111125', 'Snapdragon 8 Gen 1', false),
+('1111111111125', '8 GB RAM / 256 GB', false),
+('1111111111125', 'S Pen incluída', false);
+
+-- Surface Pro 9
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111126', 'Ecrã 13" PixelSense Flow', true),
+('1111111111126', 'Intel Core i5 / i7', false),
+('1111111111126', '16 GB RAM / 512 GB SSD', false),
+('1111111111126', 'Surface Slim Pen compatível', false);
+
+-- Fire HD 10
+INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
+('1111111111127', 'Ecrã Full HD 10.1"', true),
+('1111111111127', 'Octa-core + 3GB RAM', false),
+('1111111111127', '32 GB (expansível via microSD)', false),
+('1111111111127', 'Alexa integrada', false);
+
+/*
 INSERT INTO ProjetoBeneficencia 
 (Nome, Descricao, DataLimite, QuantidadeEquipamentos, OrganizadorID, LojaNIPC, FichaEquipamentoCodBarras, Imagem) 
 VALUES
@@ -353,7 +517,7 @@ INSERT INTO Interesse (Data, ClienteID, FichaEquipamentoCodBarras, LojaNIPC)
 VALUES 
 ('2021-11-01', 1, '12345', 12345678901234),
 ('2021-11-05', 2, '67890', 98765432109876);
-
+*/
 
 /*
 INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) 
