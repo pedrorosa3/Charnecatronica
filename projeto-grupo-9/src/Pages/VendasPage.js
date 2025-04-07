@@ -41,7 +41,8 @@ const ComprasPage = () => {
                     <TableCell>Cliente ID</TableCell>
                     <TableCell>Empregado ID</TableCell>
                     <TableCell>Loja</TableCell>
-                    <TableCell>Equipamento</TableCell>
+                    <TableCell>Marca</TableCell>
+                    <TableCell>Modelo</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -53,7 +54,8 @@ const ComprasPage = () => {
                       <TableCell>{compra.clienteid}</TableCell>
                       <TableCell>{compra.empregadoid}</TableCell>
                       <TableCell>{compra.lojanome}</TableCell>
-                      <TableCell>{compra.equipamentosnome}</TableCell>
+                      <TableCell>{compra.equipamentomarca}</TableCell>
+                      <TableCell>{compra.equipamentomodelo}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

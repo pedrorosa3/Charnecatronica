@@ -1,24 +1,99 @@
-import React, { useState } from "react";
-import { Box, Container, TextField, Button, Typography, Card, CardContent } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Card,
+  CardContent,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
+import { Alert } from "@mui/material";  // Certifique-se de importar o Alert
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 
 const VenderPage = () => {
   const [formData, setFormData] = useState({
     preco: "",
-    clienteID: 1,
-    empregadoID: 1,
-    lojaNIPC: 123456789,
+    clienteid: "", // Inicializa com uma string vazia
+    empregadoID: "",
+    lojaNIPC: "", // Inicializa com uma string vazia
     equipamentoID: 1,
   });
 
+  const [lojas, setLojas] = useState([]);
+  const [empregados, setEmpregados] = useState([]);
+  const [clientes, setClientes] = useState([]);  // Estado para armazenar clientes
+
+  // Buscar as lojas ao carregar a página
+  useEffect(() => {
+    const fetchLojas = async () => {
+      try {
+        const response = await fetch("http://localhost:9000/lojas");
+        const data = await response.json();
+        setLojas(data);
+        
+        setFormData((prev) => ({ ...prev, lojaNIPC: "" }));
+      } catch (error) {
+        console.error("Erro ao buscar lojas:", error);
+      }
+    };
+
+    fetchLojas();
+  }, []);
+
+  // Buscar empregados quando a loja é selecionada
+  useEffect(() => {
+    if (formData.lojaNIPC) {
+      const fetchEmpregados = async () => {
+        try {
+          const response = await fetch(`http://localhost:9000/lojas/${formData.lojaNIPC}/empregados`);
+          const data = await response.json();
+          setEmpregados(data);
+        } catch (error) {
+          console.error("Erro ao buscar empregados:", error);
+        }
+      };
+
+      fetchEmpregados();
+    }
+  }, [formData.lojaNIPC]);
+
+  // Buscar clientes ao carregar a página
+  useEffect(() => {
+    const fetchClientes = async () => {
+      try {
+        const response = await fetch("http://localhost:9000/clientes");  
+        const data = await response.json();
+        setClientes(data);
+       
+        setFormData((prev) => ({ ...prev, clienteid: "" }));
+      } catch (error) {
+        console.error("Erro ao buscar clientes:", error);
+      }
+    };
+
+    fetchClientes();
+  }, []);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
+  const [alertMessage, setAlertMessage] = useState("");  
+  const [alertSeverity, setAlertSeverity] = useState("success"); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch("http://localhost:9000/compras", {
         method: "POST",
@@ -27,28 +102,34 @@ const VenderPage = () => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
-        alert("Compra registada com sucesso!");
+        setAlertMessage("Compra registada com sucesso!");  // Mensagem de sucesso
+        setAlertSeverity("success");  // Define como sucesso
         setFormData({
           preco: "",
-          clienteID: 1,
-          empregadoID: 1,
-          lojaNIPC: 123456789,
+          clienteid: "",
+          empregadoID: "",
+          lojaNIPC: "",
           equipamentoID: 1,
         });
       } else {
-        alert("Erro ao registar compra.");
+        const errorData = await response.json();
+        setAlertMessage(`Erro: ${errorData.error}`);  // Mensagem de erro
+        setAlertSeverity("error");  // Define como erro
       }
     } catch (error) {
-      console.error("Erro ao registar compra:", error);
-      alert("Erro ao conectar-se ao servidor.");
+      setAlertMessage("Erro ao conectar-se ao servidor.");
+      setAlertSeverity("error");
     }
   };
+  
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
       <Header />
+
+      {/* Banner */}
       <Box sx={{ display: "flex", flexDirection: "row", height: "50vh", backgroundColor: "black" }}>
         <Box
           sx={{
@@ -84,6 +165,15 @@ const VenderPage = () => {
           />
         </Box>
       </Box>
+
+      {/* Alert */}
+      {alertMessage && (
+        <Alert severity={alertSeverity} sx={{ mb: 2, mx: 2 }}>
+          {alertMessage}
+        </Alert>
+      )}
+
+      {/* Formulário */}
       <Box sx={{ display: "flex", flex: 1, paddingTop: "20px" }}>
         <Container maxWidth="md" sx={{ flex: 1, padding: "20px" }}>
           <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "10px", padding: "20px" }}>
@@ -92,50 +182,61 @@ const VenderPage = () => {
                 Nova Compra
               </Typography>
               <form onSubmit={handleSubmit}>
-                <TextField
-                  fullWidth
-                  label="Preço"
-                  name="preco"
-                  type="number"
-                  value={formData.preco}
-                  onChange={handleChange}
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                />
-                <TextField
-                  fullWidth
-                  label="Cliente ID"
-                  name="clienteID"
-                  type="number"
-                  value={formData.clienteID}
-                  onChange={handleChange}
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                />
-                <TextField
-                  fullWidth
-                  label="Empregado ID"
-                  name="empregadoID"
-                  type="number"
-                  value={formData.empregadoID}
-                  onChange={handleChange}
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                />
-                <TextField
-                  fullWidth
-                  label="Loja NIPC"
-                  name="lojaNIPC"
-                  type="number"
-                  value={formData.lojaNIPC}
-                  onChange={handleChange}
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                />
+                {/* Loja Select */}
+                <FormControl fullWidth margin="normal" required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}>
+                  <InputLabel id="loja-select-label">Loja</InputLabel>
+                  <Select
+                    labelId="loja-select-label"
+                    name="lojaNIPC"
+                    value={formData.lojaNIPC || ""}
+                    onChange={handleChange}
+                    label="Loja"
+                  >
+                    {lojas.map((loja) => (
+                      <MenuItem key={loja.nipc} value={loja.nipc}>
+                        {loja.nome}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* Empregado Select */}
+                <FormControl fullWidth margin="normal" required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}>
+                  <InputLabel id="empregado-select-label">Empregado</InputLabel>
+                  <Select
+                    labelId="empregado-select-label"
+                    name="empregadoID"
+                    value={formData.empregadoID}
+                    onChange={handleChange}
+                    label="Empregado"
+                  >
+                    {empregados.map((empregado) => (
+                      <MenuItem key={empregado.id} value={empregado.id}>
+                        {empregado.nome}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* Cliente Select */}
+                <FormControl fullWidth margin="normal" required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}>
+                  <InputLabel id="cliente-select-label">Cliente</InputLabel>
+                  <Select
+                    labelId="cliente-select-label"
+                    name="clienteid"
+                    value={formData.clienteid || ""}
+                    onChange={handleChange}
+                    label="Cliente"
+                  >
+                    {clientes.map((cliente) => (
+                      <MenuItem key={cliente.clienteid} value={cliente.clienteid}>
+                        {cliente.nome}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* Equipamento ID */}
                 <TextField
                   fullWidth
                   label="Equipamento ID"
@@ -147,6 +248,19 @@ const VenderPage = () => {
                   required
                   sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
                 />
+
+                <TextField
+                  fullWidth
+                  label="Preço"
+                  name="preco"
+                  type="number"
+                  value={formData.preco}
+                  onChange={handleChange}
+                  margin="normal"
+                  required
+                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
+                />
+
                 <Button
                   type="submit"
                   variant="contained"
@@ -160,12 +274,17 @@ const VenderPage = () => {
           </Card>
         </Container>
       </Box>
+
       <Footer />
     </Box>
   );
 };
 
 export default VenderPage;
+
+
+
+
 
 
 

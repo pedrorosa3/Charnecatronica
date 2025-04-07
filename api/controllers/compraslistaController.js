@@ -13,15 +13,17 @@ const getCompraLista = async (req, res) => {
         PessoaEmpregado.Nome AS EmpregadoNome,
         Loja.Nome AS LojaNome, 
         Loja.NIPC AS LojaNIPC,
-        Equipamentos.ID AS EquipamentosID,  -- Tabela agora chamada 'Equipamentos'
-        Equipamentos.Nome AS EquipamentosNome  -- Alias para o nome do equipamento
+        Equipamentos.ID AS EquipamentosID,
+        Ficha_de_Equipamento.Marca AS EquipamentoMarca,
+        Ficha_de_Equipamento.Modelo AS EquipamentoModelo
       FROM Compra
       JOIN Cliente ON Compra.ClienteID = Cliente.ID
       JOIN Pessoa AS PessoaCliente ON Cliente.PessoaID = PessoaCliente.ID
       JOIN Empregado ON Compra.EmpregadoID = Empregado.NumInterno
       JOIN Pessoa AS PessoaEmpregado ON Empregado.PessoaID = PessoaEmpregado.ID
       JOIN Loja ON Compra.LojaNIPC = Loja.NIPC
-      JOIN Equipamentos ON Compra.EquipamentoID = Equipamentos.ID  -- Referência corrigida
+      JOIN Equipamentos ON Compra.EquipamentoID = Equipamentos.ID
+      JOIN Ficha_de_Equipamento ON Equipamentos.Cod_barras = Ficha_de_Equipamento.Cod_barras
       ORDER BY Compra.Data DESC
     `);
 
@@ -31,6 +33,7 @@ const getCompraLista = async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar compras" });
   }
 };
+
 
 module.exports = { getCompraLista };
 

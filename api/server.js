@@ -6,6 +6,8 @@ const compraslistaRoutes = require("./routes/compraslista");
 const loginRoutes = require("./routes/login");
 const projetos_beneficenciaRoutes = require("./routes/projetos_beneficencia");
 const addProjetoRoutes = require("./routes/add_projeto");
+const lojasRoutes = require("./routes/lojas");
+const clientesRoutes = require("./routes/clientes");
 
 const app = express();
 const PORT = 9000;
@@ -19,6 +21,10 @@ app.use("/compraslista", compraslistaRoutes);
 app.use("/login", loginRoutes);
 app.use("/projetos_beneficencia", projetos_beneficenciaRoutes);
 app.use("/adicionar-projeto", addProjetoRoutes);
+app.use("/lojas", lojasRoutes);
+app.use("/clientes", clientesRoutes);
+
+
 
 app.listen(PORT, () => {
   console.log(`Servidor ligado em http://localhost:${PORT}`);

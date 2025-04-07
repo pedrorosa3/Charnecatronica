@@ -508,10 +508,10 @@ VALUES
 
 ('Requalificação Digital para Trabalhadores Desempregados', 
  'Apoiar trabalhadores desempregados ou em transição de carreira a adquirirem novas competências digitais, aumentando suas oportunidades no mercado de trabalho.', 
- '2023-06-30', 50, 2, 98765432109876, '67890', '/images/requalificacao-trabalhadores.png');
+ '2023-06-30', 50, 2, 98765432109876, '67890', '/images/requalificacao-trabalhadores.png'),
 
 ('Inclusão Digital para Idosos', 'Oferecer cursos e suporte para idosos aprenderem a utilizar computadores e smartphones, promovendo a inclusão digital e melhorando sua qualidade de vida.', 
-    '2024-12-31', 30, 3, 12345678901234, '98765', '/images/inclusao-digital-idosos.png');
+    '2024-12-31', 30, 3, 12345678901234, '98765', '/images/inclusao-digital-idosos.jpg');
 
 INSERT INTO Interesse (Data, ClienteID, FichaEquipamentoCodBarras, LojaNIPC)
 VALUES 
