@@ -13,7 +13,7 @@ const getCompraLista = async (req, res) => {
         PessoaEmpregado.Nome AS EmpregadoNome,
         Loja.Nome AS LojaNome, 
         Loja.NIPC AS LojaNIPC,
-        Equipamentos.ID AS EquipamentosID,
+        Ficha_de_Equipamento.Cod_barras AS EquipamentoCodBarras, 
         Ficha_de_Equipamento.Marca AS EquipamentoMarca,
         Ficha_de_Equipamento.Modelo AS EquipamentoModelo
       FROM Compra
@@ -22,8 +22,7 @@ const getCompraLista = async (req, res) => {
       JOIN Empregado ON Compra.EmpregadoID = Empregado.NumInterno
       JOIN Pessoa AS PessoaEmpregado ON Empregado.PessoaID = PessoaEmpregado.ID
       JOIN Loja ON Compra.LojaNIPC = Loja.NIPC
-      JOIN Equipamentos ON Compra.EquipamentoID = Equipamentos.ID
-      JOIN Ficha_de_Equipamento ON Equipamentos.Cod_barras = Ficha_de_Equipamento.Cod_barras
+      JOIN Ficha_de_Equipamento ON Compra.Cod_barras = Ficha_de_Equipamento.Cod_barras
       ORDER BY Compra.Data DESC
     `);
 
@@ -34,8 +33,8 @@ const getCompraLista = async (req, res) => {
   }
 };
 
-
 module.exports = { getCompraLista };
+
 
 
 

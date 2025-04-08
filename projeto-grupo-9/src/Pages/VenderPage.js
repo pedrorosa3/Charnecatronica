@@ -11,32 +11,39 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  Alert,
 } from "@mui/material";
-import { Alert } from "@mui/material";  // Certifique-se de importar o Alert
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 
 const VenderPage = () => {
   const [formData, setFormData] = useState({
     preco: "",
-    clienteid: "", // Inicializa com uma string vazia
+    clienteid: "",
     empregadoID: "",
-    lojaNIPC: "", // Inicializa com uma string vazia
-    equipamentoID: 1,
+    lojaNIPC: "",
+    estado: "",
+    Cod_barras: "",
+    marca: "",
+    modelo: "",
   });
 
   const [lojas, setLojas] = useState([]);
   const [empregados, setEmpregados] = useState([]);
-  const [clientes, setClientes] = useState([]);  // Estado para armazenar clientes
+  const [clientes, setClientes] = useState([]);
+  const [equipamentos, setEquipamentos] = useState([]);
+  const [marcas, setMarcas] = useState([]);
+  const [modelosFiltrados, setModelosFiltrados] = useState([]);
 
-  // Buscar as lojas ao carregar a página
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("success");
+
   useEffect(() => {
     const fetchLojas = async () => {
       try {
         const response = await fetch("http://localhost:9000/lojas");
         const data = await response.json();
         setLojas(data);
-        
         setFormData((prev) => ({ ...prev, lojaNIPC: "" }));
       } catch (error) {
         console.error("Erro ao buscar lojas:", error);
@@ -46,7 +53,6 @@ const VenderPage = () => {
     fetchLojas();
   }, []);
 
-  // Buscar empregados quando a loja é selecionada
   useEffect(() => {
     if (formData.lojaNIPC) {
       const fetchEmpregados = async () => {
@@ -63,14 +69,12 @@ const VenderPage = () => {
     }
   }, [formData.lojaNIPC]);
 
-  // Buscar clientes ao carregar a página
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await fetch("http://localhost:9000/clientes");  
+        const response = await fetch("http://localhost:9000/clientes");
         const data = await response.json();
         setClientes(data);
-       
         setFormData((prev) => ({ ...prev, clienteid: "" }));
       } catch (error) {
         console.error("Erro ao buscar clientes:", error);
@@ -78,6 +82,22 @@ const VenderPage = () => {
     };
 
     fetchClientes();
+  }, []);
+
+  useEffect(() => {
+    const fetchEquipamentos = async () => {
+      try {
+        const response = await fetch("http://localhost:9000/fichas");
+        const data = await response.json();
+        setEquipamentos(data);
+        const marcasUnicas = [...new Set(data.map((e) => e.marca))];
+        setMarcas(marcasUnicas);
+      } catch (error) {
+        console.error("Erro ao buscar fichas de equipamentos:", error);
+      }
+    };
+
+    fetchEquipamentos();
   }, []);
 
   const handleChange = (e) => {
@@ -88,92 +108,88 @@ const VenderPage = () => {
     }));
   };
 
-  const [alertMessage, setAlertMessage] = useState("");  
-  const [alertSeverity, setAlertSeverity] = useState("success"); 
+  const handleMarcaChange = (e) => {
+    const marca = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      marca: marca,
+      modelo: "",
+      Cod_barras: "",
+    }));
+
+    const modelos = equipamentos.filter((e) => e.marca === marca);
+    setModelosFiltrados(modelos);
+  };
+
+  const handleModeloChange = (e) => {
+    const modeloSelecionado = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      modelo: modeloSelecionado,
+      Cod_barras: "", // Não armazene o Cod_barras aqui
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
+    if (!formData.modelo) {
+      setAlertMessage("Erro: O modelo é obrigatório.");
+      setAlertSeverity("error");
+      return;
+    }
+
     try {
+      // Envia apenas o modelo para o backend
       const response = await fetch("http://localhost:9000/compras", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          preco: formData.preco,
+          clienteid: formData.clienteid,
+          empregadoID: formData.empregadoID,
+          lojaNIPC: formData.lojaNIPC,
+          estado: formData.estado,
+          modelo: formData.modelo,  // Apenas o modelo
+        }),
       });
-  
+
       if (response.ok) {
-        setAlertMessage("Compra registada com sucesso!");  // Mensagem de sucesso
-        setAlertSeverity("success");  // Define como sucesso
+        setAlertMessage("Compra registada com sucesso!");
+        setAlertSeverity("success");
         setFormData({
           preco: "",
           clienteid: "",
           empregadoID: "",
           lojaNIPC: "",
-          equipamentoID: 1,
+          estado: "",
+          Cod_barras: "",  // Resetando o código de barras
+          marca: "",
+          modelo: "",  // Resetando o modelo
         });
       } else {
         const errorData = await response.json();
-        setAlertMessage(`Erro: ${errorData.error}`);  // Mensagem de erro
-        setAlertSeverity("error");  // Define como erro
+        setAlertMessage(`Erro: ${errorData.error}`);
+        setAlertSeverity("error");
       }
     } catch (error) {
       setAlertMessage("Erro ao conectar-se ao servidor.");
       setAlertSeverity("error");
     }
   };
-  
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8", marginTop: "100px" }}>
       <Header />
 
-      {/* Banner */}
-      <Box sx={{ display: "flex", flexDirection: "row", height: "50vh", backgroundColor: "black" }}>
-        <Box
-          sx={{
-            width: "40%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-            padding: "20px",
-            color: "white",
-            backgroundColor: "rgba(0, 0, 0, 0.6)",
-          }}
-        >
-          <Typography variant="h4" sx={{ fontWeight: "bold", marginBottom: "10px" }}>
-            Registo de Compra
-          </Typography>
-          <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: "20px" }}>
-            Preencha os dados para registar uma compra.
-          </Typography>
-        </Box>
-        <Box sx={{ width: "60%", display: "flex", justifyContent: "center", alignItems: "flex-start", backgroundColor: "black" }}>
-          <Box
-            sx={{
-              width: "80%",
-              height: "82.7%",
-              backgroundImage: "url(/images/vendas.jpeg)",
-              backgroundSize: "cover",
-              backgroundPosition: "center bottom",
-              backgroundRepeat: "no-repeat",
-              borderTop: "80px solid black",
-            }}
-          />
-        </Box>
-      </Box>
-
-      {/* Alert */}
       {alertMessage && (
         <Alert severity={alertSeverity} sx={{ mb: 2, mx: 2 }}>
           {alertMessage}
         </Alert>
       )}
 
-      {/* Formulário */}
       <Box sx={{ display: "flex", flex: 1, paddingTop: "20px" }}>
         <Container maxWidth="md" sx={{ flex: 1, padding: "20px" }}>
           <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "10px", padding: "20px" }}>
@@ -181,8 +197,9 @@ const VenderPage = () => {
               <Typography variant="h5" gutterBottom align="center" sx={{ fontWeight: "bold" }}>
                 Nova Compra
               </Typography>
+
               <form onSubmit={handleSubmit}>
-                {/* Loja Select */}
+                {/* Loja */}
                 <FormControl fullWidth margin="normal" required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}>
                   <InputLabel id="loja-select-label">Loja</InputLabel>
                   <Select
@@ -200,7 +217,7 @@ const VenderPage = () => {
                   </Select>
                 </FormControl>
 
-                {/* Empregado Select */}
+                {/* Empregado */}
                 <FormControl fullWidth margin="normal" required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}>
                   <InputLabel id="empregado-select-label">Empregado</InputLabel>
                   <Select
@@ -209,6 +226,7 @@ const VenderPage = () => {
                     value={formData.empregadoID}
                     onChange={handleChange}
                     label="Empregado"
+                    disabled={!formData.lojaNIPC}
                   >
                     {empregados.map((empregado) => (
                       <MenuItem key={empregado.id} value={empregado.id}>
@@ -218,7 +236,7 @@ const VenderPage = () => {
                   </Select>
                 </FormControl>
 
-                {/* Cliente Select */}
+                {/* Cliente */}
                 <FormControl fullWidth margin="normal" required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}>
                   <InputLabel id="cliente-select-label">Cliente</InputLabel>
                   <Select
@@ -236,19 +254,60 @@ const VenderPage = () => {
                   </Select>
                 </FormControl>
 
-                {/* Equipamento ID */}
-                <TextField
-                  fullWidth
-                  label="Equipamento ID"
-                  name="equipamentoID"
-                  type="number"
-                  value={formData.equipamentoID}
-                  onChange={handleChange}
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                />
+                {/* Marca */}
+                <FormControl fullWidth margin="normal" required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}>
+                  <InputLabel id="marca-select-label">Marca</InputLabel>
+                  <Select
+                    labelId="marca-select-label"
+                    value={formData.marca || ""}
+                    onChange={handleMarcaChange}
+                    label="Marca"
+                  >
+                    {marcas.map((marca, index) => (
+                      <MenuItem key={`${marca}-${index}`} value={marca}>
+                        {marca}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
+                {/* Modelo */}
+                <FormControl fullWidth margin="normal" required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}>
+                  <InputLabel id="modelo-select-label">Modelo</InputLabel>
+                  <Select
+                    labelId="modelo-select-label"
+                    value={formData.modelo || ""}
+                    onChange={handleModeloChange}
+                    label="Modelo"
+                    disabled={!formData.marca}
+                  >
+                    {modelosFiltrados.map((equip) => (
+                      <MenuItem key={equip.Cod_barras} value={equip.modelo}>
+                        {equip.modelo}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* Estado */}
+                <FormControl fullWidth margin="normal" required sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}>
+                  <InputLabel id="estado-select-label">Estado do Equipamento</InputLabel>
+                  <Select
+                    labelId="estado-select-label"
+                    name="estado"
+                    value={formData.estado}
+                    onChange={handleChange}
+                    label="Estado do Equipamento"
+                  >
+                    <MenuItem value="Novo">Novo</MenuItem>
+                    <MenuItem value="Como novo">Como novo</MenuItem>
+                    <MenuItem value="Bom">Bom</MenuItem>
+                    <MenuItem value="Aceitável">Aceitável</MenuItem>
+                    <MenuItem value="Com defeito">Com defeito</MenuItem>
+                  </Select>
+                </FormControl>
+
+                {/* Preço */}
                 <TextField
                   fullWidth
                   label="Preço"
@@ -281,6 +340,12 @@ const VenderPage = () => {
 };
 
 export default VenderPage;
+
+
+
+
+
+
 
 
 

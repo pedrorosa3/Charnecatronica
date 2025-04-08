@@ -105,7 +105,9 @@ CREATE TABLE Compra (
     ClienteID INT REFERENCES Cliente(ID),
     EmpregadoID INT REFERENCES Empregado(NumInterno),
     LojaNIPC BIGINT REFERENCES Loja(NIPC),
-    EquipamentoID INT REFERENCES equipamentos(ID)
+    estado VARCHAR(50),
+    Cod_barras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras)
+
 );
 
 CREATE TABLE Venda (
@@ -308,10 +310,10 @@ VALUES
 ('Bateria', 50.0),
 ('Tela', 100.0);
 
-INSERT INTO Compra (Data, Preco, ClienteID, EmpregadoID, LojaNIPC, EquipamentoID)
+INSERT INTO Compra (Data, Preco, ClienteID, EmpregadoID, LojaNIPC, estado, Cod_barras)
 VALUES 
-('2021-11-01', 999.99, 1, 1, 12345678901234, 1),
-('2021-11-10', 799.99, 2, 2, 98765432109876, 2);
+('2021-11-01', 999.99, 1, 1, 12345678901234, 'Novo','1111111111111'),
+('2021-11-10', 799.99, 2, 2, 98765432109876, 'Usado','1111111111111');
 
 INSERT INTO Venda (Data, Tipo, CustoTransporte, LojaNIPC, ClienteID, EmpregadoID, EquipamentoID)
 VALUES 
@@ -494,25 +496,27 @@ INSERT INTO especificacoes (cod_barras, titulo, destaque) VALUES
 ('1111111111127', '32 GB (expansível via microSD)', false),
 ('1111111111127', 'Alexa integrada', false);
 
-/*
+
 INSERT INTO ProjetoBeneficencia 
 (Nome, Descricao, DataLimite, QuantidadeEquipamentos, OrganizadorID, LojaNIPC, FichaEquipamentoCodBarras, Imagem) 
 VALUES
 ('Doação de Computadores para Escolas e Instituições Carenciadas', 
  'A loja pode recolher computadores usados, recondicioná-los e doá-los para escolas, bibliotecas ou centros comunitários que atendem crianças e jovens de baixa renda. Isso ajuda a reduzir a exclusão digital e a fornecer acesso à tecnologia para fins educacionais.', 
- '2022-12-31', 100, 1, 12345678901234, '12345', '/images/Instituicao-ensino.jpg'),
+ '2022-12-31', 100, 1, 12345678901234, '1111111111126', '/images/Instituicao-ensino.jpg'),
 
 ('Recolha e Reciclagem de Resíduos Eletrônicos', 
  'A loja pode criar um ponto de recolha de equipamentos eletrônicos antigos (teclados, monitores, baterias, etc.), garantindo que sejam reciclados de forma ambientalmente responsável. Parte dos equipamentos pode ser recondicionada e doada.', 
- '2023-06-30', 50, 2, 98765432109876, '67890', '/images/residuos-eletronicos.jpg'),
+ '2023-06-30', 50, 2, 98765432109876, '1111111111122', '/images/residuos-eletronicos.jpg'),
 
 ('Requalificação Digital para Trabalhadores Desempregados', 
  'Apoiar trabalhadores desempregados ou em transição de carreira a adquirirem novas competências digitais, aumentando suas oportunidades no mercado de trabalho.', 
- '2023-06-30', 50, 2, 98765432109876, '67890', '/images/requalificacao-trabalhadores.png'),
+ '2023-06-30', 50, 2, 98765432109876, '1111111111124', '/images/requalificacao-trabalhadores.png'),
 
 ('Inclusão Digital para Idosos', 'Oferecer cursos e suporte para idosos aprenderem a utilizar computadores e smartphones, promovendo a inclusão digital e melhorando sua qualidade de vida.', 
-    '2024-12-31', 30, 3, 12345678901234, '98765', '/images/inclusao-digital-idosos.jpg');
+    '2024-12-31', 30, 3, 12345678901234, '1111111111123', '/images/inclusao-digital-idosos.jpg');
 
+
+/*
 INSERT INTO Interesse (Data, ClienteID, FichaEquipamentoCodBarras, LojaNIPC)
 VALUES 
 ('2021-11-01', 1, '12345', 12345678901234),
