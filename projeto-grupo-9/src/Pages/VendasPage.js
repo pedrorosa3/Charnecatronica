@@ -33,32 +33,53 @@ const ComprasPage = () => {
           <CardContent>
             <TableContainer component={Paper}>
               <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Data</TableCell>
-                    <TableCell>Preço (€)</TableCell>
-                    <TableCell>Cliente ID</TableCell>
-                    <TableCell>Empregado ID</TableCell>
-                    <TableCell>Loja</TableCell>
-                    <TableCell>Marca</TableCell>
-                    <TableCell>Modelo</TableCell>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Data</TableCell>
+                  <TableCell>Preço (€)</TableCell>
+                  <TableCell>Cliente</TableCell>
+                  <TableCell>Empregado</TableCell>
+                  <TableCell>Loja</TableCell>
+                  <TableCell>Marca</TableCell>
+                  <TableCell>Modelo</TableCell>
+                  <TableCell></TableCell> {/* NOVA COLUNA */}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {compras.map((compra) => (
+                  <TableRow key={compra.id}>
+                    <TableCell>{compra.id}</TableCell>
+                    <TableCell>{new Date(compra.data).toLocaleDateString()}</TableCell>
+                    <TableCell>{compra.preco.toFixed(2)}</TableCell>
+                    <TableCell>{compra.clientenome}</TableCell>
+                    <TableCell>{compra.empregadonome}</TableCell>
+                    <TableCell>{compra.lojanome}</TableCell>
+                    <TableCell>{compra.equipamentomarca}</TableCell>
+                    <TableCell>{compra.equipamentomodelo}</TableCell>
+                    <TableCell>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#000",
+                        color: "#fff",
+                        "&:hover": { backgroundColor: "#333" },
+                        borderRadius: "8px",
+                        paddingX: 2,
+                        paddingY: 0.5,
+                        fontSize: "0.875rem", // um pouco mais pequeno que o botão principal
+                        textTransform: "none", // mantém o texto normal (sem maiúsculas)
+                      }}
+                      onClick={() => navigate(`/compraslista/${compra.id}`)}
+                    >
+                     Detalhes
+                    </Button>
+
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {compras.map((compra) => (
-                    <TableRow key={compra.id}>
-                      <TableCell>{compra.id}</TableCell>
-                      <TableCell>{new Date(compra.data).toLocaleDateString()}</TableCell>
-                      <TableCell>{compra.preco.toFixed(2)}</TableCell>
-                      <TableCell>{compra.clienteid}</TableCell>
-                      <TableCell>{compra.empregadoid}</TableCell>
-                      <TableCell>{compra.lojanome}</TableCell>
-                      <TableCell>{compra.equipamentomarca}</TableCell>
-                      <TableCell>{compra.equipamentomodelo}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
+                ))}
+              </TableBody>
+
               </Table>
             </TableContainer>
 
