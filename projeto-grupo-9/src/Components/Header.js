@@ -11,12 +11,15 @@ import {
   ListItem,
   ListItemText,
   Paper,
+  Button,
+  Avatar,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { useCarrinho } from "../Context/CarrinhoContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +29,8 @@ const Header = () => {
 
   const { carrinho } = useCarrinho();
   const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+
+  const { loginWithRedirect, logout, isAuthenticated, user, isLoading } = useAuth0();
 
   useEffect(() => {
     fetch("http://localhost:9000/equipamentos")
@@ -42,9 +47,7 @@ const Header = () => {
 
     const termo = searchTerm.toLowerCase();
     const resultados = equipamentos.filter((equip) =>
-      `${equip.nome} ${equip.marca ?? ""} ${equip.modelo ?? ""} ${
-        equip.tipo ?? ""
-      }`
+      `${equip.nome} ${equip.marca ?? ""} ${equip.modelo ?? ""} ${equip.tipo ?? ""}`
         .toLowerCase()
         .includes(termo)
     );
@@ -57,6 +60,8 @@ const Header = () => {
     setFilteredSuggestions([]);
     navigate(`/produto/${id}`);
   };
+
+  if (isLoading) return null;
 
   return (
     <AppBar
@@ -207,15 +212,72 @@ const Header = () => {
               alignItems: "center",
               gap: 2,
               marginRight: "50px",
+              marginLeft: "30px",
             }}
           >
-            <Box
-              component={Link}
-              to="/login"
-              sx={{ display: "flex", alignItems: "center" }}
-            >
-              <AccountCircleIcon sx={{ color: "#000", fontSize: "30px" }} />
-            </Box>
+            {isAuthenticated ? (
+              <>
+              <Link
+                  to="/perfil" // Defina o caminho para a página de perfil
+                  style={{ textDecoration: "none", color: "#000" }}
+                >
+                <Avatar src={user.picture} alt={user.name} />
+              </Link>
+
+              <Link
+                  to="/perfil" // Defina o caminho para a página de perfil
+                  style={{ textDecoration: "none", color: "#000" }}
+                >
+                <Typography variant="body1" sx={{ fontWeight: 600, color: "#000" }}>
+                  {user.name.split(" ")[0]}
+                </Typography>
+                </Link>
+                <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      backgroundColor: "#fff",
+                      color: "#000",
+                      border: "2px solid #000", 
+                      fontWeight: "bold", 
+                      borderRadius: "5px", 
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        backgroundColor: "#000",
+                        color: "#fff",
+                        border: "2px solid #000",
+                      },
+                    }}
+                  onClick={() =>
+                    logout({ returnTo: window.location.origin })
+                  }
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button
+              variant="outlined"
+              size="small"
+              sx={{
+                backgroundColor: "#fff",
+                color: "#000",
+                border: "2px solid #000", 
+                fontWeight: "bold", 
+                borderRadius: "5px", 
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  backgroundColor: "#000",
+                  color: "#fff",
+                  border: "2px solid #000",
+                },
+              }}
+                onClick={() => loginWithRedirect()}
+              >
+                Login
+              </Button>
+            )}
+
             <Box
               component={Link}
               to="/carrinho"
