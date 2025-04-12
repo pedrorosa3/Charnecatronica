@@ -6,7 +6,7 @@ Para executar:
      - npm install @mui/icons-material
      - npm install @mui/system
      - npm install react-router-dom
-4. cd projeto-grupo-9
+     - npm install @auth0/auth0-react
 5. npm install
 6. npm install react-scripts --save
 7. npm install --save-dev web-vitals     
