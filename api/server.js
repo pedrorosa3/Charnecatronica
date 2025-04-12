@@ -9,6 +9,7 @@ const addProjetoRoutes = require("./routes/add_projeto");
 const lojasRoutes = require("./routes/lojas");
 const clientesRoutes = require("./routes/clientes");
 const fichasRoutes = require("./routes/fichas");
+const perfilRoutes = require("./routes/perfil");
 
 const app = express();
 const PORT = 9000;
@@ -25,6 +26,7 @@ app.use("/adicionar-projeto", addProjetoRoutes);
 app.use("/lojas", lojasRoutes);
 app.use("/clientes", clientesRoutes);
 app.use("/fichas", fichasRoutes);
+app.use("/perfil", perfilRoutes);
 
 
 app.listen(PORT, () => {

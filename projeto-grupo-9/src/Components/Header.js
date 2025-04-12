@@ -236,7 +236,7 @@ const Header = () => {
                     variant="outlined"
                     size="small"
                     sx={{
-                      backgroundColor: "#fff",
+                      backgroundColor: "#F8F8F8",
                       color: "#000",
                       border: "2px solid #000", 
                       fontWeight: "bold", 

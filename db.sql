@@ -516,6 +516,10 @@ VALUES
     '2024-12-31', 30, 3, 12345678901234, '1111111111123', '/images/inclusao-digital-idosos.jpg');
 
 
+ALTER TABLE Pessoa ALTER COLUMN Password DROP NOT NULL;
+ALTER TABLE Pessoa ALTER COLUMN MoradaID DROP NOT NULL;
+
+
 /*
 INSERT INTO Interesse (Data, ClienteID, FichaEquipamentoCodBarras, LojaNIPC)
 VALUES 

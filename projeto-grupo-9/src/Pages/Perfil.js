@@ -58,7 +58,7 @@ const Perfil = () => {
 
     if (Object.keys(validationErrors).length > 0) return;
 
-    const response = await fetch("http://localhost:9000/usuario", {
+    const response = await fetch("http://localhost:9000/perfil", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
@@ -68,7 +68,7 @@ const Perfil = () => {
       alert("Dados salvos com sucesso!");
       navigate("/");
     } else {
-      alert("Erro ao salvar dados.");
+      alert("Erro ao guardar dados.");
     }
   };
 
