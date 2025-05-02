@@ -46,14 +46,14 @@ const ComprasPage = () => {
       }}
     >
       <Header />
-      <Container sx={{ flex: 1, padding: "30px" }}>
+      <Container sx={{ flex: 1, padding: "30px", mt: 12 }}>
         <Typography
           variant="h4"
           gutterBottom
           align="center"
           sx={{ fontWeight: "bold", marginBottom: "30px" }}
         >
-          Compras Realizadas
+          Equipamentos comprados a clientes
         </Typography>
         <Card sx={{ padding: "20px" }}>
           <CardContent>
