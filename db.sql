@@ -106,6 +106,7 @@ CREATE TABLE Compra (
     EmpregadoID INT REFERENCES Empregado(NumInterno),
     LojaNIPC BIGINT REFERENCES Loja(NIPC),
     estado VARCHAR(50),
+    MetodoPagamento VARCHAR(50),
     Cod_barras VARCHAR(50) REFERENCES Ficha_de_Equipamento(Cod_barras)
 
 );
@@ -310,10 +311,10 @@ VALUES
 ('Bateria', 50.0),
 ('Tela', 100.0);
 
-INSERT INTO Compra (Data, Preco, ClienteID, EmpregadoID, LojaNIPC, estado, Cod_barras)
+INSERT INTO Compra (Data, Preco, ClienteID, EmpregadoID, LojaNIPC, estado, MetodoPagamento, Cod_barras)
 VALUES 
-('2021-11-01', 999.99, 1, 1, 12345678901234, 'Novo','1111111111111'),
-('2021-11-10', 799.99, 2, 2, 98765432109876, 'Usado','1111111111111');
+('2021-11-01', 999.99, 1, 1, 12345678901234, 'Novo', 'MbWay', '1111111111111'),
+('2021-11-10', 799.99, 2, 2, 98765432109876, 'Usado','MbWay', '1111111111111');
 
 INSERT INTO Venda (Data, Tipo, CustoTransporte, LojaNIPC, ClienteID, EmpregadoID, EquipamentoID)
 VALUES 

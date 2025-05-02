@@ -41,7 +41,9 @@ const getCompraById = async (req, res) => {
       SELECT 
         Compra.ID, 
         Compra.Data, 
-        Compra.Preco, 
+        Compra.Preco,
+        COmpra.estado,
+        Compra.MetodoPagamento,
 
         -- Cliente
         Cliente.ID AS ClienteID, 

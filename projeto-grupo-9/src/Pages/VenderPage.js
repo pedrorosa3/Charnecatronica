@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Container,
@@ -7,14 +7,20 @@ import {
   Typography,
   Card,
   CardContent,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
   Alert,
+  Autocomplete,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import StripePayment from "../Components/StripePayment";
+
+const stripePromise = loadStripe("pk_test_51RKNAQLGKEXi0N5ltaZh7UDV9h5BGOCUrFQ9lzbWbbu77Amax7lgJ49Pw2ZM3dgSd2pxkuErF9fTB295ExHhKvtI00UR4JHQBj");
 
 const VenderPage = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +32,11 @@ const VenderPage = () => {
     Cod_barras: "",
     marca: "",
     modelo: "",
+    metodoPagamento: "",
   });
+
+  const [metodoPagamento, setMetodoPagamento] = useState("");
+  const [numeroMbway, setNumeroMbway] = useState("");
 
   const [lojas, setLojas] = useState([]);
   const [empregados, setEmpregados] = useState([]);
@@ -34,22 +44,22 @@ const VenderPage = () => {
   const [equipamentos, setEquipamentos] = useState([]);
   const [marcas, setMarcas] = useState([]);
   const [modelosFiltrados, setModelosFiltrados] = useState([]);
-
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("success");
 
+  const stripeRef = useRef();
+
+  // Fetches iniciais
   useEffect(() => {
     const fetchLojas = async () => {
       try {
-        const response = await fetch("http://localhost:9000/lojas");
-        const data = await response.json();
+        const res = await fetch("http://localhost:9000/lojas");
+        const data = await res.json();
         setLojas(data);
-        setFormData((prev) => ({ ...prev, lojaNIPC: "" }));
-      } catch (error) {
-        console.error("Erro ao buscar lojas:", error);
+      } catch (err) {
+        console.error("Erro ao buscar lojas:", err);
       }
     };
-
     fetchLojas();
   }, []);
 
@@ -57,16 +67,13 @@ const VenderPage = () => {
     if (formData.lojaNIPC) {
       const fetchEmpregados = async () => {
         try {
-          const response = await fetch(
-            `http://localhost:9000/lojas/${formData.lojaNIPC}/empregados`
-          );
-          const data = await response.json();
+          const res = await fetch(`http://localhost:9000/lojas/${formData.lojaNIPC}/empregados`);
+          const data = await res.json();
           setEmpregados(data);
-        } catch (error) {
-          console.error("Erro ao buscar empregados:", error);
+        } catch (err) {
+          console.error("Erro ao buscar empregados:", err);
         }
       };
-
       fetchEmpregados();
     }
   }, [formData.lojaNIPC]);
@@ -74,31 +81,28 @@ const VenderPage = () => {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await fetch("http://localhost:9000/clientes");
-        const data = await response.json();
+        const res = await fetch("http://localhost:9000/clientes");
+        const data = await res.json();
         setClientes(data);
-        setFormData((prev) => ({ ...prev, clienteid: "" }));
-      } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+      } catch (err) {
+        console.error("Erro ao buscar clientes:", err);
       }
     };
-
     fetchClientes();
   }, []);
 
   useEffect(() => {
     const fetchEquipamentos = async () => {
       try {
-        const response = await fetch("http://localhost:9000/fichas");
-        const data = await response.json();
+        const res = await fetch("http://localhost:9000/fichas");
+        const data = await res.json();
         setEquipamentos(data);
         const marcasUnicas = [...new Set(data.map((e) => e.marca))];
         setMarcas(marcasUnicas);
-      } catch (error) {
-        console.error("Erro ao buscar fichas de equipamentos:", error);
+      } catch (err) {
+        console.error("Erro ao buscar equipamentos:", err);
       }
     };
-
     fetchEquipamentos();
   }, []);
 
@@ -110,31 +114,7 @@ const VenderPage = () => {
     }));
   };
 
-  const handleMarcaChange = (e) => {
-    const marca = e.target.value;
-    setFormData((prev) => ({
-      ...prev,
-      marca: marca,
-      modelo: "",
-      Cod_barras: "",
-    }));
-
-    const modelos = equipamentos.filter((e) => e.marca === marca);
-    setModelosFiltrados(modelos);
-  };
-
-  const handleModeloChange = (e) => {
-    const modeloSelecionado = e.target.value;
-    setFormData((prev) => ({
-      ...prev,
-      modelo: modeloSelecionado,
-      Cod_barras: "", // Não armazene o Cod_barras aqui
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const registarCompra = async () => {
     if (!formData.modelo) {
       setAlertMessage("Erro: O modelo é obrigatório.");
       setAlertSeverity("error");
@@ -142,19 +122,17 @@ const VenderPage = () => {
     }
 
     try {
-      // Envia apenas o modelo para o backend
       const response = await fetch("http://localhost:9000/compras", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           preco: formData.preco,
           clienteid: formData.clienteid,
           empregadoID: formData.empregadoID,
           lojaNIPC: formData.lojaNIPC,
           estado: formData.estado,
-          modelo: formData.modelo, // Apenas o modelo
+          modelo: formData.modelo,
+          metodoPagamento: formData.metodoPagamento,
         }),
       });
 
@@ -167,44 +145,40 @@ const VenderPage = () => {
           empregadoID: "",
           lojaNIPC: "",
           estado: "",
-          Cod_barras: "", // Resetando o código de barras
+          Cod_barras: "",
           marca: "",
-          modelo: "", // Resetando o modelo
+          modelo: "",
+          metodoPagamento: "",
         });
+        setNumeroMbway("");
       } else {
-        try {
-          const errorData = await response.json();
-          const msg =
-            errorData?.error ||
-            JSON.stringify(errorData) ||
-            "Erro desconhecido ao registar compra.";
-          setAlertMessage(`Erro: ${msg}`);
-        } catch (e) {
-          const text = await response.text();
-          setAlertMessage(
-            `Erro inesperado: ${
-              text || "Erro desconhecido ao registar compra."
-            }`
-          );
-        }
+        const err = await response.json();
+        setAlertMessage(`Erro: ${err?.error || "Erro ao registar compra."}`);
         setAlertSeverity("error");
       }
-    } catch (error) {
+    } catch (err) {
       setAlertMessage("Erro ao conectar-se ao servidor.");
       setAlertSeverity("error");
     }
   };
 
+  const handleSubmitCompra = async () => {
+    if (metodoPagamento === "mbway") {
+      if (!numeroMbway.match(/^[9][0-9]{8}$/)) {
+        setAlertMessage("Número de telemóvel MBWay inválido.");
+        setAlertSeverity("error");
+        return;
+      }
+      registarCompra();
+    } else if (metodoPagamento === "multibanco") {
+      if (stripeRef.current) {
+        await stripeRef.current.handleStripePayment();
+      }
+    }
+  };
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundColor: "#F8F8F8",
-        marginTop: "100px",
-      }}
-    >
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8", marginTop: "100px" }}>
       <Header />
 
       {alertMessage && (
@@ -215,166 +189,124 @@ const VenderPage = () => {
 
       <Box sx={{ display: "flex", flex: 1, paddingTop: "20px" }}>
         <Container maxWidth="md" sx={{ flex: 1, padding: "20px" }}>
-          <Card
-            sx={{
-              backgroundColor: "#FFFFFF",
-              borderRadius: "10px",
-              padding: "20px",
-            }}
-          >
+          <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "10px", padding: "20px" }}>
             <CardContent>
-              <Typography
-                variant="h5"
-                gutterBottom
-                align="center"
-                sx={{ fontWeight: "bold" }}
-              >
+              <Typography variant="h5" gutterBottom align="center" sx={{ fontWeight: "bold" }}>
                 Nova Compra
               </Typography>
 
-              <form onSubmit={handleSubmit}>
-                {/* Loja */}
-                <FormControl
-                  fullWidth
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                >
-                  <InputLabel id="loja-select-label">Loja</InputLabel>
+              {/* FORMULÁRIO */}
+              <form onSubmit={(e) => e.preventDefault()}>
+                <Autocomplete
+                  options={lojas}
+                  getOptionLabel={(option) => option.nome}
+                  onChange={(e, value) => setFormData((prev) => ({ ...prev, lojaNIPC: value?.nipc || "", empregadoID: "" }))}
+                  value={lojas.find((l) => l.nipc === formData.lojaNIPC) || null}
+                  renderInput={(params) => <TextField {...params} label="Loja" required />}
+                  sx={{ mt: 2 }}
+                />
+
+                <Autocomplete
+                  options={empregados}
+                  getOptionLabel={(option) => option.nome}
+                  onChange={(e, value) => setFormData((prev) => ({ ...prev, empregadoID: value?.id || "" }))}
+                  value={empregados.find((e) => e.id === formData.empregadoID) || null}
+                  renderInput={(params) => <TextField {...params} label="Empregado" required />}
+                  disabled={!formData.lojaNIPC}
+                  sx={{ mt: 2 }}
+                />
+
+                <Autocomplete
+                  options={clientes}
+                  getOptionLabel={(option) => option.nome}
+                  onChange={(e, value) => setFormData((prev) => ({ ...prev, clienteid: value?.clienteid || "" }))}
+                  value={clientes.find((c) => c.clienteid === formData.clienteid) || null}
+                  renderInput={(params) => <TextField {...params} label="Cliente" required />}
+                  sx={{ mt: 2 }}
+                />
+
+                <Autocomplete
+                  options={marcas}
+                  getOptionLabel={(option) => option}
+                  onChange={(e, value) => {
+                    setFormData((prev) => ({ ...prev, marca: value || "", modelo: "", Cod_barras: "" }));
+                    const modelos = equipamentos.filter((e) => e.marca === value);
+                    setModelosFiltrados(modelos);
+                  }}
+                  value={formData.marca || null}
+                  renderInput={(params) => <TextField {...params} label="Marca" required />}
+                  sx={{ mt: 2 }}
+                />
+
+                <Autocomplete
+                  options={modelosFiltrados}
+                  getOptionLabel={(option) => option.modelo}
+                  onChange={(e, value) => setFormData((prev) => ({ ...prev, modelo: value?.modelo || "" }))}
+                  value={modelosFiltrados.find((m) => m.modelo === formData.modelo) || null}
+                  renderInput={(params) => <TextField {...params} label="Modelo" required />}
+                  disabled={!formData.marca}
+                  sx={{ mt: 2 }}
+                />
+
+                <Autocomplete
+                  options={["Novo", "Como novo", "Bom", "Aceitável", "Com defeito"]}
+                  getOptionLabel={(option) => option}
+                  onChange={(e, value) => setFormData((prev) => ({ ...prev, estado: value || "" }))}
+                  value={formData.estado || null}
+                  renderInput={(params) => <TextField {...params} label="Estado do Equipamento" required />}
+                  sx={{ mt: 2 }}
+                />
+
+                
+                {/* Método de Pagamento */}
+                <FormControl fullWidth sx={{ mt: 3 }}>
+                  <InputLabel id="metodo-pagamento-label">Método de Pagamento</InputLabel>
                   <Select
-                    labelId="loja-select-label"
-                    name="lojaNIPC"
-                    value={formData.lojaNIPC || ""}
-                    onChange={handleChange}
-                    label="Loja"
+                    labelId="metodo-pagamento-label" // <- associação correta com o InputLabel
+                    value={metodoPagamento}
+                    onChange={(e) => {
+                      setMetodoPagamento(e.target.value);
+                      setFormData((prev) => ({
+                        ...prev,
+                        metodoPagamento: e.target.value,
+                      }));
+                    }}
+                    label="Método de Pagamento"
                   >
-                    {lojas.map((loja) => (
-                      <MenuItem key={loja.nipc} value={loja.nipc}>
-                        {loja.nome}
-                      </MenuItem>
-                    ))}
+                    <MenuItem value="multibanco">Multibanco</MenuItem>
+                    <MenuItem value="mbway">MBWay</MenuItem>
                   </Select>
                 </FormControl>
 
-                {/* Empregado */}
-                <FormControl
-                  fullWidth
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                >
-                  <InputLabel id="empregado-select-label">Empregado</InputLabel>
-                  <Select
-                    labelId="empregado-select-label"
-                    name="empregadoID"
-                    value={formData.empregadoID}
-                    onChange={handleChange}
-                    label="Empregado"
-                    disabled={!formData.lojaNIPC}
-                  >
-                    {empregados.map((empregado) => (
-                      <MenuItem key={empregado.id} value={empregado.id}>
-                        {empregado.nome}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
 
-                {/* Cliente */}
-                <FormControl
-                  fullWidth
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                >
-                  <InputLabel id="cliente-select-label">Cliente</InputLabel>
-                  <Select
-                    labelId="cliente-select-label"
-                    name="clienteid"
-                    value={formData.clienteid || ""}
-                    onChange={handleChange}
-                    label="Cliente"
-                  >
-                    {clientes.map((cliente) => (
-                      <MenuItem
-                        key={cliente.clienteid}
-                        value={cliente.clienteid}
-                      >
-                        {cliente.nome}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                {/* Marca */}
-                <FormControl
-                  fullWidth
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                >
-                  <InputLabel id="marca-select-label">Marca</InputLabel>
-                  <Select
-                    labelId="marca-select-label"
-                    value={formData.marca || ""}
-                    onChange={handleMarcaChange}
-                    label="Marca"
-                  >
-                    {marcas.map((marca, index) => (
-                      <MenuItem key={`${marca}-${index}`} value={marca}>
-                        {marca}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                {/* Modelo */}
-                <FormControl
-                  fullWidth
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                >
-                  <InputLabel id="modelo-select-label">Modelo</InputLabel>
-                  <Select
-                    labelId="modelo-select-label"
-                    value={formData.modelo || ""}
-                    onChange={handleModeloChange}
-                    label="Modelo"
-                    disabled={!formData.marca}
-                  >
-                    {modelosFiltrados.map((equip) => (
-                      <MenuItem key={equip.Cod_barras} value={equip.modelo}>
-                        {equip.modelo}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                {/* Estado */}
-                <FormControl
-                  fullWidth
-                  margin="normal"
-                  required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
-                >
-                  <InputLabel id="estado-select-label">
-                    Estado do Equipamento
-                  </InputLabel>
-                  <Select
-                    labelId="estado-select-label"
-                    name="estado"
-                    value={formData.estado}
-                    onChange={handleChange}
-                    label="Estado do Equipamento"
-                  >
-                    <MenuItem value="Novo">Novo</MenuItem>
-                    <MenuItem value="Como novo">Como novo</MenuItem>
-                    <MenuItem value="Bom">Bom</MenuItem>
-                    <MenuItem value="Aceitável">Aceitável</MenuItem>
-                    <MenuItem value="Com defeito">Com defeito</MenuItem>
-                  </Select>
-                </FormControl>
+                {/* Número MBWay */}
+                {metodoPagamento === "mbway" && (
+                  <TextField
+                    fullWidth
+                    label="Número MB WAY"
+                    value={numeroMbway}
+                    onChange={(e) => {
+                      const apenasNumeros = e.target.value.replace(/\D/g, ""); // Remove tudo que não for número
+                      setNumeroMbway(apenasNumeros);
+                    }}
+                    inputProps={{
+                      inputMode: "numeric",
+                      pattern: "[0-9]*",
+                      maxLength: 9,
+                    }}
+                    margin="normal"
+                    required
+                  />
+                )}
+                
+                {/* Stripe Card Input */}
+                {metodoPagamento === "multibanco" && (
+                  <Box sx={{ mt: 2 }}>
+                    <Elements stripe={stripePromise}>
+                      <StripePayment ref={stripeRef} amount={formData.preco} onSuccess={registarCompra} />
+                    </Elements>
+                  </Box>
+                )}
 
                 {/* Preço */}
                 <TextField
@@ -386,20 +318,18 @@ const VenderPage = () => {
                   onChange={handleChange}
                   margin="normal"
                   required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px" }}
+                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px", mt: 2 }}
                 />
 
+                
+
+                {/* Botão de Submissão */}
                 <Button
-                  type="submit"
-                  variant="contained"
                   fullWidth
-                  sx={{
-                    mt: 3,
-                    backgroundColor: "#000",
-                    color: "#fff",
-                    py: 1,
-                    "&:hover": { backgroundColor: "#333" },
-                  }}
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 3, backgroundColor: "black", '&:hover': { backgroundColor: '#333' } }}
+                  onClick={handleSubmitCompra}
                 >
                   Submeter Compra
                 </Button>
@@ -415,3 +345,7 @@ const VenderPage = () => {
 };
 
 export default VenderPage;
+
+
+
+

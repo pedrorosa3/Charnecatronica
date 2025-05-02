@@ -10,6 +10,7 @@ const lojasRoutes = require("./routes/lojas");
 const clientesRoutes = require("./routes/clientes");
 const fichasRoutes = require("./routes/fichas");
 const perfilRoutes = require("./routes/perfil");
+const paymentRoutes = require("./routes/payment");
 
 const app = express();
 const PORT = 9000;
@@ -27,6 +28,7 @@ app.use("/lojas", lojasRoutes);
 app.use("/clientes", clientesRoutes);
 app.use("/fichas", fichasRoutes);
 app.use("/perfil", perfilRoutes);
+app.use(paymentRoutes);
 
 
 app.listen(PORT, () => {

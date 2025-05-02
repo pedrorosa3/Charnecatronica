@@ -29,6 +29,8 @@ const DetalhesCompra = () => {
           `http://localhost:9000/compraslista/${id}`
         );
         const data = await response.json();
+
+        console.log("Dados da compra recebidos:", data); // 👈 AQUI
         setCompra(data);
       } catch (error) {
         console.error("Erro ao buscar detalhes da compra:", error);
@@ -84,6 +86,8 @@ const DetalhesCompra = () => {
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
               Informações Gerais
             </Typography>
+            
+            {/* Informações básicas */}
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Typography>
@@ -94,6 +98,29 @@ const DetalhesCompra = () => {
               <Grid item xs={12} sm={6}>
                 <Typography>
                   <strong>Preço de Compra:</strong> {compra.preco.toFixed(2)}€
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography>
+                  <strong>Estado do Equipamento:</strong> {compra.estado}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography>
+                  <strong>Método de Pagamento:</strong>{" "}
+                  <img
+                    src={
+                      compra.metodopagamento?.toLowerCase() === "mbway"
+                        ? "/images/mbway.png"
+                        : "/images/multibanco.png"
+                    }
+                    alt={compra.metodopagamento}
+                    style={{
+                      height: compra.metodopagamento?.toLowerCase() === "mbway" ? "30px" : "50px",
+                      verticalAlign: "middle",
+                      marginLeft: "8px",
+                    }}
+                  />
                 </Typography>
               </Grid>
             </Grid>
@@ -138,6 +165,7 @@ const DetalhesCompra = () => {
             </Grid>
           </CardContent>
         </Card>
+
 
         {/* Loja */}
         <Card sx={{ mb: 3, borderRadius: "8px", boxShadow: 3 }}>
@@ -207,5 +235,6 @@ const DetalhesCompra = () => {
     </Box>
   );
 };
+
 
 export default DetalhesCompra;
