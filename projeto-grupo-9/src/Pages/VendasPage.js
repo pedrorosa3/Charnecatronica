@@ -1,5 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container, Typography, Card, CardContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material";
+import {
+  Box,
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+} from "@mui/material";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { useNavigate } from "react-router-dom";
@@ -23,68 +37,92 @@ const ComprasPage = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        backgroundColor: "#F8F8F8",
+      }}
+    >
       <Header />
       <Container sx={{ flex: 1, padding: "30px" }}>
-        <Typography variant="h4" gutterBottom align="center" sx={{ fontWeight: "bold", marginBottom: "30px" }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          align="center"
+          sx={{ fontWeight: "bold", marginBottom: "30px" }}
+        >
           Compras Realizadas
         </Typography>
         <Card sx={{ padding: "20px" }}>
           <CardContent>
             <TableContainer component={Paper}>
               <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Data</TableCell>
-                  <TableCell>Preço (€)</TableCell>
-                  <TableCell>Cliente</TableCell>
-                  <TableCell>Empregado</TableCell>
-                  <TableCell>Loja</TableCell>
-                  <TableCell>Marca</TableCell>
-                  <TableCell>Modelo</TableCell>
-                  <TableCell></TableCell> {/* NOVA COLUNA */}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {compras.map((compra) => (
-                  <TableRow key={compra.id}>
-                    <TableCell>{compra.id}</TableCell>
-                    <TableCell>{new Date(compra.data).toLocaleDateString()}</TableCell>
-                    <TableCell>{compra.preco.toFixed(2)}</TableCell>
-                    <TableCell>{compra.clientenome}</TableCell>
-                    <TableCell>{compra.empregadonome}</TableCell>
-                    <TableCell>{compra.lojanome}</TableCell>
-                    <TableCell>{compra.equipamentomarca}</TableCell>
-                    <TableCell>{compra.equipamentomodelo}</TableCell>
-                    <TableCell>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "#000",
-                        color: "#fff",
-                        "&:hover": { backgroundColor: "#333" },
-                        borderRadius: "8px",
-                        paddingX: 2,
-                        paddingY: 0.5,
-                        fontSize: "0.875rem", // um pouco mais pequeno que o botão principal
-                        textTransform: "none", // mantém o texto normal (sem maiúsculas)
-                      }}
-                      onClick={() => navigate(`/compraslista/${compra.id}`)}
-                    >
-                     Detalhes
-                    </Button>
-
-                    </TableCell>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ID</TableCell>
+                    <TableCell>Data</TableCell>
+                    <TableCell>Preço (€)</TableCell>
+                    <TableCell>Cliente</TableCell>
+                    <TableCell>Empregado</TableCell>
+                    <TableCell>Loja</TableCell>
+                    <TableCell>Marca</TableCell>
+                    <TableCell>Modelo</TableCell>
+                    <TableCell></TableCell> {/* NOVA COLUNA */}
                   </TableRow>
-                ))}
-              </TableBody>
-
+                </TableHead>
+                <TableBody>
+                  {Array.isArray(compras) && compras.length > 0 ? (
+                    compras.map((compra) => (
+                      <TableRow key={compra.id}>
+                        <TableCell>{compra.id}</TableCell>
+                        <TableCell>
+                          {new Date(compra.data).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>{compra.preco.toFixed(2)}</TableCell>
+                        <TableCell>{compra.clientenome}</TableCell>
+                        <TableCell>{compra.empregadonome}</TableCell>
+                        <TableCell>{compra.lojanome}</TableCell>
+                        <TableCell>{compra.equipamentomarca}</TableCell>
+                        <TableCell>{compra.equipamentomodelo}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="contained"
+                            sx={{
+                              backgroundColor: "#000",
+                              color: "#fff",
+                              "&:hover": { backgroundColor: "#333" },
+                              borderRadius: "8px",
+                              paddingX: 2,
+                              paddingY: 0.5,
+                              fontSize: "0.875rem",
+                              textTransform: "none",
+                            }}
+                            onClick={() =>
+                              navigate(`/equipamentosComprados/${compra.id}`)
+                            }
+                          >
+                            Detalhes
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={9} align="center">
+                        Não existem compras realizadas.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
               </Table>
             </TableContainer>
 
             {/* ✅ Botão único no canto inferior direito */}
-            <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
+            >
               <Button
                 variant="contained"
                 sx={{
@@ -95,7 +133,7 @@ const ComprasPage = () => {
                   paddingX: 3,
                   paddingY: 1,
                 }}
-                onClick={() => navigate("/vender")}
+                onClick={() => navigate("/comprarAoCliente")}
               >
                 Adicionar Compra
               </Button>
@@ -109,5 +147,3 @@ const ComprasPage = () => {
 };
 
 export default ComprasPage;
-
-

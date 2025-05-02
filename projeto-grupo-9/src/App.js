@@ -39,10 +39,10 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/comprar" element={<ComprarPage />} />
-          <Route path="/vender" element={<VenderPage />} />
+          <Route path="/comprarAoCliente" element={<VenderPage />} />
           <Route path="/orcamento" element={<OrcamentoPage />} />
           <Route path="/doar" element={<ProjetosPage />} />
-          <Route path="/compraslista" element={<VendasPage />} />
+          <Route path="/equipamentosComprados" element={<VendasPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/carrinho" element={<Carrinho />} />
           <Route path="/perfil" element={<Perfil />} />
@@ -52,7 +52,10 @@ function App() {
           />
           <Route path="/adicionar-projeto" element={<AddProjetoPage />} />
           <Route path="/produto/:id" element={<DetalhesProduto />} />
-          <Route path="/compraslista/:id" element={<DetalhesCompra />} />
+          <Route
+            path="/equipamentosComprados/:id"
+            element={<DetalhesCompra />}
+          />
         </Routes>
       </Router>
     </ThemeProvider>

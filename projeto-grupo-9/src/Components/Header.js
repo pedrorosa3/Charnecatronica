@@ -30,7 +30,8 @@ const Header = () => {
   const { carrinho } = useCarrinho();
   const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
 
-  const { loginWithRedirect, logout, isAuthenticated, user, isLoading } = useAuth0();
+  const { loginWithRedirect, logout, isAuthenticated, user, isLoading } =
+    useAuth0();
 
   useEffect(() => {
     fetch("http://localhost:9000/equipamentos")
@@ -47,7 +48,9 @@ const Header = () => {
 
     const termo = searchTerm.toLowerCase();
     const resultados = equipamentos.filter((equip) =>
-      `${equip.nome} ${equip.marca ?? ""} ${equip.modelo ?? ""} ${equip.tipo ?? ""}`
+      `${equip.nome} ${equip.marca ?? ""} ${equip.modelo ?? ""} ${
+        equip.tipo ?? ""
+      }`
         .toLowerCase()
         .includes(termo)
     );
@@ -69,7 +72,7 @@ const Header = () => {
       elevation={0}
       sx={{
         backgroundColor: "#F8F8F8",
-        padding: "10px 0",
+        padding: "15px 0",
         borderBottom: "2px solid #E0E0E0",
       }}
     >
@@ -178,14 +181,13 @@ const Header = () => {
           <Box
             sx={{
               display: "flex",
-              gap: "40px",
+              gap: "60px",
               flexGrow: 1,
               paddingLeft: "100px",
             }}
           >
             {[
               { label: "Comprar", path: "/comprar" },
-              { label: "Vender", path: "/vender" },
               { label: "Doar", path: "/doar" },
               { label: "Avarias", path: "/avarias" },
               { label: "Tracking", path: "/tracking" },
@@ -217,61 +219,62 @@ const Header = () => {
           >
             {isAuthenticated ? (
               <>
-              <Link
+                <Link
                   to="/perfil" // Defina o caminho para a página de perfil
                   style={{ textDecoration: "none", color: "#000" }}
                 >
-                <Avatar src={user.picture} alt={user.name} />
-              </Link>
+                  <Avatar src={user.picture} alt={user.name} />
+                </Link>
 
-              <Link
+                <Link
                   to="/perfil" // Defina o caminho para a página de perfil
                   style={{ textDecoration: "none", color: "#000" }}
                 >
-                <Typography variant="body1" sx={{ fontWeight: 600, color: "#000" }}>
-                  {user.name.split(" ")[0]}
-                </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: 600, color: "#000" }}
+                  >
+                    {user.name.split(" ")[0]}
+                  </Typography>
                 </Link>
                 <Button
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                      backgroundColor: "#F8F8F8",
-                      color: "#000",
-                      border: "2px solid #000", 
-                      fontWeight: "bold", 
-                      borderRadius: "5px", 
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "#000",
-                        color: "#fff",
-                        border: "2px solid #000",
-                      },
-                    }}
-                  onClick={() =>
-                    logout({ returnTo: window.location.origin })
-                  }
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    backgroundColor: "#F8F8F8",
+                    color: "#000",
+                    border: "2px solid #000",
+                    fontWeight: "bold",
+                    borderRadius: "5px",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      backgroundColor: "#000",
+                      color: "#fff",
+                      border: "2px solid #000",
+                    },
+                  }}
+                  onClick={() => logout({ returnTo: window.location.origin })}
                 >
                   Logout
                 </Button>
               </>
             ) : (
               <Button
-              variant="outlined"
-              size="small"
-              sx={{
-                backgroundColor: "#F8F8F8",
-                color: "#000",
-                border: "2px solid #000", 
-                fontWeight: "bold", 
-                borderRadius: "5px", 
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  backgroundColor: "#000",
-                  color: "#fff",
+                variant="outlined"
+                size="small"
+                sx={{
+                  backgroundColor: "#F8F8F8",
+                  color: "#000",
                   border: "2px solid #000",
-                },
-              }}
+                  fontWeight: "bold",
+                  borderRadius: "5px",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    backgroundColor: "#000",
+                    color: "#fff",
+                    border: "2px solid #000",
+                  },
+                }}
                 onClick={() => loginWithRedirect()}
               >
                 Login

@@ -88,7 +88,7 @@ const ComprarPage = () => {
       }}
     >
       <Header />
-      <Box sx={{ display: "flex", flex: 1, paddingTop: "80px" }}>
+      <Box sx={{ display: "flex", flex: 1, paddingTop: "90px" }}>
         <SidebarComprar
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
