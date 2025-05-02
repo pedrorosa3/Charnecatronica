@@ -15,6 +15,8 @@ import AddProjetoPage from "./Pages/AddProjetoPage";
 import DetalhesProduto from "./Pages/DetalhesProduto";
 import DetalhesCompra from "./Pages/DetalhesCompra";
 import Perfil from "./Pages/Perfil";
+import ListaFichaEquipamentos from "./Pages/ListaFichaEquipamentos";
+import FichaEquipamentoPage from "./Pages/FichaEquipamentoPage";
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -56,6 +58,8 @@ function App() {
             path="/equipamentosComprados/:id"
             element={<DetalhesCompra />}
           />
+          <Route path="/fichas" element={<ListaFichaEquipamentos />} />
+          <Route path="/ficha/:id" element={<FichaEquipamentoPage />} />
         </Routes>
       </Router>
     </ThemeProvider>
