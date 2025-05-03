@@ -5,20 +5,20 @@ const getFichas = async (req, res) => {
   try {
     const result = await db.query(`
       SELECT 
-        f.Cod_barras,
-        f.Marca,
-        f.Modelo,
-        f.Tipo,
-        f.Preco_base,
-        f.Ano_lancamento,
+        f.codBarras,
+        f.marca,
+        f.modelo,
+        f.tipo,
+        f.precoBase,
+        f.anoLancamento,
         i.url
-      FROM Ficha_de_Equipamento f
+      FROM fichaDeEquipamento f
       LEFT JOIN (
-        SELECT DISTINCT ON (cod_barras) cod_barras, url
-        FROM imagens_equipamento
-        ORDER BY cod_barras, id
-      ) i ON f.Cod_barras = i.cod_barras
-      ORDER BY f.Marca, f.Modelo;
+        SELECT DISTINCT ON (codBarras) codBarras, url
+        FROM imagensEquipamento
+        ORDER BY codBarras, id
+      ) i ON f.codBarras = i.codBarras
+      ORDER BY f.marca, f.modelo;
     `);
 
     res.status(200).json(result.rows);
@@ -36,14 +36,14 @@ const getFichaById = async (req, res) => {
     const fichaResult = await db.query(
       `
       SELECT 
-        f."Cod_barras",
-        f."Marca",
-        f."Modelo",
-        f."Tipo",
-        f."Preco_base",
-        f."Ano_lancamento"
-      FROM "Ficha_de_Equipamento" f
-      WHERE f."Cod_barras" = $1
+        f.codBarras,
+        f.marca,
+        f.modelo,
+        f.tipo,
+        f.precoBase,
+        f.anoLancamento
+      FROM fichaDeEquipamento f
+      WHERE f.codBarras = $1
     `,
       [id]
     );
@@ -55,17 +55,17 @@ const getFichaById = async (req, res) => {
     const ficha = fichaResult.rows[0];
 
     const imagensResult = await db.query(
-      `SELECT url FROM imagens_equipamento WHERE cod_barras = $1`,
+      `SELECT url FROM imagensEquipamento WHERE codBarras = $1`,
       [id]
     );
 
     const especificacoesResult = await db.query(
-      `SELECT titulo, destaque FROM especificacoes WHERE cod_barras = $1`,
+      `SELECT titulo, destaque FROM especificacoes WHERE codBarras = $1`,
       [id]
     );
 
-    ficha.nome = `${ficha.Marca} ${ficha.Modelo}`;
-    ficha.categoria = ficha.Tipo;
+    ficha.nome = `${ficha.marca} ${ficha.modelo}`;
+    ficha.categoria = ficha.tipo;
     ficha.imagens = imagensResult.rows.map((img) => img.url);
     ficha.especificacoes = especificacoesResult.rows;
     ficha.imagemUrl = ficha.imagens[0] || null;

@@ -100,7 +100,7 @@ const ListaFichaEquipamentos = () => {
                     }}
                   >
                     <img
-                      src={ficha.imagemurl || "/placeholder.jpg"}
+                      src={ficha.url || "/placeholder.jpg"}
                       alt={`${ficha.marca} ${ficha.modelo}`}
                       style={{
                         maxHeight: "100%",

@@ -7,20 +7,20 @@ const getEquipamentos = async (req, res) => {
         e.id,
         e.estado,
         e.preco,
-        e.numero_sequencia_loja,
+        e.numeroSequenciaLoja,
         e.dataDeDisponibilizacao,
         f.marca,
         f.modelo,
         f.tipo,
-        f.cod_barras,
+        f.codBarras,
         COALESCE(i.url, '') AS imagem
       FROM equipamentos e
-      JOIN ficha_de_equipamento f ON e.cod_barras = f.cod_barras
+      JOIN fichaDeEquipamento f ON e.codBarras = f.codBarras
       LEFT JOIN (
-        SELECT DISTINCT ON (cod_barras) cod_barras, url
-        FROM imagens_equipamento
-        ORDER BY cod_barras, id
-      ) i ON f.cod_barras = i.cod_barras
+        SELECT DISTINCT ON (codBarras) codBarras, url
+        FROM imagensEquipamento
+        ORDER BY codBarras, id
+      ) i ON f.codBarras = i.codBarras
     `);
 
     const equipamentos = result.rows.map((equip) => ({
@@ -48,16 +48,16 @@ const getEquipamentoById = async (req, res) => {
         e.id,
         e.estado,
         e.preco,
-        e.numero_sequencia_loja,
+        e.numeroSequenciaLoja,
         e.dataDeDisponibilizacao,
-        f.cod_barras,
+        f.codBarras,
         f.marca,
         f.modelo,
         f.tipo,
-        f.preco_base,
-        f.ano_lancamento
+        f.precoBase,
+        f.anoLancamento
       FROM equipamentos e
-      JOIN ficha_de_equipamento f ON e.cod_barras = f.cod_barras
+      JOIN fichaDeEquipamento f ON e.codBarras = f.codBarras
       WHERE e.id = $1
     `,
       [id]
@@ -70,13 +70,13 @@ const getEquipamentoById = async (req, res) => {
     const equipamento = equipamentoResult.rows[0];
 
     const imagensResult = await db.query(
-      "SELECT url FROM imagens_equipamento WHERE cod_barras = $1",
-      [equipamento.cod_barras]
+      "SELECT url FROM imagensEquipamento WHERE codBarras = $1",
+      [equipamento.codbarras]
     );
 
     const especificacoesResult = await db.query(
-      "SELECT titulo, destaque FROM especificacoes WHERE cod_barras = $1",
-      [equipamento.cod_barras]
+      "SELECT titulo, destaque FROM especificacoes WHERE codBarras = $1",
+      [equipamento.codbarras]
     );
 
     equipamento.nome = `${equipamento.marca} ${equipamento.modelo}`;
