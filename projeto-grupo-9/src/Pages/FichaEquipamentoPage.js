@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -8,6 +8,13 @@ import {
   List,
   ListItem,
   Paper,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
 } from "@mui/material";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
@@ -17,6 +24,8 @@ const FichaEquipamentoPage = () => {
   const [ficha, setFicha] = useState(null);
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`http://localhost:9000/fichas/${id}`)
@@ -28,6 +37,21 @@ const FichaEquipamentoPage = () => {
       .catch((err) => console.error("Erro ao buscar ficha:", err))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`http://localhost:9000/fichas/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        navigate("/fichas");
+      } else {
+        alert("Erro ao apagar a ficha.");
+      }
+    } catch (err) {
+      console.error("Erro ao apagar ficha:", err);
+    }
+  };
 
   if (loading || !ficha) {
     return (
@@ -148,9 +172,53 @@ const FichaEquipamentoPage = () => {
                   <strong>Ano de lançamento:</strong> {ficha.anolancamento}
                 </Typography>
               </Box>
+
+              <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#e53935",
+                    color: "#fff",
+                    borderRadius: 2,
+                    "&:hover": { backgroundColor: "#d32f2f" },
+                  }}
+                  onClick={() => setDialogOpen(true)}
+                >
+                  Apagar
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    borderRadius: 2,
+                    "&:hover": { backgroundColor: "#1565c0" },
+                  }}
+                  onClick={() => navigate(`/editarFicha/${ficha.codbarras}`)}
+                >
+                  Editar
+                </Button>
+              </Stack>
             </Paper>
           </Grid>
         </Grid>
+
+        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+          <DialogTitle>Apagar ficha de equipamento</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Tem a certeza que deseja apagar esta ficha de equipamento?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDialogOpen(false)} color="inherit">
+              Cancelar
+            </Button>
+            <Button onClick={handleDelete} color="error" variant="contained">
+              Confirmar
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
       <Footer />
     </Box>

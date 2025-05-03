@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Box,
   Container,
+  Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Header from "../Components/Header";
@@ -80,9 +81,36 @@ const ListaFichaEquipamentos = () => {
         />
 
         <Container sx={{ mt: 2, mb: 4 }}>
-          <Typography variant="h4" gutterBottom>
-            Lista de fichas de equipamento:
-          </Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
+          >
+            <Typography variant="h4" sx={{ m: 0 }}>
+              Lista de fichas de equipamento:
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/criarFichaEquipamento")}
+              sx={{
+                backgroundColor: "#000",
+                color: "#FFF",
+                borderRadius: "0px",
+                textTransform: "none",
+                fontWeight: "bold",
+                fontSize: 17,
+                paddingX: 8,
+                paddingY: 1.2,
+                minWidth: "150px",
+                "&:hover": {
+                  backgroundColor: "#333",
+                },
+              }}
+            >
+              Criar Ficha
+            </Button>
+          </Box>
           <Grid container spacing={2}>
             {fichasFiltradas.map((ficha) => (
               <Grid item xs={12} sm={6} md={4} key={ficha.codbarras}>
