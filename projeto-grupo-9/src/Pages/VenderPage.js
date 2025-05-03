@@ -20,14 +20,16 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import StripePayment from "../Components/StripePayment";
 
-const stripePromise = loadStripe("pk_test_51RKNAQLGKEXi0N5ltaZh7UDV9h5BGOCUrFQ9lzbWbbu77Amax7lgJ49Pw2ZM3dgSd2pxkuErF9fTB295ExHhKvtI00UR4JHQBj");
+const stripePromise = loadStripe(
+  "pk_test_51RKNAQLGKEXi0N5ltaZh7UDV9h5BGOCUrFQ9lzbWbbu77Amax7lgJ49Pw2ZM3dgSd2pxkuErF9fTB295ExHhKvtI00UR4JHQBj"
+);
 
 const VenderPage = () => {
   const [formData, setFormData] = useState({
     preco: "",
-    clienteid: "",
-    empregadoID: "",
-    lojaNIPC: "",
+    clienteId: "",
+    empregadoId: "",
+    lojaNipc: "",
     estado: "",
     Cod_barras: "",
     marca: "",
@@ -49,7 +51,6 @@ const VenderPage = () => {
 
   const stripeRef = useRef();
 
-  // Fetches iniciais
   useEffect(() => {
     const fetchLojas = async () => {
       try {
@@ -64,10 +65,12 @@ const VenderPage = () => {
   }, []);
 
   useEffect(() => {
-    if (formData.lojaNIPC) {
+    if (formData.lojaNipc) {
       const fetchEmpregados = async () => {
         try {
-          const res = await fetch(`http://localhost:9000/lojas/${formData.lojaNIPC}/empregados`);
+          const res = await fetch(
+            `http://localhost:9000/lojas/${formData.lojaNipc}/empregados`
+          );
           const data = await res.json();
           setEmpregados(data);
         } catch (err) {
@@ -76,7 +79,7 @@ const VenderPage = () => {
       };
       fetchEmpregados();
     }
-  }, [formData.lojaNIPC]);
+  }, [formData.lojaNipc]);
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -108,10 +111,7 @@ const VenderPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const registarCompra = async () => {
@@ -125,15 +125,7 @@ const VenderPage = () => {
       const response = await fetch("http://localhost:9000/compras", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          preco: formData.preco,
-          clienteid: formData.clienteid,
-          empregadoID: formData.empregadoID,
-          lojaNIPC: formData.lojaNIPC,
-          estado: formData.estado,
-          modelo: formData.modelo,
-          metodoPagamento: formData.metodoPagamento,
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -141,9 +133,9 @@ const VenderPage = () => {
         setAlertSeverity("success");
         setFormData({
           preco: "",
-          clienteid: "",
-          empregadoID: "",
-          lojaNIPC: "",
+          clienteId: "",
+          empregadoId: "",
+          lojaNipc: "",
           estado: "",
           Cod_barras: "",
           marca: "",
@@ -178,7 +170,15 @@ const VenderPage = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8", marginTop: "100px" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        backgroundColor: "#F8F8F8",
+        marginTop: "100px",
+      }}
+    >
       <Header />
 
       {alertMessage && (
@@ -189,39 +189,79 @@ const VenderPage = () => {
 
       <Box sx={{ display: "flex", flex: 1, paddingTop: "20px" }}>
         <Container maxWidth="md" sx={{ flex: 1, padding: "20px" }}>
-          <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "10px", padding: "20px" }}>
+          <Card
+            sx={{
+              backgroundColor: "#FFFFFF",
+              borderRadius: "10px",
+              padding: "20px",
+            }}
+          >
             <CardContent>
-              <Typography variant="h5" gutterBottom align="center" sx={{ fontWeight: "bold" }}>
+              <Typography
+                variant="h5"
+                gutterBottom
+                align="center"
+                sx={{ fontWeight: "bold" }}
+              >
                 Nova Compra
               </Typography>
 
-              {/* FORMULÁRIO */}
               <form onSubmit={(e) => e.preventDefault()}>
                 <Autocomplete
                   options={lojas}
                   getOptionLabel={(option) => option.nome}
-                  onChange={(e, value) => setFormData((prev) => ({ ...prev, lojaNIPC: value?.nipc || "", empregadoID: "" }))}
-                  value={lojas.find((l) => l.nipc === formData.lojaNIPC) || null}
-                  renderInput={(params) => <TextField {...params} label="Loja" required />}
+                  onChange={(e, value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      lojaNipc: value?.nipc || "",
+                      empregadoId: "",
+                    }))
+                  }
+                  value={
+                    lojas.find((l) => l.nipc === formData.lojaNipc) || null
+                  }
+                  renderInput={(params) => (
+                    <TextField {...params} label="Loja" required />
+                  )}
                   sx={{ mt: 2 }}
                 />
 
                 <Autocomplete
                   options={empregados}
                   getOptionLabel={(option) => option.nome}
-                  onChange={(e, value) => setFormData((prev) => ({ ...prev, empregadoID: value?.id || "" }))}
-                  value={empregados.find((e) => e.id === formData.empregadoID) || null}
-                  renderInput={(params) => <TextField {...params} label="Empregado" required />}
-                  disabled={!formData.lojaNIPC}
+                  onChange={(e, value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      empregadoId: value?.id || "",
+                    }))
+                  }
+                  value={
+                    empregados.find((e) => e.id === formData.empregadoId) ||
+                    null
+                  }
+                  renderInput={(params) => (
+                    <TextField {...params} label="Empregado" required />
+                  )}
+                  disabled={!formData.lojaNipc}
                   sx={{ mt: 2 }}
                 />
 
                 <Autocomplete
                   options={clientes}
                   getOptionLabel={(option) => option.nome}
-                  onChange={(e, value) => setFormData((prev) => ({ ...prev, clienteid: value?.clienteid || "" }))}
-                  value={clientes.find((c) => c.clienteid === formData.clienteid) || null}
-                  renderInput={(params) => <TextField {...params} label="Cliente" required />}
+                  onChange={(e, value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      clienteId: value?.clienteid || "",
+                    }))
+                  }
+                  value={
+                    clientes.find((c) => c.clienteid === formData.clienteId) ||
+                    null
+                  }
+                  renderInput={(params) => (
+                    <TextField {...params} label="Cliente" required />
+                  )}
                   sx={{ mt: 2 }}
                 />
 
@@ -229,40 +269,74 @@ const VenderPage = () => {
                   options={marcas}
                   getOptionLabel={(option) => option}
                   onChange={(e, value) => {
-                    setFormData((prev) => ({ ...prev, marca: value || "", modelo: "", Cod_barras: "" }));
-                    const modelos = equipamentos.filter((e) => e.marca === value);
+                    setFormData((prev) => ({
+                      ...prev,
+                      marca: value || "",
+                      modelo: "",
+                      Cod_barras: "",
+                    }));
+                    const modelos = equipamentos.filter(
+                      (e) => e.marca === value
+                    );
                     setModelosFiltrados(modelos);
                   }}
                   value={formData.marca || null}
-                  renderInput={(params) => <TextField {...params} label="Marca" required />}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Marca" required />
+                  )}
                   sx={{ mt: 2 }}
                 />
 
                 <Autocomplete
                   options={modelosFiltrados}
                   getOptionLabel={(option) => option.modelo}
-                  onChange={(e, value) => setFormData((prev) => ({ ...prev, modelo: value?.modelo || "" }))}
-                  value={modelosFiltrados.find((m) => m.modelo === formData.modelo) || null}
-                  renderInput={(params) => <TextField {...params} label="Modelo" required />}
+                  onChange={(e, value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      modelo: value?.modelo || "",
+                    }))
+                  }
+                  value={
+                    modelosFiltrados.find(
+                      (m) => m.modelo === formData.modelo
+                    ) || null
+                  }
+                  renderInput={(params) => (
+                    <TextField {...params} label="Modelo" required />
+                  )}
                   disabled={!formData.marca}
                   sx={{ mt: 2 }}
                 />
 
                 <Autocomplete
-                  options={["Novo", "Como novo", "Bom", "Aceitável", "Com defeito"]}
+                  options={[
+                    "Novo",
+                    "Como novo",
+                    "Bom",
+                    "Aceitável",
+                    "Com defeito",
+                  ]}
                   getOptionLabel={(option) => option}
-                  onChange={(e, value) => setFormData((prev) => ({ ...prev, estado: value || "" }))}
+                  onChange={(e, value) =>
+                    setFormData((prev) => ({ ...prev, estado: value || "" }))
+                  }
                   value={formData.estado || null}
-                  renderInput={(params) => <TextField {...params} label="Estado do Equipamento" required />}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Estado do Equipamento"
+                      required
+                    />
+                  )}
                   sx={{ mt: 2 }}
                 />
 
-                
-                {/* Método de Pagamento */}
                 <FormControl fullWidth sx={{ mt: 3 }}>
-                  <InputLabel id="metodo-pagamento-label">Método de Pagamento</InputLabel>
+                  <InputLabel id="metodo-pagamento-label">
+                    Método de Pagamento
+                  </InputLabel>
                   <Select
-                    labelId="metodo-pagamento-label" // <- associação correta com o InputLabel
+                    labelId="metodo-pagamento-label"
                     value={metodoPagamento}
                     onChange={(e) => {
                       setMetodoPagamento(e.target.value);
@@ -278,15 +352,13 @@ const VenderPage = () => {
                   </Select>
                 </FormControl>
 
-
-                {/* Número MBWay */}
                 {metodoPagamento === "mbway" && (
                   <TextField
                     fullWidth
                     label="Número MB WAY"
                     value={numeroMbway}
                     onChange={(e) => {
-                      const apenasNumeros = e.target.value.replace(/\D/g, ""); // Remove tudo que não for número
+                      const apenasNumeros = e.target.value.replace(/\D/g, "");
                       setNumeroMbway(apenasNumeros);
                     }}
                     inputProps={{
@@ -298,17 +370,19 @@ const VenderPage = () => {
                     required
                   />
                 )}
-                
-                {/* Stripe Card Input */}
+
                 {metodoPagamento === "multibanco" && (
                   <Box sx={{ mt: 2 }}>
                     <Elements stripe={stripePromise}>
-                      <StripePayment ref={stripeRef} amount={formData.preco} onSuccess={registarCompra} />
+                      <StripePayment
+                        ref={stripeRef}
+                        amount={formData.preco}
+                        onSuccess={registarCompra}
+                      />
                     </Elements>
                   </Box>
                 )}
 
-                {/* Preço */}
                 <TextField
                   fullWidth
                   label="Preço"
@@ -318,17 +392,22 @@ const VenderPage = () => {
                   onChange={handleChange}
                   margin="normal"
                   required
-                  sx={{ backgroundColor: "#F5F5F5", borderRadius: "5px", mt: 2 }}
+                  sx={{
+                    backgroundColor: "#F5F5F5",
+                    borderRadius: "5px",
+                    mt: 2,
+                  }}
                 />
 
-                
-
-                {/* Botão de Submissão */}
                 <Button
                   fullWidth
                   variant="contained"
                   color="primary"
-                  sx={{ mt: 3, backgroundColor: "black", '&:hover': { backgroundColor: '#333' } }}
+                  sx={{
+                    mt: 3,
+                    backgroundColor: "black",
+                    "&:hover": { backgroundColor: "#333" },
+                  }}
                   onClick={handleSubmitCompra}
                 >
                   Submeter Compra
@@ -345,7 +424,3 @@ const VenderPage = () => {
 };
 
 export default VenderPage;
-
-
-
-

@@ -4,26 +4,26 @@ const getCompraLista = async (req, res) => {
   try {
     const result = await db.query(`
       SELECT 
-        Compra.ID, 
-        Compra.Data, 
-        Compra.Preco, 
-        Cliente.ID AS ClienteID, 
-        PessoaCliente.Nome AS ClienteNome,
-        Empregado.NumInterno AS EmpregadoID, 
-        PessoaEmpregado.Nome AS EmpregadoNome,
-        Loja.Nome AS LojaNome, 
-        Loja.NIPC AS LojaNIPC,
-        Ficha_de_Equipamento.Cod_barras AS EquipamentoCodBarras, 
-        Ficha_de_Equipamento.Marca AS EquipamentoMarca,
-        Ficha_de_Equipamento.Modelo AS EquipamentoModelo
-      FROM Compra
-      JOIN Cliente ON Compra.ClienteID = Cliente.ID
-      JOIN Pessoa AS PessoaCliente ON Cliente.PessoaID = PessoaCliente.ID
-      JOIN Empregado ON Compra.EmpregadoID = Empregado.NumInterno
-      JOIN Pessoa AS PessoaEmpregado ON Empregado.PessoaID = PessoaEmpregado.ID
-      JOIN Loja ON Compra.LojaNIPC = Loja.NIPC
-      JOIN Ficha_de_Equipamento ON Compra.Cod_barras = Ficha_de_Equipamento.Cod_barras
-      ORDER BY Compra.Data DESC
+        compra.id, 
+        compra.data, 
+        compra.preco, 
+        cliente.id AS clienteId, 
+        pessoaCliente.nome AS clienteNome,
+        empregado.numInterno AS empregadoId, 
+        pessoaEmpregado.nome AS empregadoNome,
+        loja.nome AS lojaNome, 
+        loja.nipc AS lojaNipc,
+        fichaDeEquipamento.codBarras AS equipamentoCodBarras, 
+        fichaDeEquipamento.marca AS equipamentoMarca,
+        fichaDeEquipamento.modelo AS equipamentoModelo
+      FROM compra
+      JOIN cliente ON compra.clienteId = cliente.id
+      JOIN pessoa AS pessoaCliente ON cliente.pessoaId = pessoaCliente.id
+      JOIN empregado ON compra.empregadoId = empregado.numInterno
+      JOIN pessoa AS pessoaEmpregado ON empregado.pessoaId = pessoaEmpregado.id
+      JOIN loja ON compra.lojaNipc = loja.nipc
+      JOIN fichaDeEquipamento ON compra.codBarras = fichaDeEquipamento.codBarras
+      ORDER BY compra.data DESC
     `);
 
     res.status(200).json(result.rows);
@@ -37,70 +37,67 @@ const getCompraById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const result = await db.query(`
+    const result = await db.query(
+      `
       SELECT 
-        Compra.ID, 
-        Compra.Data, 
-        Compra.Preco,
-        COmpra.estado,
-        Compra.MetodoPagamento,
+        compra.id, 
+        compra.data, 
+        compra.preco,
+        compra.estado,
+        compra.metodoPagamento,
 
         -- Cliente
-        Cliente.ID AS ClienteID, 
-        PessoaCliente.Nome AS ClienteNome,
-        PessoaCliente.Email AS ClienteEmail,
-        PessoaCliente.Telemovel AS ClienteTelemovel,
+        cliente.id AS clienteId, 
+        pessoaCliente.nome AS clienteNome,
+        pessoaCliente.email AS clienteEmail,
+        pessoaCliente.telemovel AS clienteTelemovel,
 
         -- Empregado
-        Empregado.NumInterno AS EmpregadoID, 
-        PessoaEmpregado.Nome AS EmpregadoNome,
-        PessoaEmpregado.Email AS EmpregadoEmail,
-        PessoaEmpregado.Telemovel AS EmpregadoTelemovel,
+        empregado.numInterno AS empregadoId, 
+        pessoaEmpregado.nome AS empregadoNome,
+        pessoaEmpregado.email AS empregadoEmail,
+        pessoaEmpregado.telemovel AS empregadoTelemovel,
 
         -- Loja
-        Loja.Nome AS LojaNome, 
-        Loja.NIPC AS LojaNIPC,
-        Loja.NumeroTelefone AS LojaTelefone,
+        loja.nome AS lojaNome, 
+        loja.nipc AS lojaNipc,
+        loja.numeroTelefone AS lojaTelefone,
 
         -- Morada da Loja
-        Morada.Rua AS LojaRua,
-        Morada.Numero AS LojaNumero,
-        Morada.Localidade AS LojaLocalidade,
-        Morada.Concelho AS LojaConcelho,
-        Morada.Distrito AS LojaDistrito,
-        Morada.CodigoPostal AS LojaCodigoPostal,
+        morada.rua AS lojaRua,
+        morada.numero AS lojaNumero,
+        morada.localidade AS lojaLocalidade,
+        morada.concelho AS lojaConcelho,
+        morada.distrito AS lojaDistrito,
+        morada.codigoPostal AS lojaCodigoPostal,
 
         -- Equipamento
-        Ficha_de_Equipamento.Cod_barras AS EquipamentoCodBarras, 
-        Ficha_de_Equipamento.Marca AS EquipamentoMarca,
-        Ficha_de_Equipamento.Modelo AS EquipamentoModelo,
-        Ficha_de_Equipamento.Tipo AS EquipamentoTipo,
-        Ficha_de_Equipamento.Ano_lancamento AS EquipamentoAnoLancamento,
+        fichaDeEquipamento.codBarras AS equipamentoCodBarras, 
+        fichaDeEquipamento.marca AS equipamentoMarca,
+        fichaDeEquipamento.modelo AS equipamentoModelo,
+        fichaDeEquipamento.tipo AS equipamentoTipo,
+        fichaDeEquipamento.anoLancamento AS equipamentoAnoLancamento,
 
         -- Imagem do Equipamento
         (
           SELECT url 
-          FROM imagens_equipamento 
-          WHERE cod_barras = Ficha_de_Equipamento.Cod_barras 
+          FROM imagensEquipamento 
+          WHERE codBarras = fichaDeEquipamento.codBarras 
           LIMIT 1
-        ) AS EquipamentoImagemURL
+        ) AS equipamentoImagemUrl
 
-      FROM Compra
-
-      -- Relações
-      JOIN Cliente ON Compra.ClienteID = Cliente.ID
-      JOIN Pessoa AS PessoaCliente ON Cliente.PessoaID = PessoaCliente.ID
-
-      JOIN Empregado ON Compra.EmpregadoID = Empregado.NumInterno
-      JOIN Pessoa AS PessoaEmpregado ON Empregado.PessoaID = PessoaEmpregado.ID
-
-      JOIN Loja ON Compra.LojaNIPC = Loja.NIPC
-      JOIN Morada ON Loja.MoradaID = Morada.ID
-
-      JOIN Ficha_de_Equipamento ON Compra.Cod_barras = Ficha_de_Equipamento.Cod_barras
-
-      WHERE Compra.ID = $1
-    `, [id]);
+      FROM compra
+      JOIN cliente ON compra.clienteId = cliente.id
+      JOIN pessoa AS pessoaCliente ON cliente.pessoaId = pessoaCliente.id
+      JOIN empregado ON compra.empregadoId = empregado.numInterno
+      JOIN pessoa AS pessoaEmpregado ON empregado.pessoaId = pessoaEmpregado.id
+      JOIN loja ON compra.lojaNipc = loja.nipc
+      JOIN morada ON loja.moradaId = morada.id
+      JOIN fichaDeEquipamento ON compra.codBarras = fichaDeEquipamento.codBarras
+      WHERE compra.id = $1
+    `,
+      [id]
+    );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Compra não encontrada" });
@@ -114,7 +111,3 @@ const getCompraById = async (req, res) => {
 };
 
 module.exports = { getCompraLista, getCompraById };
-
-
-
-

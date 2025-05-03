@@ -77,7 +77,7 @@ const DetalhesCompra = () => {
           gutterBottom
           sx={{ fontWeight: "bold", mb: 3, textAlign: "center" }}
         >
-          Detalhes da Compra
+          Detalhes da compra
         </Typography>
 
         {/* Informações Gerais e Equipamento */}
@@ -86,7 +86,7 @@ const DetalhesCompra = () => {
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
               Informações Gerais
             </Typography>
-            
+
             {/* Informações básicas */}
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -116,7 +116,10 @@ const DetalhesCompra = () => {
                     }
                     alt={compra.metodopagamento}
                     style={{
-                      height: compra.metodopagamento?.toLowerCase() === "mbway" ? "30px" : "50px",
+                      height:
+                        compra.metodopagamento?.toLowerCase() === "mbway"
+                          ? "30px"
+                          : "50px",
                       verticalAlign: "middle",
                       marginLeft: "8px",
                     }}
@@ -165,7 +168,6 @@ const DetalhesCompra = () => {
             </Grid>
           </CardContent>
         </Card>
-
 
         {/* Loja */}
         <Card sx={{ mb: 3, borderRadius: "8px", boxShadow: 3 }}>
@@ -235,6 +237,5 @@ const DetalhesCompra = () => {
     </Box>
   );
 };
-
 
 export default DetalhesCompra;

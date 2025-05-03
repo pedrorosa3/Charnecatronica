@@ -1,5 +1,7 @@
 const Stripe = require("stripe");
-const stripe = Stripe("STRIPE_SECRET_KEY_REMOVED"); // substitui com a tua Secret Key
+const stripe = Stripe(
+  "STRIPE_SECRET_KEY_REMOVED"
+); // substitui com a tua Secret Key
 
 exports.createPaymentIntent = async (req, res) => {
   const { amount } = req.body;
@@ -10,16 +12,15 @@ exports.createPaymentIntent = async (req, res) => {
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount),
-        currency: "eur",
-        payment_method_types: ["mbway"],
-        payment_method_options: {
-          mbway: {
-            // é possível adicionar um número de telefone para simular o MB WAY real
-          }
+      amount: Math.round(amount),
+      currency: "eur",
+      payment_method_types: ["mbway"],
+      payment_method_options: {
+        mbway: {
+          // é possível adicionar um número de telefone para simular o MB WAY real
         },
-      });
-      
+      },
+    });
 
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (err) {

@@ -5,13 +5,13 @@ const getClientesLista = async (req, res) => {
   try {
     const result = await db.query(`
       SELECT 
-        C.ID AS clienteID,
-        P.Nome AS nome,
-        P.Email,
-        P.Telemovel AS telefone
-      FROM Cliente C
-      JOIN Pessoa P ON C.PessoaID = P.ID
-      ORDER BY P.Nome;
+        c.id AS clienteId,
+        p.nome AS nome,
+        p.email,
+        p.telemovel AS telefone
+      FROM cliente c
+      JOIN pessoa p ON c.pessoaId = p.id
+      ORDER BY p.nome;
     `);
 
     res.status(200).json(result.rows); // Envia os dados dos clientes como resposta
@@ -24,4 +24,3 @@ const getClientesLista = async (req, res) => {
 module.exports = {
   getClientesLista,
 };
-

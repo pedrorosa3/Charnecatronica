@@ -5,13 +5,13 @@ const getLojas = async (req, res) => {
   try {
     const result = await db.query(`
       SELECT 
-        NIPC AS nipc,
-        Nome AS nome,
-        NumeroTelefone, 
-        Email, 
-        MoradaID
-      FROM Loja
-      ORDER BY Nome;
+        nipc,
+        nome,
+        numerotelefone, 
+        email, 
+        moradaid
+      FROM loja
+      ORDER BY nome;
     `);
 
     res.status(200).json(result.rows);
@@ -26,15 +26,18 @@ const getEmpregadosByLoja = async (req, res) => {
   const { nipc } = req.params;
 
   try {
-    const result = await db.query(`
+    const result = await db.query(
+      `
       SELECT 
-        e.NumInterno AS id,
-        p.Nome AS nome
-      FROM Empregado e
-      JOIN Pessoa p ON e.PessoaID = p.ID
-      WHERE e.LojaNIPC = $1
-      ORDER BY p.Nome;
-    `, [nipc]);
+        e.numinterno AS id,
+        p.nome AS nome
+      FROM empregado e
+      JOIN pessoa p ON e.pessoaid = p.id
+      WHERE e.lojanipc = $1
+      ORDER BY p.nome;
+    `,
+      [nipc]
+    );
 
     res.status(200).json(result.rows);
   } catch (error) {
