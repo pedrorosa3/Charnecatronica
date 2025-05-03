@@ -29,7 +29,9 @@ app.use("/clientes", clientesRoutes);
 app.use("/fichas", fichasRoutes);
 app.use("/perfil", perfilRoutes);
 app.use(paymentRoutes);
-
+app.get("/testAPI", (req, res) => {
+  res.json({ message: "API a funcionar corretamente!" });
+});
 
 app.listen(PORT, () => {
   console.log(`Servidor ligado em http://localhost:${PORT}`);
