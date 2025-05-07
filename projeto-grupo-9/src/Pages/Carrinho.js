@@ -13,9 +13,11 @@ import {
 import { Add, Remove } from "@mui/icons-material";
 import Header from "../Components/Header";
 import { useCarrinho } from "../Context/CarrinhoContext";
+import { useNavigate } from "react-router-dom"; // <--- Import do React Router
 
 export default function Carrinho() {
   const { carrinho, atualizarQuantidade } = useCarrinho();
+  const navigate = useNavigate(); // <--- Hook para navegação
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -164,7 +166,11 @@ export default function Carrinho() {
               <Typography variant="body2" color="green" mt={1}>
                 Tem direito a envio gratuito.
               </Typography>
-              <Button variant="contained" sx={{ mt: 2, px: 4 }}>
+              <Button
+                variant="contained"
+                sx={{ mt: 2, px: 4 }}
+                onClick={() => navigate("/checkout", { state: { total } })}
+              >
                 Finalizar Compra
               </Button>
             </Box>

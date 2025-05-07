@@ -29,10 +29,8 @@ export const CarrinhoProvider = ({ children }) => {
   const atualizarQuantidade = (id, novaQuantidade) => {
     setCarrinho((prev) => {
       if (novaQuantidade <= 0) {
-        // Remove do carrinho
         return prev.filter((item) => item.id !== id);
       }
-      // Atualiza quantidade
       return prev.map((item) =>
         item.id === id ? { ...item, quantidade: novaQuantidade } : item
       );
@@ -43,6 +41,10 @@ export const CarrinhoProvider = ({ children }) => {
     setCarrinho((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const limparCarrinho = () => {
+    setCarrinho([]);
+  };
+
   return (
     <CarrinhoContext.Provider
       value={{
@@ -50,9 +52,11 @@ export const CarrinhoProvider = ({ children }) => {
         adicionarAoCarrinho,
         atualizarQuantidade,
         removerDoCarrinho,
+        limparCarrinho, // <-- Aqui adicionas a função
       }}
     >
       {children}
     </CarrinhoContext.Provider>
   );
 };
+
