@@ -169,10 +169,11 @@ export default function Carrinho() {
               <Button
                 variant="contained"
                 sx={{ mt: 2, px: 4 }}
-                onClick={() => navigate("/checkout", { state: { total } })}
+                onClick={() => navigate("/checkout", { state: { total, carrinho } })}
               >
                 Finalizar Compra
               </Button>
+                
             </Box>
           </>
         )}
