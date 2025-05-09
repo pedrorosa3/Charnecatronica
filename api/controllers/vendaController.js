@@ -1,7 +1,7 @@
 const db = require("../db");
 
 const criarVenda = async (req, res) => {
-    const { tipo, custoTransporte, lojaNipc, empregadoId, clienteId, carrinho } = req.body;
+  const { tipo, custoTransporte, lojaNipc, empregadoId, clienteId, carrinho } = req.body;
 
   if (!clienteId || !tipo || !carrinho || carrinho.length === 0) {
     return res.status(400).json({
@@ -20,10 +20,10 @@ const criarVenda = async (req, res) => {
       });
     }
 
-    // Inserir venda na tabela 'venda'
+    // Inserir venda na tabela 'venda' com a data sendo 'now()'
     const insertVenda = await db.query(
-      `INSERT INTO venda (tipo, custoTransporte, lojaNipc, empregadoId, clienteId) 
-       VALUES ($1, $2, $3, $4, $5) RETURNING numeroVenda`,
+      `INSERT INTO venda (tipo, custoTransporte, lojaNipc, empregadoId, clienteId, data) 
+       VALUES ($1, $2, $3, $4, $5, CURRENT_DATE) RETURNING numeroVenda`,
       [tipo, custoTransporte, lojaNipc, empregadoId, clienteId]
     );
 
