@@ -57,14 +57,14 @@ const DetalhesVendaPage = () => {
       <Header />
       <Container sx={{ flex: 1, padding: "30px", maxWidth: "900px" }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold", mb: 3, textAlign: "center" }}>
-          Detalhes da Venda #{venda.numerovenda}
+          Detalhes da Venda 
         </Typography>
 
         {/* Informações da Venda */}
         <Card sx={{ mb: 3, borderRadius: "8px", boxShadow: 3 }}>
           <CardContent>
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-              Informações da Venda
+              Informações da Venda #{venda.numerovenda}
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>

@@ -51,10 +51,9 @@ const VendasPage = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Nº Venda</TableCell>
-                    <TableCell>Data</TableCell>
-                    <TableCell>Tipo</TableCell>
+                    <TableCell>Data</TableCell>                   
                     <TableCell>Cliente</TableCell>
-                    <TableCell>Custo Transporte (€)</TableCell>
+                    <TableCell>Total da Compra (€)</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
@@ -68,13 +67,18 @@ const VendasPage = () => {
                             ? new Date(venda.data).toLocaleDateString()
                             : "—"}
                         </TableCell>
-                        <TableCell>{venda.tipo || "—"}</TableCell>
                         <TableCell>{venda.clientenome || "—"}</TableCell>
                         <TableCell>
-                          {venda.custotransporte != null
-                            ? venda.custotransporte.toFixed(2)
-                            : "0.00"}
-                        </TableCell>
+                            {venda.equipamentos && Array.isArray(venda.equipamentos)
+                                ? venda.equipamentos
+                                    .reduce(
+                                    (acc, eq) =>
+                                        acc + Number(eq.precounitario || 0) * Number(eq.quantidade || 0),
+                                    0
+                                    )
+                                    .toFixed(2)
+                                : "0.00"}
+                            </TableCell>
                         <TableCell>
                           <Button
                             variant="contained"

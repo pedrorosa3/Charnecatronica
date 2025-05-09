@@ -3,7 +3,8 @@ const db = require("../db");
 // Função para listar todas as vendas
 const listarVendas = async (req, res) => {
   try {
-    const result = await db.query(`
+    // 1. Buscar todas as vendas
+    const vendasResult = await db.query(`
       SELECT 
         v.numerovenda, 
         v.data, 
@@ -16,12 +17,51 @@ const listarVendas = async (req, res) => {
       ORDER BY v.data DESC
     `);
 
-    res.status(200).json(result.rows);
+    const vendas = vendasResult.rows;
+
+    // 2. Buscar todos os equipamentos associados a todas as vendas
+    const equipamentosResult = await db.query(`
+      SELECT 
+        ve.numerovenda,
+        ve.id, 
+        fe.marca, 
+        fe.modelo, 
+        ve.precounitario, 
+        ve.quantidade
+      FROM venda_equipamento ve
+      JOIN equipamentos e ON ve.equipamentoid = e.id
+      JOIN fichadeequipamento fe ON e.codbarras = fe.codbarras
+    `);
+
+    const equipamentosPorVenda = {};
+
+    // 3. Agrupar equipamentos por venda
+    for (const eq of equipamentosResult.rows) {
+      if (!equipamentosPorVenda[eq.numerovenda]) {
+        equipamentosPorVenda[eq.numerovenda] = [];
+      }
+      equipamentosPorVenda[eq.numerovenda].push({
+        id: eq.id,
+        marca: eq.marca,
+        modelo: eq.modelo,
+        precounitario: eq.precounitario,
+        quantidade: eq.quantidade,
+      });
+    }
+
+    // 4. Anexar os equipamentos a cada venda
+    const vendasComEquipamentos = vendas.map((venda) => ({
+      ...venda,
+      equipamentos: equipamentosPorVenda[venda.numerovenda] || [],
+    }));
+
+    res.status(200).json(vendasComEquipamentos);
   } catch (err) {
     console.error("Erro ao buscar vendas:", err);
     res.status(500).json({ error: "Erro ao buscar vendas" });
   }
 };
+
 
 // Função para obter detalhes de uma venda específica
 const detalhesVenda = async (req, res) => {
