@@ -70,7 +70,7 @@ function App() {
           <Route path="/editarFicha/:id" element={<EditarFichaEquip />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/equipamentosVendidos" element={<ComprasPage />} />
-          <Route path="/detalhesVenda/:numerovenda" element={<DetalhesVenda />} />
+          <Route path="/equipamentosVendidos/:numerovenda" element={<DetalhesVenda />} />
         </Routes>
       </Router>
     </ThemeProvider>

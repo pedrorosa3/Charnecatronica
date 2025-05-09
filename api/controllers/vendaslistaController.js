@@ -25,22 +25,22 @@ const listarVendas = async (req, res) => {
 
 // Função para obter detalhes de uma venda específica
 const detalhesVenda = async (req, res) => {
-  const { numerovenda } = req.params; // <-- nome correto aqui
-
-  console.log("Número da venda:", numerovenda);
+  const { numerovenda } = req.params;
 
   try {
-    // Busca os dados principais da venda
+    // Consulta da venda + info cliente
     const vendaResult = await db.query(`
       SELECT 
         v.numerovenda, 
         v.data AS datavenda, 
         v.tipo, 
-        c.nome AS clientenome,
+        pc.nome AS clientenome,
+        pc.email AS clienteemail,
+        pc.telemovel AS clientetelemovel,
         v.custotransporte
       FROM venda v
       JOIN cliente cl ON v.clienteid = cl.id
-      JOIN pessoa c ON cl.pessoaid = c.id
+      JOIN pessoa pc ON cl.pessoaid = pc.id
       WHERE v.numerovenda = $1
     `, [numerovenda]);
 
@@ -50,26 +50,34 @@ const detalhesVenda = async (req, res) => {
 
     const venda = vendaResult.rows[0];
 
-    // Busca os equipamentos vendidos
+    // Equipamentos vendidos com imagem
     const equipamentosResult = await db.query(`
       SELECT 
         ve.id, 
         fe.marca, 
         fe.modelo, 
         ve.precounitario, 
-        ve.quantidade
+        ve.quantidade,
+        (
+          SELECT url 
+          FROM imagensequipamento 
+          WHERE codbarras = fe.codbarras 
+          LIMIT 1
+        ) AS imagemurl
       FROM venda_equipamento ve
       JOIN equipamentos e ON ve.equipamentoid = e.id
       JOIN fichadeequipamento fe ON e.codbarras = fe.codbarras
       WHERE ve.numerovenda = $1
     `, [numerovenda]);
 
-    // Resposta final com os detalhes
+    // Resposta formatada
     res.status(200).json({
       numerovenda: venda.numerovenda,
       datavenda: venda.datavenda,
       tipo: venda.tipo,
       clientenome: venda.clientenome,
+      clienteemail: venda.clienteemail,
+      clientetelemovel: venda.clientetelemovel,
       custotransporte: venda.custotransporte,
       equipamentos: equipamentosResult.rows
     });
@@ -80,6 +88,7 @@ const detalhesVenda = async (req, res) => {
 };
 
 module.exports = { listarVendas, detalhesVenda };
+
 
 
 

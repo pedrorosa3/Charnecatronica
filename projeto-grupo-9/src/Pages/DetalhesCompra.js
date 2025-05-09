@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Grid,
   Divider,
+  Button,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -232,6 +233,22 @@ const DetalhesCompra = () => {
             </Typography>
           </CardContent>
         </Card>
+
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "#000",
+            color: "#fff",
+            "&:hover": { backgroundColor: "#333" },
+            borderRadius: "8px",
+            paddingX: 3,
+            paddingY: 1,
+            marginTop: "20px",
+          }}
+          onClick={() => navigate("/equipamentosComprados")}
+        >
+          Voltar
+        </Button>
       </Container>
       <Footer />
     </Box>

@@ -83,7 +83,7 @@ const VendasPage = () => {
                               "&:hover": { backgroundColor: "#333" },
                             }}
                             onClick={() =>
-                              navigate(`/detalhesVenda/${venda.numerovenda}`)
+                              navigate(`/equipamentosVendidos/${venda.numerovenda}`)
                             }
                           >
                             Detalhes
