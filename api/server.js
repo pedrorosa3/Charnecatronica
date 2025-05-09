@@ -13,6 +13,7 @@ const perfilRoutes = require("./routes/perfil");
 const paymentRoutes = require("./routes/payment");
 const moradaRoutes = require("./routes/morada");
 const pessoaRoutes = require("./routes/pessoa");
+const vendaRoutes = require("./routes/venda");
 
 const app = express();
 const PORT = 9000;
@@ -32,6 +33,7 @@ app.use("/fichas", fichasRoutes);
 app.use("/perfil", perfilRoutes);
 app.use("/morada", moradaRoutes);
 app.use("/pessoa", pessoaRoutes);
+app.use("/venda", vendaRoutes);
 app.use(paymentRoutes);
 app.get("/testAPI", (req, res) => {
   res.json({ message: "API a funcionar corretamente!" });

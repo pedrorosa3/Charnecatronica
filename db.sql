@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS projetoBeneficencia;
 DROP TABLE IF EXISTS reparacao;
 DROP TABLE IF EXISTS doacao;
 DROP TABLE IF EXISTS venda;
+DROP TABLE IF EXISTS venda_equipamento;
 DROP TABLE IF EXISTS compra;
 DROP TABLE IF EXISTS equipamentos;
 DROP TABLE IF EXISTS fichaDeEquipamento;
@@ -117,8 +118,16 @@ CREATE TABLE venda (
     custoTransporte FLOAT,
     lojaNipc BIGINT REFERENCES loja(nipc),
     clienteId INT REFERENCES cliente(id),
-    empregadoId INT REFERENCES empregado(numInterno),
-    equipamentoId INT REFERENCES equipamentos(id)
+    empregadoId INT REFERENCES empregado(numInterno)
+   
+);
+
+CREATE TABLE venda_equipamento (
+    id SERIAL PRIMARY KEY,
+    numeroVenda INT REFERENCES venda(numeroVenda) ON DELETE CASCADE,
+    equipamentoId INT REFERENCES equipamentos(id),
+    quantidade INT DEFAULT 1,
+    precoUnitario FLOAT
 );
 
 CREATE TABLE doacao (
@@ -312,10 +321,10 @@ VALUES
 ('2021-11-01', 999.99, 1, 1, 12345678901234, 'Novo', 'MbWay', '1111111111111'),
 ('2021-11-10', 799.99, 2, 2, 98765432109876, 'Usado', 'MbWay', '1111111111111');
 
-INSERT INTO venda (data, tipo, custoTransporte, lojaNipc, clienteId, empregadoId, equipamentoId)
+INSERT INTO venda (data, tipo, custoTransporte, lojaNipc, clienteId, empregadoId)
 VALUES 
-('2021-12-01', 'Venda Direta', 10.0, 12345678901234, 1, 1, 1),
-('2021-12-10', 'Venda Direta', 15.0, 98765432109876, 2, 2, 2);
+('2021-12-01', 'Venda Direta', 10.0, 12345678901234, 1, 1),
+('2021-12-10', 'Venda Direta', 15.0, 98765432109876, 2, 2);
 
 INSERT INTO doacao (data, doadorId, lojaNipc, empregadoId, equipamentoId, projetoBeneficenciaId, compraId)
 VALUES 

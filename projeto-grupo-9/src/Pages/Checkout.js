@@ -85,15 +85,6 @@ const CheckoutPagamento = () => {
       cidade: formData.cidade,
     };
   
-    // Dados da pessoa (nif, nome, telefone, email)
-    const dadosPessoa = {
-      nif: formData.nif,
-      nome: formData.nome,
-      telefone: formData.telefone,
-      email: user?.email, // Obtendo o email do Auth0
-      
-    };
-  
     try {
       // Enviar os dados da morada para o backend
       const responseMorada = await fetch("http://localhost:9000/morada", { 
@@ -110,12 +101,22 @@ const CheckoutPagamento = () => {
       }
   
       const dataMorada = await responseMorada.json();
-      console.log("Resposta da morada:", dataMorada); // Verifique se é o esperado
-
+      const moradaId = dataMorada.id || dataMorada.moradaId;
+      console.log("Resposta da morada:", dataMorada);
+  
+      // Agora que temos o moradaId, criamos os dados da pessoa
+      const dadosPessoa = {
+        nif: formData.nif,
+        nome: formData.nome,
+        telefone: formData.telefone,
+        email: user?.email,
+        moradaId: moradaId
+      };
+  
       console.log("Dados da pessoa antes de enviar:", dadosPessoa);
   
       if (dataMorada.success) {
-        // Agora, enviando os dados da pessoa para o backend
+        // Enviar os dados da pessoa
         const responsePessoa = await fetch("http://localhost:9000/pessoa", {
           method: "POST",
           headers: {
@@ -130,16 +131,57 @@ const CheckoutPagamento = () => {
         }
   
         const dataPessoa = await responsePessoa.json();
-        console.log("Resposta da pessoa:", dataPessoa); // Verifique se é o esperado
+        console.log("Resposta da pessoa:", dataPessoa);
+  
         if (dataPessoa.success) {
-          // Se tudo estiver bem, finalizar a compra
-          if (metodoPagamento === "mbway") {
-            mostrarAlertaSucessoERedirecionar("Compra realizada com MBWay!");
+          // Agora que a pessoa foi salva, obter o clienteId para enviar na venda
+          const clienteId = dataPessoa.clienteId; // Alterar aqui para acessar o clienteId corretamente
+  
+          // Preparar os dados para a venda
+          const dadosVenda = {
+            tipo: metodoPagamento,
+            custoTransporte: 0, // Você pode alterar conforme necessário
+            lojaNipc: null, // Se não for necessário, manter como null
+            empregadoId: null, // Caso não tenha empregado associado, pode ser null
+            clienteId: clienteId, // Aqui você vai passar o clienteId
+            carrinho: carrinho.map(item => ({
+              id: item.id,
+              quantidade: item.quantidade,
+              preco: item.preco
+            }))
+          };
+  
+          console.log("Dados da venda para enviar:", dadosVenda);
+  
+          // Enviar os dados da venda para o backend
+          const responseVenda = await fetch("http://localhost:9000/venda", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dadosVenda),
+          });
+  
+          if (!responseVenda.ok) {
+            const errorMessage = await responseVenda.text();
+            throw new Error(`Erro ao inserir venda: ${errorMessage}`);
           }
   
-          if (metodoPagamento === "multibanco" && stripeRef.current) {
-            await stripeRef.current.handleStripePayment();
-            mostrarAlertaSucessoERedirecionar("Pagamento realizado com Multibanco!");
+          const dataVenda = await responseVenda.json();
+          console.log("Resposta da venda:", dataVenda);
+  
+          if (dataVenda.success) {
+            // Se tudo estiver bem, finalizar a compra
+            if (metodoPagamento === "mbway") {
+              mostrarAlertaSucessoERedirecionar("Compra realizada com MBWay!");
+            }
+  
+            if (metodoPagamento === "multibanco" && stripeRef.current) {
+              await stripeRef.current.handleStripePayment();
+              mostrarAlertaSucessoERedirecionar("Pagamento realizado com Multibanco!");
+            }
+          } else {
+            setAlerta({ tipo: "error", texto: "Erro ao salvar a venda." });
           }
         } else {
           setAlerta({ tipo: "error", texto: "Erro ao salvar dados da pessoa." });
@@ -152,6 +194,9 @@ const CheckoutPagamento = () => {
       setAlerta({ tipo: "error", texto: "Houve um erro. Tente novamente mais tarde." });
     }
   };
+  
+  
+  
   
   
 
@@ -175,15 +220,19 @@ const CheckoutPagamento = () => {
               </Typography>
 
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="NIF"
-                    fullWidth
-                    required
-                    value={formData.nif}
-                    onChange={(e) => handleFormChange("nif", e.target.value)}
-                  />
-                </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="NIF"
+                  fullWidth
+                  required
+                  value={formData.nif}
+                  onChange={(e) => {
+                    let valor = e.target.value.replace(/\D/g, "").slice(0, 9);
+                    handleFormChange("nif", valor);
+                  }}
+                  inputProps={{ inputMode: "numeric", maxLength: 9 }}
+                />
+              </Grid>
 
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -275,11 +324,15 @@ const CheckoutPagamento = () => {
                       fullWidth
                       label="Número MBWay"
                       value={numeroMbway}
-                      onChange={(e) => setNumeroMbway(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                      onChange={(e) => {
+                        let valor = e.target.value.replace(/\D/g, "").slice(0, 9);
+                        if (valor && valor[0] !== "9") valor = "9" + valor.slice(1);
+                        setNumeroMbway(valor);
+                      }}
                       inputProps={{ inputMode: "numeric", maxLength: 9 }}
                       required
                     />
-                  </Grid>
+                </Grid>
                 )}
               </Grid>
 
