@@ -4,8 +4,8 @@ DROP TABLE IF EXISTS interesse;
 DROP TABLE IF EXISTS projetoBeneficencia;
 DROP TABLE IF EXISTS reparacao;
 DROP TABLE IF EXISTS doacao;
-DROP TABLE IF EXISTS venda;
 DROP TABLE IF EXISTS venda_equipamento;
+DROP TABLE IF EXISTS venda;
 DROP TABLE IF EXISTS compra;
 DROP TABLE IF EXISTS equipamentos;
 DROP TABLE IF EXISTS fichaDeEquipamento;
@@ -199,7 +199,7 @@ VALUES
 ('1111111111116', 'Xiaomi', '13 Pro', 'Telemóveis', 699.99, 2023),
 ('1111111111117', 'Dell', 'XPS 15', 'Portáteis', 1799.99, 2022),
 ('1111111111118', 'HP', 'Spectre x360', 'Portáteis', 1399.99, 2022),
-('1111111111119', 'Lenovo', 'ThinkPad X1 Carbon', 'Portáteis', 1599.99, 2022),
+('1111111111119', 'LeNovo', 'ThinkPad X1 Carbon', 'Portáteis', 1599.99, 2022),
 ('1111111111120', 'Samsung', 'Smart Monitor M7', 'Monitores', 499.99, 2023),
 ('1111111111121', 'LG', 'UltraFine 5K', 'Monitores', 1299.99, 2021),
 ('1111111111122', 'BenQ', 'EX3501R', 'Monitores', 799.99, 2021),
@@ -243,23 +243,23 @@ INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId) VALUES (694287057
 
 INSERT INTO equipamentos (estado, preco, numeroSequenciaLoja, lojaNipc, dataDeDisponibilizacao, codBarras)
 VALUES
-('novo', 699.99, '0001', 696115913, '2024-03-16', '1111111111111'),
-('novo', 999.99, '0002', 199915275, '2024-02-25', '1111111111112'),
-('novo', 399.99, '0003', 694287057, '2024-01-10', '1111111111113'),
-('usado', 1199.99, '0004', 696115913, '2024-01-05', '1111111111114'),
-('novo', 799.99, '0005', 199915275, '2024-03-10', '1111111111115'),
-('novo', 699.99, '0006', 694287057, '2024-03-12', '1111111111116'),
-('usado', 1799.99, '0007', 696115913, '2024-02-15', '1111111111117'),
-('usado', 1399.99, '0008', 199915275, '2024-02-20', '1111111111118'),
-('usado', 1599.99, '0009', 694287057, '2024-02-28', '1111111111119'),
-('novo', 499.99, '0010', 696115913, '2024-03-05', '1111111111120'),
-('usado', 1299.99, '0011', 199915275, '2024-01-22', '1111111111121'),
-('novo', 799.99, '0012', 694287057, '2024-01-28', '1111111111122'),
-('novo', 699.99, '0013', 696115913, '2024-02-02', '1111111111123'),
-('novo', 1199.99, '0014', 199915275, '2024-03-15', '1111111111124'),
-('novo', 899.99, '0015', 694287057, '2024-03-07', '1111111111125'),
-('novo', 1099.99, '0016', 696115913, '2024-03-09', '1111111111126'),
-('usado', 199.99, '0017', 199915275, '2024-01-18', '1111111111127');
+('Novo', 699.99, '0001', 696115913, '2024-03-16', '1111111111111'),
+('Muito usado', 999.99, '0002', 199915275, '2024-02-25', '1111111111112'),
+('Novo', 399.99, '0003', 694287057, '2024-01-10', '1111111111113'),
+('Semi-novo', 1199.99, '0004', 696115913, '2024-01-05', '1111111111114'),
+('Muito usado', 799.99, '0005', 199915275, '2024-03-10', '1111111111115'),
+('Novo', 699.99, '0006', 694287057, '2024-03-12', '1111111111116'),
+('Usado', 1799.99, '0007', 696115913, '2024-02-15', '1111111111117'),
+('Semi-novo', 1399.99, '0008', 199915275, '2024-02-20', '1111111111118'),
+('Usado', 1599.99, '0009', 694287057, '2024-02-28', '1111111111119'),
+('Novo', 499.99, '0010', 696115913, '2024-03-05', '1111111111120'),
+('Usado', 1299.99, '0011', 199915275, '2024-01-22', '1111111111121'),
+('Novo', 799.99, '0012', 694287057, '2024-01-28', '1111111111122'),
+('Semi-novo', 699.99, '0013', 696115913, '2024-02-02', '1111111111123'),
+('Novo', 1199.99, '0014', 199915275, '2024-03-15', '1111111111124'),
+('Semi-novo', 899.99, '0015', 694287057, '2024-03-07', '1111111111125'),
+('Muito usado', 1099.99, '0016', 696115913, '2024-03-09', '1111111111126'),
+('Usado', 199.99, '0017', 199915275, '2024-01-18', '1111111111127');
 
 INSERT INTO cliente (pessoaId) VALUES (1);
 INSERT INTO cliente (pessoaId) VALUES (2);
@@ -351,7 +351,7 @@ VALUES
   ('1111111111116', '/images/xiaomi13Pro.jpg'),
   ('1111111111117', '/images/dellXPS15.jpg'),
   ('1111111111118', '/images/hpSpectre.jpg'),
-  ('1111111111119', '/images/lenovoThinkPad.jpg'),
+  ('1111111111119', '/images/leNovoThinkPad.jpg'),
   ('1111111111120', '/images/samsungM7.jpg'),
   ('1111111111121', '/images/lgUltraFine.jpg'),
   ('1111111111122', '/images/benQEX3501R.jpg'),
@@ -420,7 +420,7 @@ INSERT INTO especificacoes (codBarras, titulo, destaque) VALUES
 ('1111111111118', 'Modo Tablet 360°', false),
 ('1111111111118', 'Windows 11 Home', false),
 
--- Lenovo ThinkPad X1 Carbon
+-- LeNovo ThinkPad X1 Carbon
 ('1111111111119', 'Ecrã 14" IPS WUXGA', true),
 ('1111111111119', 'Intel vPro i7 12ª Gen', false),
 ('1111111111119', '16 GB RAM / 512 GB SSD', false),
@@ -474,7 +474,7 @@ INSERT INTO projetoBeneficencia (
   organizadorId, lojaNipc, fichaEquipamentoCodBarras, imagem
 ) VALUES
 ('Doação de Computadores para Escolas e Instituições Carenciadas',
- 'A loja pode recolher computadores usados, recondicioná-los e doá-los para escolas, bibliotecas ou centros comunitários que atendem crianças e jovens de baixa renda. Isso ajuda a reduzir a exclusão digital e a fornecer acesso à tecnologia para fins educacionais.',
+ 'A loja pode recolher computadores Usados, recondicioná-los e doá-los para escolas, bibliotecas ou centros comunitários que atendem crianças e jovens de baixa renda. Isso ajuda a reduzir a exclusão digital e a fornecer acesso à tecnologia para fins educacionais.',
  '2022-12-31', 100, 1, 12345678901234, '1111111111126', '/images/Instituicao-ensino.jpg'),
 
 ('Recolha e Reciclagem de Resíduos Eletrônicos',

@@ -12,8 +12,6 @@ import {
   Snackbar,
   Alert,
   Rating,
-  MenuItem,
-  Select,
 } from "@mui/material";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
@@ -25,9 +23,9 @@ const DetalhesProduto = () => {
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [loading, setLoading] = useState(true);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [quantidade, setQuantidade] = useState(1);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const { adicionarAoCarrinho } = useCarrinho();
+  const { adicionarAoCarrinho, carrinho } = useCarrinho();
 
   useEffect(() => {
     fetch(`http://localhost:9000/equipamentos/${id}`)
@@ -50,6 +48,14 @@ const DetalhesProduto = () => {
   const handleAdicionar = () => {
     if (!produto) return;
 
+    const jaExiste = carrinho.some((item) => item.id === produto.id);
+
+    if (jaExiste) {
+      setSnackbarMessage("O produto já se encontra no carrinho");
+      setOpenSnackbar(true);
+      return;
+    }
+
     const produtoComQuantidade = {
       id: produto.id,
       nome: produto.nome,
@@ -58,10 +64,12 @@ const DetalhesProduto = () => {
       marca: produto.marca,
       preco: Number(produto.preco),
       imagem: produto.imagens?.[0] || "/placeholder.png",
-      quantidade: Number(quantidade),
+      quantidade: 1,
+      estado: produto.estado,
     };
 
     adicionarAoCarrinho(produtoComQuantidade);
+    setSnackbarMessage("Produto adicionado ao carrinho!");
     setOpenSnackbar(true);
   };
 
@@ -164,7 +172,7 @@ const DetalhesProduto = () => {
           <Grid item xs={12} md={6}>
             <Paper elevation={3} sx={{ p: 3, backgroundColor: "#fff", mr: 15 }}>
               <Typography variant="h4" fontWeight="bold">
-                {produto.nome}
+                {`${produto.marca} ${produto.modelo} - ${produto.estado}`}
               </Typography>
 
               <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
@@ -205,9 +213,6 @@ const DetalhesProduto = () => {
                 <Typography variant="body2" color="text.secondary">
                   Entrega estimada: <strong>3-5 dias úteis</strong>
                 </Typography>
-                <Typography variant="body2" color="text.secondary" mt={1}>
-                  Garantia de 2 anos • Devolução em 30 dias
-                </Typography>
               </Box>
 
               <Box sx={{ mt: -11 }}>
@@ -228,25 +233,6 @@ const DetalhesProduto = () => {
                     mt: 2,
                   }}
                 >
-                  <Select
-                    value={quantidade}
-                    onChange={(e) => setQuantidade(Number(e.target.value))}
-                    size="medium"
-                    sx={{
-                      width: 70,
-                      height: 40,
-                      fontWeight: "bold",
-                      backgroundColor: "#fff",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                      <MenuItem key={num} value={num}>
-                        {num}
-                      </MenuItem>
-                    ))}
-                  </Select>
-
                   <Button
                     variant="contained"
                     onClick={handleAdicionar}
@@ -280,10 +266,10 @@ const DetalhesProduto = () => {
       >
         <Alert
           onClose={handleCloseSnackbar}
-          severity="success"
+          severity="info"
           sx={{ width: "100%" }}
         >
-          Produto adicionado ao carrinho!
+          {snackbarMessage}
         </Alert>
       </Snackbar>
 

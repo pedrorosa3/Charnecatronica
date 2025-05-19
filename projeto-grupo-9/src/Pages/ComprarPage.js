@@ -18,7 +18,6 @@ import Footer from "../Components/Footer";
 import SidebarComprar from "../Components/SidebarComprar";
 import { useCarrinho } from "../Context/CarrinhoContext";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 
 const ComprarPage = () => {
   const [equipamentos, setEquipamentos] = useState([]);
@@ -26,9 +25,12 @@ const ComprarPage = () => {
   const [preco, setPreco] = useState([0, 2000]);
   const [loading, setLoading] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [ordenacao, setOrdenacao] = useState("recentes");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const { adicionarAoCarrinho } = useCarrinho();
+  const [ordenacao, setOrdenacao] = useState("recentes");
+  const [selectedEstados, setSelectedEstados] = useState([]);
+
+  const { adicionarAoCarrinho, carrinho } = useCarrinho();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,7 +58,10 @@ const ComprarPage = () => {
         selectedCategories.length === 0 ||
         selectedCategories.includes(produto.categoria);
       const precoMatch = precoNumerico >= preco[0] && precoNumerico <= preco[1];
-      return categoriaMatch && precoMatch;
+      const estadoMatch =
+        selectedEstados.length === 0 ||
+        selectedEstados.includes(produto.estado);
+      return categoriaMatch && precoMatch && estadoMatch;
     });
 
     if (ordenacao === "recentes") {
@@ -76,7 +81,7 @@ const ComprarPage = () => {
     );
 
     return filtrados;
-  }, [equipamentos, selectedCategories, preco, ordenacao]);
+  }, [equipamentos, selectedCategories, selectedEstados, preco, ordenacao]);
 
   return (
     <Box
@@ -92,6 +97,8 @@ const ComprarPage = () => {
         <SidebarComprar
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
+          selectedEstados={selectedEstados}
+          setSelectedEstados={setSelectedEstados}
           preco={preco}
           setPreco={setPreco}
           ordenacao={ordenacao}
@@ -134,11 +141,28 @@ const ComprarPage = () => {
                         sx={{
                           position: "absolute",
                           top: "10px",
-                          right: "10px",
+                          left: "10px",
                         }}
                       >
                         <Chip
                           label={produto.categoria}
+                          variant="outlined"
+                          sx={{
+                            backgroundColor: "#F5F5F5",
+                            color: "#000",
+                            fontSize: "12px",
+                          }}
+                        />
+                      </Box>
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                        }}
+                      >
+                        <Chip
+                          label={produto.estado}
                           variant="outlined"
                           sx={{
                             backgroundColor: "#F5F5F5",
@@ -196,7 +220,25 @@ const ComprarPage = () => {
                           fullWidth
                           onClick={(e) => {
                             e.stopPropagation();
-                            adicionarAoCarrinho(produto);
+
+                            const jaExiste = carrinho.some(
+                              (item) => item.id === produto.id
+                            );
+
+                            if (jaExiste) {
+                              setSnackbarMessage(
+                                "O produto já se encontra no carrinho"
+                              );
+                            } else {
+                              adicionarAoCarrinho({
+                                ...produto,
+                                quantidade: 1,
+                              });
+                              setSnackbarMessage(
+                                "Produto adicionado ao carrinho"
+                              );
+                            }
+
                             setSnackbarOpen(true);
                           }}
                           sx={{
@@ -229,10 +271,10 @@ const ComprarPage = () => {
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
-          severity="success"
+          severity="info"
           sx={{ width: "100%" }}
         >
-          Produto adicionado ao carrinho.
+          {snackbarMessage}
         </Alert>
       </Snackbar>
 

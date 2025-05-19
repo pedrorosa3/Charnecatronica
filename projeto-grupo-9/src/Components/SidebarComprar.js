@@ -13,10 +13,13 @@ import {
 } from "@mui/material";
 
 const categorias = ["Telemóveis", "Portáteis", "Monitores", "Tablets"];
+const estados = ["Novo", "Semi-novo", "Usado", "Muito usado"];
 
 const SidebarComprar = ({
   selectedCategories,
   setSelectedCategories,
+  selectedEstados,
+  setSelectedEstados,
   preco,
   setPreco,
   ordenacao,
@@ -39,6 +42,14 @@ const SidebarComprar = ({
     newPreco[index] =
       event.target.value === "" ? "" : Number(event.target.value);
     setPreco(newPreco);
+  };
+
+  const handleEstadoChange = (estado) => {
+    setSelectedEstados((prev) =>
+      prev.includes(estado)
+        ? prev.filter((e) => e !== estado)
+        : [...prev, estado]
+    );
   };
 
   return (
@@ -66,6 +77,30 @@ const SidebarComprar = ({
                 />
               }
               label={categoria}
+            />
+          </ListItem>
+        ))}
+      </List>
+
+      {/* Estado */}
+      <Typography
+        variant="h6"
+        fontWeight="bold"
+        sx={{ marginTop: "20px", marginBottom: "10px" }}
+      >
+        Estado
+      </Typography>
+      <List>
+        {estados.map((estado) => (
+          <ListItem key={estado} disablePadding>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedEstados.includes(estado)}
+                  onChange={() => handleEstadoChange(estado)}
+                />
+              }
+              label={estado}
             />
           </ListItem>
         ))}
