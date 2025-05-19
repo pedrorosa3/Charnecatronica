@@ -5,30 +5,27 @@ import {
   Divider,
   Grid,
   Button,
-  IconButton,
   Paper,
   Snackbar,
   Alert,
 } from "@mui/material";
-import { Add, Remove } from "@mui/icons-material";
 import Header from "../Components/Header";
 import { useCarrinho } from "../Context/CarrinhoContext";
-import { useNavigate } from "react-router-dom"; // <--- Import do React Router
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import { useNavigate } from "react-router-dom";
 
 export default function Carrinho() {
-  const { carrinho, atualizarQuantidade } = useCarrinho();
+  const { carrinho, removerDoCarrinho } = useCarrinho();
   const navigate = useNavigate(); // <--- Hook para navegação
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-
-  const handleAtualizarQuantidade = (id, novaQuantidade) => {
-    if (novaQuantidade <= 0) {
-      setSnackbarMessage("Produto removido do carrinho");
-      setSnackbarOpen(true);
-    }
-    atualizarQuantidade(id, novaQuantidade);
-  };
+  const [snackbarMessage] = useState("");
+  const [produtoParaRemover, setProdutoParaRemover] = useState(null);
 
   const subtotal = carrinho.reduce((total, item) => {
     return total + parseFloat(item.preco) * item.quantidade;
@@ -70,7 +67,7 @@ export default function Carrinho() {
                 <Typography variant="subtitle1">Preço</Typography>
               </Box>
               <Box sx={{ width: "20%", textAlign: "center" }}>
-                <Typography variant="subtitle1">Quantidade</Typography>
+                <Typography variant="subtitle1">Estado</Typography>
               </Box>
               <Box sx={{ width: "15%", textAlign: "right" }}>
                 <Typography variant="subtitle1">Total</Typography>
@@ -83,6 +80,20 @@ export default function Carrinho() {
                 sx={{ mb: 2, p: 2, minHeight: "160px" }}
                 elevation={2}
               >
+                <Box sx={{ position: "relative" }}>
+                  <IconButton
+                    onClick={() => setProdutoParaRemover(item)}
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      zIndex: 1,
+                      padding: 0,
+                    }}
+                  >
+                    <DeleteIcon color="gray" />
+                  </IconButton>
+                </Box>
                 <Grid container spacing={2} alignItems="center">
                   <Grid item xs={2}>
                     <Box
@@ -119,30 +130,9 @@ export default function Carrinho() {
                     </Typography>
                   </Grid>
                   <Grid item xs={2}>
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      <IconButton
-                        onClick={() =>
-                          handleAtualizarQuantidade(
-                            item.id,
-                            item.quantidade - 1
-                          )
-                        }
-                      >
-                        <Remove />
-                      </IconButton>
-                      <Typography>{item.quantidade}</Typography>
-                      <IconButton
-                        onClick={() =>
-                          atualizarQuantidade(item.id, item.quantidade + 1)
-                        }
-                      >
-                        <Add />
-                      </IconButton>
-                    </Box>
+                    <Typography textAlign="center" fontWeight="bold">
+                      {item.estado || "N/A"}
+                    </Typography>
                   </Grid>
                   <Grid item xs={2}>
                     <Typography fontWeight="bold" textAlign="right">
@@ -169,11 +159,12 @@ export default function Carrinho() {
               <Button
                 variant="contained"
                 sx={{ mt: 2, px: 4 }}
-                onClick={() => navigate("/checkout", { state: { total, carrinho } })}
+                onClick={() =>
+                  navigate("/checkout", { state: { total, carrinho } })
+                }
               >
                 Finalizar Compra
               </Button>
-                
             </Box>
           </>
         )}
@@ -193,6 +184,42 @@ export default function Carrinho() {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+      <Dialog
+        open={Boolean(produtoParaRemover)}
+        onClose={() => setProdutoParaRemover(null)}
+      >
+        <DialogTitle>
+          <Typography fontWeight="bold" fontSize="23px">
+            Remover produto do carrinho
+          </Typography>
+        </DialogTitle>
+
+        <DialogContent>
+          <Typography>
+            Tem a certeza de que deseja remover este produto do carrinho?
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            variant="contained"
+            onClick={() => setProdutoParaRemover(null)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              removerDoCarrinho(produtoParaRemover.id);
+              setProdutoParaRemover(null);
+            }}
+          >
+            Remover
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
