@@ -155,19 +155,49 @@ const VenderPage = () => {
   };
 
   const handleSubmitCompra = async () => {
-    if (metodoPagamento === "mbway") {
-      if (!numeroMbway.match(/^[9][0-9]{8}$/)) {
-        setAlertMessage("Número de telemóvel MBWay inválido.");
+  if (metodoPagamento === "mbway") {
+    if (!numeroMbway.match(/^[9][0-9]{8}$/)) {
+      setAlertMessage("Número de telemóvel MBWay inválido.");
+      setAlertSeverity("error");
+      return;
+    }
+    registarCompra(); // MBWay não usa Stripe
+  } else if (metodoPagamento === "multibanco") {
+    try {
+      const res = await fetch("http://localhost:9000/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: parseFloat(formData.preco),
+          metodoPagamento: "cartao",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.clientSecret) {
+        setAlertMessage(`Erro ao iniciar pagamento: ${data.error || "Desconhecido"}`);
         setAlertSeverity("error");
         return;
       }
-      registarCompra();
-    } else if (metodoPagamento === "multibanco") {
-      if (stripeRef.current) {
-        await stripeRef.current.handleStripePayment();
+
+      const sucesso = await stripeRef.current?.handleStripePayment(data.clientSecret);
+
+      if (!sucesso) {
+        setAlertMessage("Pagamento falhou.");
+        setAlertSeverity("error");
       }
+
+      // ⚠️ NÃO chamar registarCompra() aqui — já é feito dentro do StripePayment via onSuccess
+    } catch (err) {
+      console.error("Erro no pagamento Stripe:", err);
+      setAlertMessage("Erro ao processar o pagamento.");
+      setAlertSeverity("error");
     }
-  };
+  }
+};
+
+
 
   return (
     <Box

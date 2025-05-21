@@ -4,4 +4,5 @@ const { criarVenda } = require("../controllers/vendaController");
 
 router.post("/", criarVenda);
 
+
 module.exports = router;

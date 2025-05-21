@@ -12,7 +12,7 @@ import StripePayment from "../Components/StripePayment";
 import { useCarrinho } from "../Context/CarrinhoContext";
 import { useAuth0 } from "@auth0/auth0-react";
 
-const stripePromise = loadStripe("pk_test_51RKNAQLGKEXi0N5ltaZh7UDV9h5BGOCUrFQ9lzbWbbu77Amax7lgJ49Pw2ZM3dgSd2pxkuErF9fTB295ExHhKvtI00UR4JHQBj"); // substitua pela sua chave real
+const stripePromise = loadStripe("pk_test_51RKNAQLGKEXi0N5ltaZh7UDV9h5BGOCUrFQ9lzbWbbu77Amax7lgJ49Pw2ZM3dgSd2pxkuErF9fTB295ExHhKvtI00UR4JHQBj");
 
 const CheckoutPagamento = () => {
   const location = useLocation();
@@ -62,143 +62,116 @@ const CheckoutPagamento = () => {
       formData.telefone,
       metodoPagamento,
     ];
-  
+
     if (metodoPagamento === "mbway" && !numeroMbway.match(/^9[0-9]{8}$/)) {
       return false;
     }
-  
+
     return camposObrigatorios.every((campo) => campo && campo.trim() !== "");
   };
-  
 
   const handleFinalizarCompra = async () => {
     if (!isFormValid()) {
       setAlerta({ tipo: "error", texto: "Por favor, preencha todos os campos corretamente." });
       return;
     }
-  
-    // Dados de morada para enviar para o backend
-    const dadosMorada = {
-      rua: formData.rua,
-      numero: formData.numero,
-      codigoPostal: formData.codigoPostal,
-      cidade: formData.cidade,
-    };
-  
+
     try {
-      // Enviar os dados da morada para o backend
+      // Envia a morada
       const responseMorada = await fetch("http://localhost:9000/morada", { 
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dadosMorada),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rua: formData.rua,
+          numero: formData.numero,
+          codigoPostal: formData.codigoPostal,
+          cidade: formData.cidade,
+        }),
       });
-  
-      if (!responseMorada.ok) {
-        const errorMessage = await responseMorada.text();
-        throw new Error(`Erro ao enviar dados da morada: ${errorMessage}`);
-      }
-  
+
+      if (!responseMorada.ok) throw new Error("Erro ao enviar dados da morada.");
       const dataMorada = await responseMorada.json();
       const moradaId = dataMorada.id || dataMorada.moradaId;
-      console.log("Resposta da morada:", dataMorada);
-  
-      // Agora que temos o moradaId, criamos os dados da pessoa
-      const dadosPessoa = {
-        nif: formData.nif,
-        nome: formData.nome,
-        telefone: formData.telefone,
-        email: user?.email,
-        moradaId: moradaId
-      };
-  
-      console.log("Dados da pessoa antes de enviar:", dadosPessoa);
-  
-      if (dataMorada.success) {
-        // Enviar os dados da pessoa
-        const responsePessoa = await fetch("http://localhost:9000/pessoa", {
+
+      // Envia os dados da pessoa
+      const responsePessoa = await fetch("http://localhost:9000/pessoa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nif: formData.nif,
+          nome: formData.nome,
+          telefone: formData.telefone,
+          email: user?.email,
+          moradaId,
+        }),
+      });
+
+      if (!responsePessoa.ok) throw new Error("Erro ao enviar dados da pessoa.");
+      const dataPessoa = await responsePessoa.json();
+      console.log("👤 Pessoa criada:", dataPessoa);
+      const clienteId = dataPessoa.clienteId;
+
+      let clientSecret = null;
+
+      // NOVO: evitar chamada para MBWay ao backend create-payment-intent
+      if (metodoPagamento !== "mbway") {
+        const paymentIntentResponse = await fetch("http://localhost:9000/create-payment-intent", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dadosPessoa),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: total,
+            metodoPagamento,
+            numeroMbway: metodoPagamento === "mbway" ? numeroMbway : null,
+          }),
         });
-  
-        if (!responsePessoa.ok) {
-          const errorMessage = await responsePessoa.text();
-          throw new Error(`Erro ao enviar dados da pessoa: ${errorMessage}`);
-        }
-  
-        const dataPessoa = await responsePessoa.json();
-        console.log("Resposta da pessoa:", dataPessoa);
-  
-        if (dataPessoa.success) {
-          // Agora que a pessoa foi salva, obter o clienteId para enviar na venda
-          const clienteId = dataPessoa.clienteId; // Alterar aqui para acessar o clienteId corretamente
-  
-          // Preparar os dados para a venda
-          const dadosVenda = {
-            tipo: metodoPagamento,
-            custoTransporte: 0, // Você pode alterar conforme necessário
-            lojaNipc: null, // Se não for necessário, manter como null
-            empregadoId: null, // Caso não tenha empregado associado, pode ser null
-            clienteId: clienteId, // Aqui você vai passar o clienteId
-            carrinho: carrinho.map(item => ({
-              id: item.id,
-              quantidade: item.quantidade,
-              preco: item.preco
-            }))
-          };
-  
-          console.log("Dados da venda para enviar:", dadosVenda);
-  
-          // Enviar os dados da venda para o backend
-          const responseVenda = await fetch("http://localhost:9000/venda", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(dadosVenda),
-          });
-  
-          if (!responseVenda.ok) {
-            const errorMessage = await responseVenda.text();
-            throw new Error(`Erro ao inserir venda: ${errorMessage}`);
-          }
-  
-          const dataVenda = await responseVenda.json();
-          console.log("Resposta da venda:", dataVenda);
-  
-          if (dataVenda.success) {
-            // Se tudo estiver bem, finalizar a compra
-            if (metodoPagamento === "mbway") {
-              mostrarAlertaSucessoERedirecionar("Compra realizada com MBWay!");
-            }
-  
-            if (metodoPagamento === "multibanco" && stripeRef.current) {
-              await stripeRef.current.handleStripePayment();
-              mostrarAlertaSucessoERedirecionar("Pagamento realizado com Multibanco!");
-            }
-          } else {
-            setAlerta({ tipo: "error", texto: "Erro ao salvar a venda." });
-          }
-        } else {
-          setAlerta({ tipo: "error", texto: "Erro ao salvar dados da pessoa." });
-        }
-      } else {
-        setAlerta({ tipo: "error", texto: "Erro ao salvar morada." });
+
+        if (!paymentIntentResponse.ok) throw new Error("Erro ao criar pagamento.");
+        const paymentData = await paymentIntentResponse.json();
+        clientSecret = paymentData.clientSecret;
       }
+
+      // Processa pagamento com Stripe apenas se for cartão
+      if (metodoPagamento === "cartao") {
+        const sucesso = await stripeRef.current.handleStripePayment(clientSecret);
+        if (!sucesso) {
+          setAlerta({ tipo: "error", texto: "Erro no pagamento com Cartão." });
+          return;
+        }
+      }
+
+      // Regista a venda no backend (independente do método)
+      const responseVenda = await fetch("http://localhost:9000/venda", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo: metodoPagamento,
+          custoTransporte: 0,
+          lojaNipc: null,
+          empregadoId: null,
+          clienteId,
+          carrinho: carrinho.map(item => ({
+            id: item.id,
+            quantidade: item.quantidade,
+            preco: item.preco,
+          })),
+        }),
+      });
+
+      if (!responseVenda.ok) throw new Error("Erro ao registar venda.");
+      const dataVenda = await responseVenda.json();
+
+      if (!dataVenda.success) {
+        setAlerta({ tipo: "error", texto: "Erro ao salvar a venda." });
+        return;
+      }
+
+      mostrarAlertaSucessoERedirecionar("Compra realizada com sucesso!");
+
     } catch (error) {
-      console.error("Erro capturado:", error);
-      setAlerta({ tipo: "error", texto: "Houve um erro. Tente novamente mais tarde." });
+      console.error(error);
+      setAlerta({ tipo: "error", texto: "Ocorreu um erro. Tente novamente." });
     }
   };
-  
-  
-  
-  
-  
 
   const mostrarAlertaSucessoERedirecionar = (texto) => {
     setAlerta({ tipo: "success", texto });
@@ -220,19 +193,19 @@ const CheckoutPagamento = () => {
               </Typography>
 
               <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="NIF"
-                  fullWidth
-                  required
-                  value={formData.nif}
-                  onChange={(e) => {
-                    let valor = e.target.value.replace(/\D/g, "").slice(0, 9);
-                    handleFormChange("nif", valor);
-                  }}
-                  inputProps={{ inputMode: "numeric", maxLength: 9 }}
-                />
-              </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="NIF"
+                    fullWidth
+                    required
+                    value={formData.nif}
+                    onChange={(e) => {
+                      let valor = e.target.value.replace(/\D/g, "").slice(0, 9);
+                      handleFormChange("nif", valor);
+                    }}
+                    inputProps={{ inputMode: "numeric", maxLength: 9 }}
+                  />
+                </Grid>
 
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -263,7 +236,6 @@ const CheckoutPagamento = () => {
                   />
                 </Grid>
 
-
                 <Grid item xs={6}>
                   <TextField
                     label="Código Postal"
@@ -291,64 +263,57 @@ const CheckoutPagamento = () => {
                     required
                     value={formData.telefone}
                     onChange={(e) => {
-                      let valor = e.target.value.replace(/\D/g, "").slice(0, 9); // Remove não-números e limita a 9 caracteres
-                      if (valor && valor[0] !== "9") valor = "9" + valor.slice(1); // Garante que comece com 9
+                      let valor = e.target.value.replace(/\D/g, "").slice(0, 9);
+                      if (valor && valor[0] !== "9") valor = "9" + valor.slice(1);
                       handleFormChange("telefone", valor);
                     }}
                     inputProps={{ inputMode: "numeric", maxLength: 9 }}
                   />
                 </Grid>
-
               </Grid>
 
               <Divider sx={{ my: 3 }} />
 
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <FormControl fullWidth required>
-                    <InputLabel>Método de Pagamento</InputLabel>
-                    <Select
-                      value={metodoPagamento}
-                      onChange={(e) => setMetodoPagamento(e.target.value)}
-                      label="Método de Pagamento"
-                    >
-                      <MenuItem value="multibanco">Multibanco</MenuItem>
-                      <MenuItem value="mbway">MBWay</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
+              <FormControl fullWidth required>
+                <InputLabel>Método de Pagamento</InputLabel>
+                <Select
+                  value={metodoPagamento}
+                  onChange={(e) => setMetodoPagamento(e.target.value)}
+                  label="Método de Pagamento"
+                >
+                  <MenuItem value="cartao">Cartão de Crédito</MenuItem>
+                  <MenuItem value="mbway">MBWay</MenuItem>
+                </Select>
+              </FormControl>
 
-                {metodoPagamento === "mbway" && (
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Número MBWay"
-                      value={numeroMbway}
-                      onChange={(e) => {
-                        let valor = e.target.value.replace(/\D/g, "").slice(0, 9);
-                        if (valor && valor[0] !== "9") valor = "9" + valor.slice(1);
-                        setNumeroMbway(valor);
-                      }}
-                      inputProps={{ inputMode: "numeric", maxLength: 9 }}
-                      required
-                    />
-                </Grid>
-                )}
-              </Grid>
+              {metodoPagamento === "mbway" && (
+                <Box sx={{ mt: 3 }}>
+                  <TextField
+                    fullWidth
+                    label="Número MBWay"
+                    value={numeroMbway}
+                    onChange={(e) => {
+                      let valor = e.target.value.replace(/\D/g, "").slice(0, 9);
+                      if (valor && valor[0] !== "9") valor = "9" + valor.slice(1);
+                      setNumeroMbway(valor);
+                    }}
+                    inputProps={{ inputMode: "numeric", maxLength: 9 }}
+                    required
+                  />
+                </Box>
+              )}
 
-
-              {metodoPagamento === "multibanco" && (
-                <Grid item xs={12} sx={{ mt: 2 }}>
+              {metodoPagamento === "cartao" && (
+                <Box sx={{ mt: 3 }}>
                   <Elements stripe={stripePromise}>
                     <StripePayment
                       ref={stripeRef}
                       amount={total}
-                      onSuccess={() => mostrarAlertaSucessoERedirecionar("Pagamento realizado com Multibanco!")}
+                      onSuccess={() => mostrarAlertaSucessoERedirecionar("Pagamento realizado com Cartão!")}
                     />
                   </Elements>
-                </Grid>
+                </Box>
               )}
-
 
               <Button
                 variant="contained"
@@ -413,6 +378,10 @@ const CheckoutPagamento = () => {
 };
 
 export default CheckoutPagamento;
+
+
+
+
 
 
 
