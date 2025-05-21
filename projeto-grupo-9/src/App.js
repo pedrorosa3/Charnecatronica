@@ -22,7 +22,7 @@ import EditarFichaEquip from "./Pages/EditarFichaEquip";
 import Checkout from "./Pages/Checkout";
 import ComprasPage from "./Pages/ComprasPage";
 import DetalhesVenda from "./Pages/DetalhesVenda";
-
+import ReparacoesEmpregado from "./Pages/reparacoesEmpregado";
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -70,7 +70,14 @@ function App() {
           <Route path="/editarFicha/:id" element={<EditarFichaEquip />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/equipamentosVendidos" element={<ComprasPage />} />
-          <Route path="/equipamentosVendidos/:numerovenda" element={<DetalhesVenda />} />
+          <Route
+            path="/equipamentosVendidos/:numerovenda"
+            element={<DetalhesVenda />}
+          />
+          <Route
+            path="/reparacoesEmpregado"
+            element={<ReparacoesEmpregado />}
+          />
         </Routes>
       </Router>
     </ThemeProvider>
