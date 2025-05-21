@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const cardElementOptions = {
   style: {
@@ -17,40 +17,65 @@ const cardElementOptions = {
   },
 };
 
-const StripePayment = forwardRef(({ amount, onSuccess }, ref) => {
+const StripePayment = forwardRef(({ onSuccess }, ref) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState(null);
 
   useImperativeHandle(ref, () => ({
-    async handleStripePayment() {
-      if (!stripe || !elements) return;
-
-      const cardElement = elements.getElement(CardElement);
-      const { error, paymentMethod } = await stripe.createPaymentMethod({
-        type: "card",
-        card: cardElement,
-      });
-
-      if (error) {
-        setError(error.message);
-        return;
+    async handleStripePayment(clientSecret) {
+      if (!stripe || !elements) {
+        setError("Stripe não inicializado");
+        return false;
       }
 
-      // Simular sucesso sem backend
-      onSuccess();
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        setError("Elemento de cartão não encontrado");
+        return false;
+      }
+
+      try {
+        const result = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
+          },
+        });
+
+        if (result.error) {
+          setError(result.error.message);
+          return false;
+        } else if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
+          setError(null);
+          onSuccess();
+          return true;
+        } else {
+          setError("Pagamento não concluído.");
+          return false;
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Erro ao processar o pagamento.");
+        return false;
+      }
     },
   }));
 
   return (
     <Box sx={{ border: "1px solid #ccc", borderRadius: "5px", padding: "10px" }}>
       <CardElement options={cardElementOptions} />
-      {error && <p style={{ color: "red", marginTop: "8px" }}>{error}</p>}
+      {error && (
+        <Typography color="error" sx={{ mt: 2 }}>
+          {error}
+        </Typography>
+      )}
     </Box>
   );
 });
 
 export default StripePayment;
+
+
 
 
 

@@ -39,6 +39,23 @@ const adicionarPessoa = async (req, res) => {
       );
       pessoaId = updatedPessoa.rows[0].id;
 
+      // Verificar se já existe cliente para essa pessoa
+      const existingCliente = await db.query(
+        "SELECT id FROM cliente WHERE pessoaId = $1",
+        [pessoaId]
+      );
+
+      if (existingCliente.rows.length > 0) {
+        clienteId = existingCliente.rows[0].id; // Cliente já existe
+      } else {
+        // Criar cliente se não existir
+        const insertCliente = await db.query(
+          `INSERT INTO cliente (pessoaId) VALUES ($1) RETURNING id`,
+          [pessoaId]
+        );
+        clienteId = insertCliente.rows[0].id;
+      }
+
     } else {
       // Inserir uma nova pessoa
       const insertPessoa = await db.query(
@@ -47,15 +64,14 @@ const adicionarPessoa = async (req, res) => {
         [nif, nome, email, telefone, moradaId]
       );
       pessoaId = insertPessoa.rows[0].id;
-    }
 
-    // Inserir na tabela cliente associando a pessoa
-    const insertCliente = await db.query(
-      `INSERT INTO cliente (pessoaId) 
-       VALUES ($1) RETURNING id`,
-      [pessoaId]
-    );
-    clienteId = insertCliente.rows[0].id;
+      // Inserir cliente para a nova pessoa
+      const insertCliente = await db.query(
+        `INSERT INTO cliente (pessoaId) VALUES ($1) RETURNING id`,
+        [pessoaId]
+      );
+      clienteId = insertCliente.rows[0].id;
+    }
 
     // Commit da transação
     await db.query('COMMIT');
@@ -64,8 +80,8 @@ const adicionarPessoa = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Pessoa e cliente inseridos com sucesso.",
-      pessoaId: pessoaId,
-      clienteId: clienteId,
+      pessoaId,
+      clienteId,
     });
 
   } catch (error) {
@@ -80,6 +96,7 @@ const adicionarPessoa = async (req, res) => {
 module.exports = {
   adicionarPessoa,
 };
+
 
 
 
