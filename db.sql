@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS pecasASubstituir;
 DROP TABLE IF EXISTS especificacoes;
 DROP TABLE IF EXISTS imagensEquipamento;
 DROP TABLE IF EXISTS interesse;
@@ -17,6 +18,7 @@ DROP TABLE IF EXISTS cliente;
 DROP TABLE IF EXISTS loja;
 DROP TABLE IF EXISTS pessoa;
 DROP TABLE IF EXISTS morada;
+
 
 CREATE TABLE morada (
     id SERIAL PRIMARY KEY,
@@ -149,9 +151,10 @@ CREATE TABLE reparacao (
     orcamentoReparacao FLOAT,
     clienteId INT REFERENCES cliente(id),
     empregadoId INT REFERENCES empregado(numInterno),
-    equipamentoId INT REFERENCES equipamentos(id),
+    codBarras VARCHAR(50) REFERENCES fichaDeEquipamento(codBarras),
     lojaNipc BIGINT REFERENCES loja(nipc),
-    compraId INT REFERENCES compra(id)
+    compraId INT REFERENCES compra(id),
+    CONSTRAINT unique_orcamento_por_loja UNIQUE (lojaNipc, numPedidoOrcamento)
 );
 
 CREATE TABLE projetoBeneficencia (
@@ -187,6 +190,12 @@ CREATE TABLE especificacoes (
     destaque BOOLEAN DEFAULT FALSE
 );
 
+CREATE TABLE pecasASubstituir (
+    id SERIAL PRIMARY KEY,
+    reparacaoId INT REFERENCES reparacao(id),
+    peca TEXT NOT NULL,
+    custo FLOAT NOT NULL
+);
 
 
 INSERT INTO fichaDeEquipamento (codBarras, marca, modelo, tipo, precoBase, anoLancamento)
@@ -488,27 +497,3 @@ INSERT INTO projetoBeneficencia (
 ('Inclusão Digital para Idosos',
  'Oferecer cursos e suporte para idosos aprenderem a utilizar computadores e smartphones, promovendo a inclusão digital e melhorando sua qualidade de vida.',
  '2024-12-31', 30, 3, 12345678901234, '1111111111123', '/images/inclusao-digital-idosos.jpg');
-
-
-ALTER TABLE Pessoa ALTER COLUMN Password DROP NOT NULL;
-ALTER TABLE Pessoa ALTER COLUMN MoradaID DROP NOT NULL;
-
-
-/*
-INSERT INTO Interesse (Data, ClienteID, FichaEquipamentoCodBarras, LojaNIPC)
-VALUES 
-('2021-11-01', 1, '12345', 12345678901234),
-('2021-11-05', 2, '67890', 98765432109876);
-*/
-
-/*
-INSERT INTO Morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) 
-VALUES ('Portugal', 'Lisboa', 38.7169, -9.1399, 'Santa Maria Maior', 'Rua Augusta', '1100-053', 'Lisboa', 10, 'Lisboa') 
-RETURNING ID;
-
-
-INSERT INTO Pessoa (NIF, NIC, Nome, Genero, Telemovel, Email, Password, DataDeNascimento, MoradaID)
-VALUES 
-(123456789, 987654321, 'João Silva', 'Masculino', 912345678, 'joao.silva@gmail.com', 'DB_PASSWORD_REMOVED', '1990-05-15', 1);
-
-*/
