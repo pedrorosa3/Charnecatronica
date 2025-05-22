@@ -1,5 +1,6 @@
+import Header from "../Components/Header";
+import Footer from "../Components/Footer";
 import React, { useEffect, useState, useRef } from "react";
-
 
 function Lojas() {
   const [lojas, setLojas] = useState([
