@@ -142,11 +142,13 @@ const createEquipamento = async (req, res) => {
     }
 
     // Busca maior numeroSequenciaLoja
+    // Busca maior numeroSequenciaLoja convertendo para número
     const seqResult = await db.query(`
-      SELECT MAX(numeroSequenciaLoja) AS ultimoNumero FROM equipamentos
+      SELECT MAX(CAST(numeroSequenciaLoja AS INTEGER)) AS ultimoNumero FROM equipamentos
     `);
     const ultimoNumero = seqResult.rows[0].ultimonumero || 0;
-    const novoNumeroSequencia = ultimoNumero + 1;
+    const novoNumeroSequenciaInt = parseInt(ultimoNumero, 10) + 1;
+    const novoNumeroSequencia = novoNumeroSequenciaInt.toString().padStart(4, '0'); // ex: "0018"
 
     // Insere novo equipamento
     const insertEquip = await db.query(
@@ -163,6 +165,7 @@ const createEquipamento = async (req, res) => {
     `,
       [estado, preco, novoNumeroSequencia, lojaNipc, codBarras]
     );
+
 
     // Insere a imagem na tabela imagensEquipamento
     await db.query(
