@@ -23,6 +23,10 @@ import Checkout from "./Pages/Checkout";
 import ComprasPage from "./Pages/ComprasPage";
 import DetalhesVenda from "./Pages/DetalhesVenda";
 import ReparacoesEmpregado from "./Pages/reparacoesEmpregado";
+import Lojas from "./Pages/Lojas";
+
+
+
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -78,6 +82,8 @@ function App() {
             path="/reparacoesEmpregado"
             element={<ReparacoesEmpregado />}
           />
+          <Route path="/lojas" element={<Lojas />} />
+          
         </Routes>
       </Router>
     </ThemeProvider>
