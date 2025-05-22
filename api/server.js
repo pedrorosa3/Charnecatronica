@@ -17,6 +17,7 @@ const vendaRoutes = require("./routes/venda");
 const vendaslistaRoutes = require("./routes/vendaslista");
 const reparacoesRoutes = require("./routes/reparacoes");
 
+
 const app = express();
 const PORT = 9000;
 
