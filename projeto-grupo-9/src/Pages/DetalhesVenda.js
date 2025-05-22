@@ -152,10 +152,8 @@ const DetalhesVendaPage = () => {
                         <Box sx={{ flex: 1 }}>
                         <Typography><strong>Marca:</strong> {equipamento.marca}</Typography>
                         <Typography><strong>Modelo:</strong> {equipamento.modelo}</Typography>
-                        <Typography><strong>Preço Unitário (€):</strong> {equipamento.precounitario.toFixed(2)}</Typography>
-                        <Typography><strong>Quantidade:</strong> {equipamento.quantidade}</Typography>
                         <Typography>
-                            <strong>Total (€):</strong> {(equipamento.precounitario * equipamento.quantidade).toFixed(2)}
+                            <strong>Valor (€):</strong> {(equipamento.precounitario * equipamento.quantidade).toFixed(2)}
                         </Typography>
                         </Box>
                     </Box>
