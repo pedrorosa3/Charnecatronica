@@ -6,7 +6,8 @@ const getCompraLista = async (req, res) => {
       SELECT 
         compra.id, 
         compra.data, 
-        compra.preco, 
+        compra.preco,
+        compra.estadocompra, -- <- novo campo adicionado
         cliente.id AS clienteId, 
         pessoaCliente.nome AS clienteNome,
         empregado.numInterno AS empregadoId, 
@@ -33,6 +34,7 @@ const getCompraLista = async (req, res) => {
   }
 };
 
+
 const getCompraById = async (req, res) => {
   const { id } = req.params;
 
@@ -45,6 +47,7 @@ const getCompraById = async (req, res) => {
         compra.preco,
         compra.estado,
         compra.metodoPagamento,
+        compra.estadocompra, -- <- novo campo adicionado
 
         -- Cliente
         cliente.id AS clienteId, 
@@ -109,5 +112,6 @@ const getCompraById = async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar compra por ID" });
   }
 };
+
 
 module.exports = { getCompraLista, getCompraById };
