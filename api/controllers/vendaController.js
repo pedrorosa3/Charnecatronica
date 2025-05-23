@@ -40,16 +40,23 @@ const criarVenda = async (req, res) => {
 
     const insertItens = carrinho.map(async (produto, index) => {
       console.log(`📦 [ITEM ${index}] Inserindo produto:`, produto);
+
       await db.query(
         `INSERT INTO venda_equipamento (numeroVenda, equipamentoId, quantidade, precoUnitario) 
          VALUES ($1, $2, $3, $4)`,
         [vendaId, produto.id, produto.quantidade, produto.preco]
       );
+
+      // Atualiza o estadovenda para "Vendido"
+      await db.query(
+        `UPDATE equipamentos SET estadovenda = 'Vendido' WHERE id = $1`,
+        [produto.id]
+      );
     });
 
     await Promise.all(insertItens);
 
-    console.log("✅ [VENDA] Todos os itens do carrinho foram inseridos com sucesso.");
+    console.log("✅ [VENDA] Todos os itens do carrinho foram inseridos e atualizados com sucesso.");
 
     return res.status(201).json({
       success: true,

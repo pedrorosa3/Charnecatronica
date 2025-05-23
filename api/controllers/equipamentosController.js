@@ -6,9 +6,11 @@ const getEquipamentos = async (req, res) => {
       SELECT 
         e.id,
         e.estado,
+        e.estadovenda,
         e.preco,
         e.numeroSequenciaLoja,
         e.dataDeDisponibilizacao,
+        e.lojanipc,
         f.marca,
         f.modelo,
         f.tipo,
@@ -21,6 +23,7 @@ const getEquipamentos = async (req, res) => {
         FROM imagensEquipamento
         ORDER BY codBarras, id
       ) i ON f.codBarras = i.codBarras
+      WHERE e.estadovenda = 'À venda'
     `);
 
     const equipamentos = result.rows.map((equip) => ({
@@ -38,6 +41,8 @@ const getEquipamentos = async (req, res) => {
   }
 };
 
+
+
 const getEquipamentoById = async (req, res) => {
   const { id } = req.params;
 
@@ -47,9 +52,11 @@ const getEquipamentoById = async (req, res) => {
       SELECT 
         e.id,
         e.estado,
+        e.estadovenda, -- ADICIONADO AQUI
         e.preco,
         e.numeroSequenciaLoja,
         e.dataDeDisponibilizacao,
+        e.lojanipc,
         f.codBarras,
         f.marca,
         f.modelo,
@@ -92,6 +99,7 @@ const getEquipamentoById = async (req, res) => {
     res.status(500).json({ error: "Erro interno ao buscar equipamento" });
   }
 };
+
 
 const createEquipamento = async (req, res) => {
   const {
@@ -155,12 +163,13 @@ const createEquipamento = async (req, res) => {
       `
       INSERT INTO equipamentos (
         estado,
+        estadoVenda, -- ADICIONADO AQUI
         preco,
         numeroSequenciaLoja,
         lojaNipc,
         dataDeDisponibilizacao,
         codBarras
-      ) VALUES ($1, $2, $3, $4, NOW(), $5)
+      ) VALUES ($1, 'À venda', $2, $3, $4, NOW(), $5)
       RETURNING id
     `,
       [estado, preco, novoNumeroSequencia, lojaNipc, codBarras]
