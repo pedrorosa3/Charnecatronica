@@ -8,12 +8,14 @@ import {
   Card,
   CardContent,
   Alert,
+  Snackbar,
   Autocomplete,
   MenuItem,
   Select,
   FormControl,
   InputLabel,
 } from "@mui/material";
+
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { Elements } from "@stripe/react-stripe-js";
@@ -46,10 +48,22 @@ const VenderPage = () => {
   const [equipamentos, setEquipamentos] = useState([]);
   const [marcas, setMarcas] = useState([]);
   const [modelosFiltrados, setModelosFiltrados] = useState([]);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertSeverity, setAlertSeverity] = useState("success");
+
+  // Estados para Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
   const stripeRef = useRef();
+
+  // Função para mostrar o snackbar com mensagem e tipo (success, error, etc)
+  
 
   useEffect(() => {
     const fetchLojas = async () => {
@@ -116,8 +130,7 @@ const VenderPage = () => {
 
   const registarCompra = async () => {
     if (!formData.modelo) {
-      setAlertMessage("Erro: O modelo é obrigatório.");
-      setAlertSeverity("error");
+      showSnackbar("Erro: O modelo é obrigatório.", "error");
       return;
     }
 
@@ -129,8 +142,7 @@ const VenderPage = () => {
       });
 
       if (response.ok) {
-        setAlertMessage("Compra registada com sucesso!");
-        setAlertSeverity("success");
+        showSnackbar("Compra registada com sucesso!", "success");
         setFormData({
           preco: "",
           clienteId: "",
@@ -145,57 +157,52 @@ const VenderPage = () => {
         setNumeroMbway("");
       } else {
         const err = await response.json();
-        setAlertMessage(`Erro: ${err?.error || "Erro ao registar compra."}`);
-        setAlertSeverity("error");
+        showSnackbar(`Erro: ${err?.error || "Erro ao registar compra."}`, "error");
       }
     } catch (err) {
-      setAlertMessage("Erro ao conectar-se ao servidor.");
-      setAlertSeverity("error");
+      showSnackbar("Erro ao conectar-se ao servidor.", "error");
     }
   };
 
   const handleSubmitCompra = async () => {
-  if (metodoPagamento === "mbway") {
-    if (!numeroMbway.match(/^[9][0-9]{8}$/)) {
-      setAlertMessage("Número de telemóvel MBWay inválido.");
-      setAlertSeverity("error");
-      return;
-    }
-    registarCompra(); // MBWay não usa Stripe
-  } else if (metodoPagamento === "multibanco") {
-    try {
-      const res = await fetch("http://localhost:9000/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: parseFloat(formData.preco),
-          metodoPagamento: "cartao",
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.clientSecret) {
-        setAlertMessage(`Erro ao iniciar pagamento: ${data.error || "Desconhecido"}`);
-        setAlertSeverity("error");
+    if (metodoPagamento === "mbway") {
+      if (!numeroMbway.match(/^[9][0-9]{8}$/)) {
+        showSnackbar("Número de telemóvel MBWay inválido.", "error");
         return;
       }
+      registarCompra(); // MBWay não usa Stripe
+    } else if (metodoPagamento === "multibanco") {
+      try {
+        const res = await fetch("http://localhost:9000/create-payment-intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: parseFloat(formData.preco),
+            metodoPagamento: "cartao",
+          }),
+        });
 
-      const sucesso = await stripeRef.current?.handleStripePayment(data.clientSecret);
+        const data = await res.json();
 
-      if (!sucesso) {
-        setAlertMessage("Pagamento falhou.");
-        setAlertSeverity("error");
+        if (!res.ok || !data.clientSecret) {
+          showSnackbar(`Erro ao iniciar pagamento: ${data.error || "Desconhecido"}`, "error");
+          return;
+        }
+
+        const sucesso = await stripeRef.current?.handleStripePayment(data.clientSecret);
+
+        if (!sucesso) {
+          showSnackbar("Pagamento falhou.", "error");
+        }
+
+        // ⚠️ NÃO chamar registarCompra() aqui — já é feito dentro do StripePayment via onSuccess
+      } catch (err) {
+        console.error("Erro no pagamento Stripe:", err);
+        showSnackbar("Erro ao processar o pagamento.", "error");
       }
-
-      // ⚠️ NÃO chamar registarCompra() aqui — já é feito dentro do StripePayment via onSuccess
-    } catch (err) {
-      console.error("Erro no pagamento Stripe:", err);
-      setAlertMessage("Erro ao processar o pagamento.");
-      setAlertSeverity("error");
     }
-  }
-};
+  };
+
 
 
 
@@ -210,12 +217,6 @@ const VenderPage = () => {
       }}
     >
       <Header />
-
-      {alertMessage && (
-        <Alert severity={alertSeverity} sx={{ mb: 2, mx: 2 }}>
-          {alertMessage}
-        </Alert>
-      )}
 
       <Box sx={{ display: "flex", flex: 1, paddingTop: "20px" }}>
         <Container maxWidth="md" sx={{ flex: 1, padding: "20px" }}>
@@ -444,6 +445,20 @@ const VenderPage = () => {
               </form>
             </CardContent>
           </Card>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={4000}
+            onClose={() => setSnackbarOpen(false)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          >
+            <Alert
+              onClose={() => setSnackbarOpen(false)}
+              severity={snackbarSeverity}
+              sx={{ width: "100%" }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
         </Container>
       </Box>
 
