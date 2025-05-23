@@ -8,6 +8,7 @@ const listarVendas = async (req, res) => {
         v.numerovenda, 
         v.data, 
         v.tipo, 
+        v.estadovenda,
         c.nome AS clientenome,
         v.custotransporte
       FROM venda v
@@ -57,6 +58,7 @@ const listarVendas = async (req, res) => {
   }
 };
 
+
 // Função para obter detalhes de uma venda específica
 const detalhesVenda = async (req, res) => {
   const { numerovenda } = req.params;
@@ -67,6 +69,7 @@ const detalhesVenda = async (req, res) => {
         v.numerovenda, 
         v.data AS datavenda, 
         v.tipo, 
+        v.estadovenda,
         pc.nome AS clientenome,
         pc.email AS clienteemail,
         pc.telemovel AS clientetelemovel,
@@ -109,6 +112,7 @@ const detalhesVenda = async (req, res) => {
       numerovenda: venda.numerovenda,
       datavenda: venda.datavenda,
       tipo: venda.tipo,
+      estadovenda: venda.estadovenda,
       clientenome: venda.clientenome,
       clienteemail: venda.clienteemail,
       clientetelemovel: venda.clientetelemovel,
@@ -123,12 +127,32 @@ const detalhesVenda = async (req, res) => {
   }
 };
 
-// ✅ Exportando ambas funções corretamente
+
+const atualizarEstadoVenda = async (req, res) => {
+  const { numerovenda } = req.params;
+  const { estadovenda } = req.body;
+
+  if (!estadovenda) {
+    return res.status(400).json({ error: "O parâmetro 'estadovenda' é obrigatório." });
+  }
+
+  try {
+    await db.query(
+      "UPDATE venda SET estadovenda = $1 WHERE numerovenda = $2",
+      [estadovenda, numerovenda]
+    );
+    res.status(200).json({ message: "Estado da venda atualizado com sucesso." });
+  } catch (err) {
+    console.error("Erro ao atualizar estado da venda:", err);
+    res.status(500).json({ error: "Erro ao atualizar estado da venda." });
+  }
+};
+
 module.exports = {
   listarVendas,
   detalhesVenda,
+  atualizarEstadoVenda
 };
-
 
 
 

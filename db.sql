@@ -117,14 +117,16 @@ CREATE TABLE compra (
 
 CREATE TABLE venda (
     numeroVenda SERIAL PRIMARY KEY,
-    data DATE,
+    data DATE NOT NULL,
     tipo VARCHAR(50),
     custoTransporte FLOAT,
     lojaNipc BIGINT REFERENCES loja(nipc),
     clienteId INT REFERENCES cliente(id),
-    empregadoId INT REFERENCES empregado(numInterno)
-   
+    empregadoId INT REFERENCES empregado(numInterno),
+    estadoVenda VARCHAR(50) DEFAULT 'Pago'
 );
+
+
 
 CREATE TABLE venda_equipamento (
     id SERIAL PRIMARY KEY,
@@ -333,10 +335,11 @@ VALUES
 ('2021-11-01','Por vender', 999.99, 1, 1, 12345678901234, 'Novo', 'MbWay', '1111111111111'),
 ('2021-11-10','Por vender', 799.99, 2, 2, 98765432109876, 'Usado', 'MbWay', '1111111111111');
 
-INSERT INTO venda (data, tipo, custoTransporte, lojaNipc, clienteId, empregadoId)
+INSERT INTO venda (data, tipo, custoTransporte, lojaNipc, clienteId, empregadoId, estadoVenda)
 VALUES 
-('2021-12-01', 'Venda Direta', 10.0, 12345678901234, 1, 1),
-('2021-12-10', 'Venda Direta', 15.0, 98765432109876, 2, 2);
+('2021-12-01', 'Venda Direta', 10.0, 12345678901234, 1, 1, 'Entregue'),
+('2021-12-10', 'Venda Direta', 15.0, 98765432109876, 2, 2, 'Pago');
+
 
 INSERT INTO doacao (data, doadorId, lojaNipc, empregadoId, equipamentoId, projetoBeneficenciaId, compraId)
 VALUES 
