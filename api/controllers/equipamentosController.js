@@ -104,7 +104,8 @@ const createEquipamento = async (req, res) => {
     tipo,
     precoBase,
     anoLancamento,
-    imagemurl,  // <-- aqui a URL da imagem que você mencionou
+    imagemurl,
+    compraId, // <-- novo campo
   } = req.body;
 
   if (
@@ -117,7 +118,7 @@ const createEquipamento = async (req, res) => {
     !tipo ||
     precoBase === undefined ||
     !anoLancamento ||
-    !imagemurl  // imagemurl obrigatório também
+    !imagemurl
   ) {
     return res.status(400).json({ error: "Campos obrigatórios em falta" });
   }
@@ -141,16 +142,15 @@ const createEquipamento = async (req, res) => {
       );
     }
 
-    // Busca maior numeroSequenciaLoja
-    // Busca maior numeroSequenciaLoja convertendo para número
+    // Buscar maior numeroSequenciaLoja
     const seqResult = await db.query(`
       SELECT MAX(CAST(numeroSequenciaLoja AS INTEGER)) AS ultimoNumero FROM equipamentos
     `);
     const ultimoNumero = seqResult.rows[0].ultimonumero || 0;
     const novoNumeroSequenciaInt = parseInt(ultimoNumero, 10) + 1;
-    const novoNumeroSequencia = novoNumeroSequenciaInt.toString().padStart(4, '0'); // ex: "0018"
+    const novoNumeroSequencia = novoNumeroSequenciaInt.toString().padStart(4, '0');
 
-    // Insere novo equipamento
+    // Inserir novo equipamento
     const insertEquip = await db.query(
       `
       INSERT INTO equipamentos (
@@ -166,8 +166,7 @@ const createEquipamento = async (req, res) => {
       [estado, preco, novoNumeroSequencia, lojaNipc, codBarras]
     );
 
-
-    // Insere a imagem na tabela imagensEquipamento
+    // Inserir imagem
     await db.query(
       `
       INSERT INTO imagensEquipamento (codBarras, url)
@@ -176,8 +175,16 @@ const createEquipamento = async (req, res) => {
       [codBarras, imagemurl]
     );
 
+    // Atualizar a compra para "À venda"
+    if (compraId) {
+      await db.query(
+        `UPDATE compra SET estadoCompra = 'À venda' WHERE id = $1`,
+        [compraId]
+      );
+    }
+
     res.status(201).json({
-      message: "Equipamento criado com sucesso",
+      message: "Equipamento criado e compra atualizada com sucesso",
       id: insertEquip.rows[0].id,
     });
   } catch (error) {
@@ -185,6 +192,7 @@ const createEquipamento = async (req, res) => {
     res.status(500).json({ error: "Erro interno ao criar equipamento" });
   }
 };
+
 
 
 

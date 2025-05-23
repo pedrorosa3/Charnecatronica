@@ -62,6 +62,7 @@ const ComprasPage = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>ID</TableCell>
+                    <TableCell>Estado</TableCell>
                     <TableCell>Data</TableCell>
                     <TableCell>Preço (€)</TableCell>
                     <TableCell>Cliente</TableCell>
@@ -77,6 +78,7 @@ const ComprasPage = () => {
                     compras.map((compra) => (
                       <TableRow key={compra.id}>
                         <TableCell>{compra.id}</TableCell>
+                        <TableCell>{compra.estadocompra}</TableCell>
                         <TableCell>
                           {new Date(compra.data).toLocaleDateString()}
                         </TableCell>
@@ -110,7 +112,7 @@ const ComprasPage = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={9} align="center">
+                      <TableCell colSpan={10} align="center">
                         Não existem compras realizadas.
                       </TableCell>
                     </TableRow>

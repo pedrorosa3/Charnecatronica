@@ -73,12 +73,13 @@ const DetalhesCompra = () => {
     marca: compra.equipamentomarca,
     modelo: compra.equipamentomodelo,
     tipo: compra.equipamentotipo,
-    precoBase: compra.preco, // Preço da compra, base para revenda
+    precoBase: compra.preco,
     anoLancamento: compra.equipamentoanolancamento,
     estado: compra.estado,
-    preco: preco, // Preço definido no input
+    preco: preco,
     lojaNipc: compra.lojanipc,
     imagemurl: compra.equipamentoimagemurl,
+    compraId: compra.id, // <-- AQUI adicionamos o ID da compra
   };
 
   try {
@@ -305,9 +306,11 @@ const DetalhesCompra = () => {
                 py: 1,
               }}
               onClick={() => setOpenVendaModal(true)}
+              disabled={compra.estadocompra?.toLowerCase() !== "por vender"}
             >
               Vender Equipamento
             </Button>
+
           </Grid>
         </Grid>
 

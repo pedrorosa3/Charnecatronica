@@ -103,6 +103,7 @@ CREATE TABLE equipamentos (
 
 CREATE TABLE compra (
     id SERIAL PRIMARY KEY,
+    estadoCompra VARCHAR(50),
     data DATE,
     preco FLOAT,
     clienteId INT REFERENCES cliente(id),
@@ -325,10 +326,10 @@ VALUES
 ('Bateria', 50.0),
 ('Tela', 100.0);
 
-INSERT INTO compra (data, preco, clienteId, empregadoId, lojaNipc, estado, metodoPagamento, codBarras)
+INSERT INTO compra (data, estadoCompra, preco, clienteId, empregadoId, lojaNipc, estado, metodoPagamento, codBarras)
 VALUES 
-('2021-11-01', 999.99, 1, 1, 12345678901234, 'Novo', 'MbWay', '1111111111111'),
-('2021-11-10', 799.99, 2, 2, 98765432109876, 'Usado', 'MbWay', '1111111111111');
+('2021-11-01','Por vender', 999.99, 1, 1, 12345678901234, 'Novo', 'MbWay', '1111111111111'),
+('2021-11-10','Por vender', 799.99, 2, 2, 98765432109876, 'Usado', 'MbWay', '1111111111111');
 
 INSERT INTO venda (data, tipo, custoTransporte, lojaNipc, clienteId, empregadoId)
 VALUES 
@@ -340,10 +341,11 @@ VALUES
 ('2021-11-05', 1, 12345678901234, 1, 1, 1, 1),
 ('2021-11-12', 2, 98765432109876, 2, 2, 2, 2);
 
-INSERT INTO reparacao (dataEntregaAoCliente, numPedidoOrcamento, descNaoFunciona, orcamentoReparacao, clienteId, empregadoId, equipamentoId, lojaNipc, compraId)
+INSERT INTO reparacao (dataEntregaAoCliente,numPedidoOrcamento,descNaoFunciona,orcamentoReparacao,clienteId,empregadoId,lojaNipc,compraId)
 VALUES 
-('2021-11-20', 1001, 'Tela rachada', 120.0, 1, 1, 1, 12345678901234, 1),
-('2021-12-01', 1002, 'Bateria descarregada', 50.0, 2, 2, 2, 98765432109876, 2);
+('2021-11-20', 1001, 'Tela rachada', 120.0, 1, 1, 12345678901234, 1),
+('2021-12-01', 1002, 'Bateria descarregada', 50.0, 2, 2, 98765432109876, 2);
+
 
 
 INSERT INTO imagensEquipamento (codBarras, url)
