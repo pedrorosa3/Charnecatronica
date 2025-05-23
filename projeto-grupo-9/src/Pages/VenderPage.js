@@ -341,10 +341,9 @@ const VenderPage = () => {
                 <Autocomplete
                   options={[
                     "Novo",
-                    "Como novo",
-                    "Bom",
-                    "Aceitável",
-                    "Com defeito",
+                    "Semi-novo",
+                    "Usado",
+                    "Muito usado",
                   ]}
                   getOptionLabel={(option) => option}
                   onChange={(e, value) =>

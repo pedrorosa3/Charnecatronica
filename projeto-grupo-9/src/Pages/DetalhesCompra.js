@@ -253,6 +253,11 @@ const DetalhesCompra = () => {
               <EmailIcon sx={{ verticalAlign: "middle", marginRight: 1 }} />
               <strong>Email:</strong> {compra.clienteemail}
             </Typography>
+            <Typography>
+              <LocationOnIcon sx={{ verticalAlign: "middle", marginRight: 1 }} />
+              <strong>Morada:</strong> {compra.clienterua}, {compra.clientelocalidade}
+            </Typography>
+
           </CardContent>
         </Card>
 

@@ -47,13 +47,15 @@ const getCompraById = async (req, res) => {
         compra.preco,
         compra.estado,
         compra.metodoPagamento,
-        compra.estadocompra, -- <- novo campo adicionado
+        compra.estadocompra,
 
         -- Cliente
         cliente.id AS clienteId, 
         pessoaCliente.nome AS clienteNome,
         pessoaCliente.email AS clienteEmail,
         pessoaCliente.telemovel AS clienteTelemovel,
+        moradaCliente.rua AS clienteRua,
+        moradaCliente.localidade AS clienteLocalidade,
 
         -- Empregado
         empregado.numInterno AS empregadoId, 
@@ -67,12 +69,12 @@ const getCompraById = async (req, res) => {
         loja.numeroTelefone AS lojaTelefone,
 
         -- Morada da Loja
-        morada.rua AS lojaRua,
-        morada.numero AS lojaNumero,
-        morada.localidade AS lojaLocalidade,
-        morada.concelho AS lojaConcelho,
-        morada.distrito AS lojaDistrito,
-        morada.codigoPostal AS lojaCodigoPostal,
+        moradaLoja.rua AS lojaRua,
+        moradaLoja.numero AS lojaNumero,
+        moradaLoja.localidade AS lojaLocalidade,
+        moradaLoja.concelho AS lojaConcelho,
+        moradaLoja.distrito AS lojaDistrito,
+        moradaLoja.codigoPostal AS lojaCodigoPostal,
 
         -- Equipamento
         fichaDeEquipamento.codBarras AS equipamentoCodBarras, 
@@ -92,11 +94,16 @@ const getCompraById = async (req, res) => {
       FROM compra
       JOIN cliente ON compra.clienteId = cliente.id
       JOIN pessoa AS pessoaCliente ON cliente.pessoaId = pessoaCliente.id
+      LEFT JOIN morada AS moradaCliente ON pessoaCliente.moradaId = moradaCliente.id
+
       JOIN empregado ON compra.empregadoId = empregado.numInterno
       JOIN pessoa AS pessoaEmpregado ON empregado.pessoaId = pessoaEmpregado.id
+
       JOIN loja ON compra.lojaNipc = loja.nipc
-      JOIN morada ON loja.moradaId = morada.id
+      JOIN morada AS moradaLoja ON loja.moradaId = moradaLoja.id
+
       JOIN fichaDeEquipamento ON compra.codBarras = fichaDeEquipamento.codBarras
+
       WHERE compra.id = $1
     `,
       [id]
@@ -112,6 +119,7 @@ const getCompraById = async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar compra por ID" });
   }
 };
+
 
 
 module.exports = { getCompraLista, getCompraById };

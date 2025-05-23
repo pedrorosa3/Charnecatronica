@@ -10,6 +10,7 @@ const insertCompra = async (req, res) => {
     estado,
     modelo,
     metodoPagamento,
+    estadocompra = "Por vender", // valor padrão
   } = req.body;
 
   if (
@@ -44,8 +45,10 @@ const insertCompra = async (req, res) => {
     console.log("Código de barras encontrado:", codBarras);
 
     const compraResult = await db.query(
-      `INSERT INTO compra (data, preco, clienteId, empregadoId, lojaNipc, estado, metodoPagamento, codBarras)
-       VALUES (NOW(), $1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO compra (
+        data, preco, clienteId, empregadoId, lojaNipc, estado, metodoPagamento, codBarras, estadocompra
+      )
+       VALUES (NOW(), $1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
       [
         preco,
@@ -55,6 +58,7 @@ const insertCompra = async (req, res) => {
         estado,
         metodoPagamento,
         codBarras,
+        estadocompra, // novo campo
       ]
     );
 
@@ -71,3 +75,4 @@ const insertCompra = async (req, res) => {
 module.exports = {
   insertCompra,
 };
+

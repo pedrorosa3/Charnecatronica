@@ -104,15 +104,27 @@ const DetalhesVendaPage = () => {
           </CardContent>
         </Card>
 
+
         {/* Cliente */}
         <Card sx={{ mb: 3, borderRadius: "8px", boxShadow: 3 }}>
           <CardContent>
             <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>Cliente</Typography>
             <Typography><strong>Nome:</strong> {venda.clientenome}</Typography>
-            <Typography><PhoneIcon sx={{ verticalAlign: "middle", mr: 1 }} /><strong>Telemóvel:</strong> {venda.clientetelemovel}</Typography>
-            <Typography><EmailIcon sx={{ verticalAlign: "middle", mr: 1 }} /><strong>Email:</strong> {venda.clienteemail}</Typography>
+            <Typography>
+              <PhoneIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+              <strong>Telemóvel:</strong> {venda.clientetelemovel}
+            </Typography>
+            <Typography>
+              <EmailIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+              <strong>Email:</strong> {venda.clienteemail}
+            </Typography>
+            <Typography sx={{ mt: 1 }}>
+              <LocationOnIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+              <strong>Morada:</strong> {venda.clienterua}, {venda.clientelocalidade}
+            </Typography>
           </CardContent>
         </Card>
+
 
         {/* Equipamentos */}
         <Card>
