@@ -1,26 +1,26 @@
-import Header from "../Components/Header";
-import Footer from "../Components/Footer";
 import React, { useEffect, useState, useRef } from "react";
 
 function Lojas() {
-  const [lojas, setLojas] = useState([
-  {
-    nome: "Charnecatrónica - Sede",
-    morada: "Rua Principal 1, Charneca da Caparica",
-    telefone: "212 345 678",
-    horario: "Seg a Sex: 9h - 18h",
-    posicao: { lat: 38.6275, lng: -9.1853 },
-  },
-  {
-    nome: "Charnecatrónica - Almada",
-    morada: "Avenida Central 100, Almada",
-    telefone: "212 876 543",
-    horario: "Seg a Sáb: 10h - 19h",
-    posicao: { lat: 38.6792, lng: -9.1604 },
-  },
-]); // tuas lojas iniciais
+  const [lojas, setLojas] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [novaLoja, setNovaLoja] = useState({ morada: "", telefone: "" });
+  const [novaLoja, setNovaLoja] = useState({
+    nome: "",
+    telefone: "",
+    email: "",
+    morada: {
+      pais: "Portugal",
+      localidade: "",
+      latitude: null,
+      longitude: null,
+      freguesia: "",
+      rua: "",
+      codigopostal: "",
+      concelho: "",
+      numero: "",
+      distrito: "",
+    },
+  });
+
   const mapRef = useRef(null);
   const mapa = useRef(null);
   const autocompleteRef = useRef(null);
@@ -28,21 +28,18 @@ function Lojas() {
 
   useEffect(() => {
     mapa.current = new window.google.maps.Map(mapRef.current, {
-      center: lojas[0].posicao,
+      center: { lat: 38.6275, lng: -9.1853 },
       zoom: 12,
     });
-
     desenharMarcadores(lojas);
   }, []);
 
   useEffect(() => {
     if (!mapa.current) return;
-
     mapa.current = new window.google.maps.Map(mapRef.current, {
-      center: lojas[0].posicao,
+      center: { lat: 38.6275, lng: -9.1853 },
       zoom: 12,
     });
-
     desenharMarcadores(lojas);
   }, [lojas]);
 
@@ -50,21 +47,35 @@ function Lojas() {
     if (mostrarFormulario && inputRef.current && !autocompleteRef.current) {
       autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
         types: ["geocode"],
-        componentRestrictions: { country: "pt" },
       });
 
       autocompleteRef.current.addListener("place_changed", () => {
         const place = autocompleteRef.current.getPlace();
-        console.log("PLACE", place);
+
         if (place.geometry) {
-          setNovaLoja({
-            ...novaLoja,
-            morada: place.formatted_address,
-            posicao: {
-              lat: place.geometry.location.lat(),
-              lng: place.geometry.location.lng(),
-            },
-          });
+          const addressComponents = place.address_components || [];
+          const getComponent = (type) => {
+            const comp = addressComponents.find(c => c.types.includes(type));
+            return comp ? comp.long_name : "";
+          };
+
+          const morada = {
+            rua: getComponent("route") || place.name || "",
+            numero: getComponent("street_number"),
+            localidade: getComponent("locality"),
+            freguesia: getComponent("sublocality") || getComponent("administrative_area_level_2"),
+            concelho: getComponent("administrative_area_level_2"),
+            distrito: getComponent("administrative_area_level_1"),
+            codigopostal: getComponent("postal_code"),
+            pais: getComponent("country"),
+            latitude: place.geometry.location.lat(),
+            longitude: place.geometry.location.lng(),
+          };
+
+          setNovaLoja((prev) => ({
+            ...prev,
+            morada,
+          }));
         }
       });
     }
@@ -94,26 +105,65 @@ function Lojas() {
     });
   };
 
-  const handleAdicionarLoja = (e) => {
+  const handleAdicionarLoja = async (e) => {
     e.preventDefault();
 
-    if (!novaLoja.posicao) {
+    if (!novaLoja.morada.latitude || !novaLoja.morada.longitude) {
       alert("Por favor selecione uma morada válida.");
       return;
     }
 
-    const nova = {
-      nome: `Charnecatrónica - Nova Loja`,
-      morada: novaLoja.morada,
-      telefone: novaLoja.telefone,
-      horario: "A definir",
-      posicao: novaLoja.posicao,
-    };
+    try {
+      const res = await fetch("http://localhost:3000/lojas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome: novaLoja.nome || "Charnecatrónica - Nova Loja",
+          numerotelefone: novaLoja.telefone,
+          email: novaLoja.email || "loja@charnecatronica.pt",
+          morada: novaLoja.morada,
+        }),
+      });
 
-    setLojas([...lojas, nova]);
-    setNovaLoja({ morada: "", telefone: "", posicao: null });
-    autocompleteRef.current = null;
-    setMostrarFormulario(false);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erro ao criar loja");
+
+      alert("Loja criada com sucesso!");
+      setLojas([
+        ...lojas,
+        {
+          nome: novaLoja.nome,
+          morada: novaLoja.morada.rua,
+          telefone: novaLoja.telefone,
+          horario: "A definir",
+          posicao: {
+            lat: novaLoja.morada.latitude,
+            lng: novaLoja.morada.longitude,
+          },
+        },
+      ]);
+      setNovaLoja({
+        nome: "",
+        telefone: "",
+        email: "",
+        morada: {
+          pais: "Portugal",
+          localidade: "",
+          latitude: null,
+          longitude: null,
+          freguesia: "",
+          rua: "",
+          codigopostal: "",
+          concelho: "",
+          numero: "",
+          distrito: "",
+        },
+      });
+      setMostrarFormulario(false);
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao criar loja.");
+    }
   };
 
   return (
@@ -147,25 +197,40 @@ function Lojas() {
 
       {mostrarFormulario && (
         <form onSubmit={handleAdicionarLoja} style={{ marginBottom: "2rem" }}>
-          <div style={{ marginBottom: "1rem" }}>
-            <label>Morada: </label>
-            <input
-              ref={inputRef}
-              type="text"
-              value={novaLoja.morada}
-              onChange={(e) => setNovaLoja({ ...novaLoja, morada: e.target.value })}
-              required
-            />
-          </div>
-          <div style={{ marginBottom: "1rem" }}>
-            <label>Telefone: </label>
-            <input
-              type="text"
-              value={novaLoja.telefone}
-              onChange={(e) => setNovaLoja({ ...novaLoja, telefone: e.target.value })}
-              required
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Nome da Loja"
+            value={novaLoja.nome}
+            onChange={(e) => setNovaLoja({ ...novaLoja, nome: e.target.value })}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={novaLoja.email}
+            onChange={(e) => setNovaLoja({ ...novaLoja, email: e.target.value })}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Telefone"
+            value={novaLoja.telefone}
+            onChange={(e) => setNovaLoja({ ...novaLoja, telefone: e.target.value })}
+            required
+          />
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Pesquisar morada..."
+            value={novaLoja.morada.rua}
+            onChange={(e) =>
+              setNovaLoja({
+                ...novaLoja,
+                morada: { ...novaLoja.morada, rua: e.target.value },
+              })
+            }
+            required
+          />
           <button
             type="submit"
             style={{
