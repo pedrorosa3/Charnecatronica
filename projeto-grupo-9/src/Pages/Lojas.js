@@ -1,8 +1,30 @@
 import React, { useEffect, useState, useRef } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Alert,
+} from "@mui/material";
+import Header from "../Components/Header";
 
-function Lojas() {
-  const [lojas, setLojas] = useState([]);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+const AdicionarLoja = () => {
+  const [lojas, setLojas] = useState([
+    {
+      nome: "Loja Exemplo",
+      morada: "Rua das Flores, 123",
+      telefone: "912345678",
+      horario: "09:00 - 18:00",
+      posicao: {
+        lat: 38.7169,
+        lng: -9.1399,
+      },
+    },
+  ]);
+  const [mensagem, setMensagem] = useState(null);
+  const [tipoMensagem, setTipoMensagem] = useState("success");
+
   const [novaLoja, setNovaLoja] = useState({
     nome: "",
     telefone: "",
@@ -31,65 +53,55 @@ function Lojas() {
       center: { lat: 38.6275, lng: -9.1853 },
       zoom: 12,
     });
-    desenharMarcadores(lojas);
   }, []);
 
   useEffect(() => {
     if (!mapa.current) return;
-    mapa.current = new window.google.maps.Map(mapRef.current, {
-      center: { lat: 38.6275, lng: -9.1853 },
-      zoom: 12,
-    });
     desenharMarcadores(lojas);
   }, [lojas]);
 
   useEffect(() => {
-    if (mostrarFormulario && inputRef.current && !autocompleteRef.current) {
+    if (inputRef.current && !autocompleteRef.current) {
       autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
         types: ["geocode"],
       });
 
       autocompleteRef.current.addListener("place_changed", () => {
         const place = autocompleteRef.current.getPlace();
-
         if (place.geometry) {
-          const addressComponents = place.address_components || [];
-          const getComponent = (type) => {
-            const comp = addressComponents.find(c => c.types.includes(type));
+          const getComp = (type) => {
+            const comp = place.address_components?.find(c => c.types.includes(type));
             return comp ? comp.long_name : "";
           };
 
           const morada = {
-            rua: getComponent("route") || place.name || "",
-            numero: getComponent("street_number"),
-            localidade: getComponent("locality"),
-            freguesia: getComponent("sublocality") || getComponent("administrative_area_level_2"),
-            concelho: getComponent("administrative_area_level_2"),
-            distrito: getComponent("administrative_area_level_1"),
-            codigopostal: getComponent("postal_code"),
-            pais: getComponent("country"),
+            rua: getComp("route") || place.name || "",
+            numero: getComp("street_number"),
+            localidade: getComp("locality"),
+            freguesia: getComp("sublocality") || getComp("administrative_area_level_2"),
+            concelho: getComp("administrative_area_level_2"),
+            distrito: getComp("administrative_area_level_1"),
+            codigopostal: getComp("postal_code"),
+            pais: getComp("country"),
             latitude: place.geometry.location.lat(),
             longitude: place.geometry.location.lng(),
           };
 
-          setNovaLoja((prev) => ({
-            ...prev,
-            morada,
-          }));
+          setNovaLoja((prev) => ({ ...prev, morada }));
         }
       });
     }
-  }, [mostrarFormulario]);
+  }, []);
 
-  const desenharMarcadores = (listaLojas) => {
-    listaLojas.forEach((loja) => {
+  const desenharMarcadores = (lista) => {
+    lista.forEach((loja) => {
       const marker = new window.google.maps.Marker({
         position: loja.posicao,
         map: mapa.current,
         title: loja.nome,
       });
 
-      const infoWindow = new window.google.maps.InfoWindow({
+      const info = new window.google.maps.InfoWindow({
         content: `
           <div>
             <strong>${loja.nome}</strong><br/>
@@ -100,40 +112,43 @@ function Lojas() {
       });
 
       marker.addListener("click", () => {
-        infoWindow.open(mapa.current, marker);
+        info.open(mapa.current, marker);
       });
     });
   };
 
-  const handleAdicionarLoja = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!novaLoja.morada.latitude || !novaLoja.morada.longitude) {
-      alert("Por favor selecione uma morada válida.");
+      setMensagem("Por favor selecione uma morada válida.");
+      setTipoMensagem("error");
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:3000/lojas", {
+      const res = await fetch("http://localhost:9000/lojas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nome: novaLoja.nome || "Charnecatrónica - Nova Loja",
+          nome: novaLoja.nome,
           numerotelefone: novaLoja.telefone,
-          email: novaLoja.email || "loja@charnecatronica.pt",
+          email: novaLoja.email,
           morada: novaLoja.morada,
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Erro ao criar loja");
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Erro ao criar loja: ${res.status} - ${errorText}`);
+      }
 
-      alert("Loja criada com sucesso!");
+      const data = await res.json();
+
       setLojas([
         ...lojas,
         {
           nome: novaLoja.nome,
-          morada: novaLoja.morada.rua,
+          morada: `${novaLoja.morada.rua}, ${novaLoja.morada.localidade}`,
           telefone: novaLoja.telefone,
           horario: "A definir",
           posicao: {
@@ -142,6 +157,7 @@ function Lojas() {
           },
         },
       ]);
+
       setNovaLoja({
         nome: "",
         telefone: "",
@@ -159,103 +175,165 @@ function Lojas() {
           distrito: "",
         },
       });
-      setMostrarFormulario(false);
+
+      setMensagem("Loja criada com sucesso!");
+      setTipoMensagem("success");
     } catch (err) {
       console.error(err);
-      alert("Erro ao criar loja.");
+      setMensagem("Erro ao criar loja.");
+      setTipoMensagem("error");
     }
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Lojas Charnecatrónica</h1>
+    <>
+      <Header />
+      <Container sx={{ mt: 12 }}>
+        <Typography variant="h4" gutterBottom>
+          Adicionar Loja
+        </Typography>
 
-      <div
-        ref={mapRef}
-        style={{
-          width: "100%",
-          height: "400px",
-          marginBottom: "2rem",
-          borderRadius: "8px",
-        }}
-      ></div>
+        {mensagem && (
+          <Alert
+            severity={tipoMensagem}
+            onClose={() => setMensagem(null)}
+            sx={{ mb: 2 }}
+          >
+            {mensagem}
+          </Alert>
+        )}
 
-      <button
-        onClick={() => setMostrarFormulario(!mostrarFormulario)}
-        style={{
-          padding: "0.5rem 1rem",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          marginBottom: "1rem",
-          cursor: "pointer",
-        }}
-      >
-        {mostrarFormulario ? "Cancelar" : "Criar nova loja"}
-      </button>
+        <Box
+          ref={mapRef}
+          sx={{
+            width: "100%",
+            height: 400,
+            borderRadius: 2,
+            mb: 4,
+          }}
+        />
 
-      {mostrarFormulario && (
-        <form onSubmit={handleAdicionarLoja} style={{ marginBottom: "2rem" }}>
-          <input
-            type="text"
-            placeholder="Nome da Loja"
+        <form onSubmit={handleSubmit}>
+          <TextField
+            fullWidth
+            label="Nome da Loja"
             value={novaLoja.nome}
             onChange={(e) => setNovaLoja({ ...novaLoja, nome: e.target.value })}
+            margin="normal"
             required
           />
-          <input
+          <TextField
+            fullWidth
+            label="Email"
             type="email"
-            placeholder="Email"
             value={novaLoja.email}
             onChange={(e) => setNovaLoja({ ...novaLoja, email: e.target.value })}
+            margin="normal"
             required
           />
-          <input
-            type="text"
-            placeholder="Telefone"
+          <TextField
+            fullWidth
+            label="Telefone"
             value={novaLoja.telefone}
             onChange={(e) => setNovaLoja({ ...novaLoja, telefone: e.target.value })}
+            margin="normal"
             required
           />
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Pesquisar morada..."
+          <TextField
+            fullWidth
+            inputRef={inputRef}
+            label="Pesquisar Morada"
             value={novaLoja.morada.rua}
             onChange={(e) =>
-              setNovaLoja({
-                ...novaLoja,
-                morada: { ...novaLoja.morada, rua: e.target.value },
-              })
+              setNovaLoja((prev) => ({
+                ...prev,
+                morada: { ...prev.morada, rua: e.target.value },
+              }))
             }
+            margin="normal"
             required
           />
-          <button
+
+          {/* NOVOS CAMPOS PARA MORADA */}
+          <TextField
+            fullWidth
+            label="Localidade"
+            value={novaLoja.morada.localidade}
+            onChange={(e) =>
+              setNovaLoja((prev) => ({
+                ...prev,
+                morada: { ...prev.morada, localidade: e.target.value },
+              }))
+            }
+            margin="normal"
+            disabled
+          />
+          <TextField
+            fullWidth
+            label="Freguesia"
+            value={novaLoja.morada.freguesia}
+            onChange={(e) =>
+              setNovaLoja((prev) => ({
+                ...prev,
+                morada: { ...prev.morada, freguesia: e.target.value },
+              }))
+            }
+            margin="normal"
+            disabled
+          />
+          <TextField
+            fullWidth
+            label="Concelho"
+            value={novaLoja.morada.concelho}
+            onChange={(e) =>
+              setNovaLoja((prev) => ({
+                ...prev,
+                morada: { ...prev.morada, concelho: e.target.value },
+              }))
+            }
+            margin="normal"
+            disabled
+          />
+          <TextField
+            fullWidth
+            label="Distrito"
+            value={novaLoja.morada.distrito}
+            onChange={(e) =>
+              setNovaLoja((prev) => ({
+                ...prev,
+                morada: { ...prev.morada, distrito: e.target.value },
+              }))
+            }
+            margin="normal"
+            disabled
+          />
+
+          <Button
             type="submit"
-            style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "#28a745",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-            }}
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, backgroundColor: "black", "&:hover": { backgroundColor: "#333" } }}
           >
-            Adicionar
-          </button>
+            Adicionar Loja
+          </Button>
         </form>
-      )}
 
-      {lojas.map((loja, index) => (
-        <div key={index} style={{ marginBottom: "1.5rem" }}>
-          <h2>{loja.nome}</h2>
-          <p><strong>Morada:</strong> {loja.morada}</p>
-          <p><strong>Telefone:</strong> {loja.telefone}</p>
-          <p><strong>Horário:</strong> {loja.horario}</p>
-        </div>
-      ))}
-    </div>
+        {lojas.length > 0 && (
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h5">Lojas Registradas</Typography>
+            {lojas.map((loja, i) => (
+              <Box key={i} sx={{ mt: 2 }}>
+                <Typography><strong>Nome:</strong> {loja.nome}</Typography>
+                <Typography><strong>Morada:</strong> {loja.morada}</Typography>
+                <Typography><strong>Telefone:</strong> {loja.telefone}</Typography>
+                <Typography><strong>Horário:</strong> {loja.horario}</Typography>
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Container>
+    </>
   );
-}
+};
 
-export default Lojas;
+export default AdicionarLoja;
