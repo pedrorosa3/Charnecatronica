@@ -2,7 +2,10 @@
 const express = require("express");
 const router = express.Router();
 const {insertLojaComMorada} = require("../controllers/adicionarLoja");
+const { getLojas } = require("../controllers/adicionarLoja");
 
 router.post("/", insertLojaComMorada);
+router.get("/", getLojas); // NOVO
+
 
 module.exports = router;
