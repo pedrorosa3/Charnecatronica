@@ -8,9 +8,7 @@ const gerarNIPCAleatorioUnico = async () => {
 
   do {
     tentativas++;
-    // Gera número aleatório de 9 dígitos
     nipc = Math.floor(100000000 + Math.random() * 900000000);
-
     const resultado = await db.query("SELECT 1 FROM loja WHERE nipc = $1", [nipc]);
     existe = resultado.rowCount > 0;
 
@@ -22,7 +20,7 @@ const gerarNIPCAleatorioUnico = async () => {
   return nipc;
 };
 
-// Função para inserir loja com morada
+// Inserir loja com morada
 const insertLojaComMorada = async (req, res) => {
   console.log("➡️ Recebido POST /lojas");
   console.log("📦 Dados recebidos:", req.body);
@@ -32,6 +30,8 @@ const insertLojaComMorada = async (req, res) => {
       nome,
       numerotelefone,
       email,
+      horarioabertura: horaabertura,
+      horariofecho: horafecho,
       morada: {
         pais,
         localidade,
@@ -46,7 +46,7 @@ const insertLojaComMorada = async (req, res) => {
       } = {},
     } = req.body;
 
-    if (!nome || !numerotelefone || !email || !rua || !pais) {
+    if (!nome || !numerotelefone || !email || !rua || !pais || !horaabertura || !horafecho) {
       console.warn("⚠️ Campos obrigatórios em falta.");
       return res.status(400).json({ error: "Campos obrigatórios em falta." });
     }
@@ -71,11 +71,14 @@ const insertLojaComMorada = async (req, res) => {
     console.log("✅ Morada inserida com ID:", moradaId);
 
     const nipcGerado = await gerarNIPCAleatorioUnico();
+    const horaAberturaFormatada = horaabertura.slice(0, 5);
+    const horaFechoFormatada = horafecho.slice(0, 5);
+
     const lojaResult = await db.query(
-      `INSERT INTO loja (nipc, nome, numerotelefone, email, moradaid)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO loja (nipc, nome, numerotelefone, email, moradaid, horaabertura, horafecho)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [nipcGerado, nome, numerotelefone, email, moradaId]
+      [nipcGerado, nome, numerotelefone, email, moradaId, horaAberturaFormatada, horaFechoFormatada]
     );
 
     console.log("✅ Loja criada:", lojaResult.rows[0]);
@@ -90,11 +93,12 @@ const insertLojaComMorada = async (req, res) => {
   }
 };
 
-// NOVO: Buscar todas as lojas
+// Buscar todas as lojas
 const getLojas = async (req, res) => {
   try {
     const resultado = await db.query(
-      `SELECT loja.nome, loja.numerotelefone AS telefone, loja.email, 
+      `SELECT loja.nome, loja.numerotelefone AS telefone, loja.email,
+              loja.horaabertura, loja.horafecho,
               morada.latitude, morada.longitude,
               morada.rua, morada.numero, morada.localidade
        FROM loja
@@ -105,7 +109,7 @@ const getLojas = async (req, res) => {
       nome: row.nome,
       telefone: row.telefone,
       email: row.email,
-      horario: "A definir",
+      horario: `${row.horaabertura} - ${row.horafecho}`,
       morada: `${row.rua}, ${row.numero}, ${row.localidade}`,
       posicao: {
         lat: row.latitude,
@@ -122,5 +126,5 @@ const getLojas = async (req, res) => {
 
 module.exports = {
   insertLojaComMorada,
-  getLojas, // NOVO
+  getLojas,
 };

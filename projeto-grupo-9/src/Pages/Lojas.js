@@ -16,14 +16,17 @@ import Header from "../Components/Header";
 
 const AdicionarLoja = () => {
   const [lojas, setLojas] = useState([]);
-  const [mensagem, setMensagem] = useState(null);
+  const [mensagem, setMensagem] = useState(null); // mensagem para erros/alertas dentro do modal
   const [tipoMensagem, setTipoMensagem] = useState("success");
   const [abrirModal, setAbrirModal] = useState(false);
+  const [mensagemGlobal, setMensagemGlobal] = useState(null); // mensagem que aparece fora do modal
 
   const [novaLoja, setNovaLoja] = useState({
     nome: "",
     telefone: "",
     email: "",
+    horarioAbertura: "",
+    horarioFecho: "",
     morada: {
       pais: "Portugal",
       localidade: "",
@@ -79,7 +82,7 @@ const AdicionarLoja = () => {
         const place = autocompleteRef.current.getPlace();
         if (place.geometry) {
           const getComp = (type) => {
-            const comp = place.address_components?.find(c => c.types.includes(type));
+            const comp = place.address_components?.find((c) => c.types.includes(type));
             return comp ? comp.long_name : "";
           };
 
@@ -90,7 +93,7 @@ const AdicionarLoja = () => {
             freguesia: getComp("sublocality_level_1") || getComp("administrative_area_level_3"),
             concelho: getComp("administrative_area_level_2"),
             distrito: getComp("administrative_area_level_1"),
-            codigopostal: getComp("postal_code"),
+            codigopostal: getComp("postal_code") || "",
             pais: getComp("country"),
             latitude: place.geometry.location.lat(),
             longitude: place.geometry.location.lng(),
@@ -115,7 +118,8 @@ const AdicionarLoja = () => {
           <div>
             <strong>${loja.nome}</strong><br/>
             ${loja.morada}<br/>
-            ${loja.telefone}
+            ${loja.telefone}<br/>
+            <small>Horário: ${loja.horario}</small>
           </div>
         `,
       });
@@ -142,14 +146,13 @@ const AdicionarLoja = () => {
           nome: novaLoja.nome,
           numerotelefone: novaLoja.telefone,
           email: novaLoja.email,
+          horarioabertura: novaLoja.horarioAbertura,
+          horariofecho: novaLoja.horarioFecho,
           morada: novaLoja.morada,
         }),
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Erro ao criar loja: ${res.status} - ${errorText}`);
-      }
+      if (!res.ok) throw new Error("Erro ao criar loja");
 
       const data = await res.json();
 
@@ -159,7 +162,7 @@ const AdicionarLoja = () => {
           nome: novaLoja.nome,
           morada: `${novaLoja.morada.rua}, ${novaLoja.morada.numero}, ${novaLoja.morada.localidade}`,
           telefone: novaLoja.telefone,
-          horario: "A definir",
+          horario: `${novaLoja.horarioAbertura} - ${novaLoja.horarioFecho}`,
           posicao: {
             lat: novaLoja.morada.latitude,
             lng: novaLoja.morada.longitude,
@@ -171,6 +174,8 @@ const AdicionarLoja = () => {
         nome: "",
         telefone: "",
         email: "",
+        horarioAbertura: "",
+        horarioFecho: "",
         morada: {
           pais: "Portugal",
           localidade: "",
@@ -185,9 +190,14 @@ const AdicionarLoja = () => {
         },
       });
 
-      setMensagem("Loja criada com sucesso!");
-      setTipoMensagem("success");
       setAbrirModal(false);
+
+      // Mostrar mensagem global centralizada por 1 segundo
+      setMensagemGlobal("Loja criada com sucesso!");
+      setTipoMensagem("success");
+      setTimeout(() => {
+        setMensagemGlobal(null);
+      }, 1000);
     } catch (err) {
       console.error(err);
       setMensagem("Erro ao criar loja.");
@@ -197,15 +207,32 @@ const AdicionarLoja = () => {
 
   return (
     <>
-      {/* Adiciona o CSS para garantir o z-index do autocomplete */}
       <style>{`
         .pac-container {
           z-index: 1400 !important;
         }
+        /* Estilos para mensagem global centralizada */
+        .mensagem-global {
+          position: fixed;
+          top: 120px; /* ajusta para ficar logo abaixo do header */
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 1500;
+          width: 300px;
+          text-align: center;
+          animation: fadeInOut 3s forwards;
+          pointer-events: none; /* não interfere em cliques */
+        }
+        @keyframes fadeInOut {
+          0% {opacity: 0;}
+          10% {opacity: 1;}
+          90% {opacity: 1;}
+          100% {opacity: 0;}
+        }
       `}</style>
 
       <Header />
-      <Container sx={{ mt: 12 }}>
+      <Container sx={{ mt: 12, position: "relative" }}>
         <Typography variant="h4" gutterBottom>
           Gestão de Lojas
         </Typography>
@@ -218,14 +245,16 @@ const AdicionarLoja = () => {
           + Adicionar Loja
         </Button>
 
+        {/* Mensagem global aparece fixada centralizada e com animação */}
+        {mensagemGlobal && (
+          <Alert severity={tipoMensagem} className="mensagem-global">
+            {mensagemGlobal}
+          </Alert>
+        )}
+
         <Box
           ref={mapRef}
-          sx={{
-            width: "100%",
-            height: 400,
-            borderRadius: 2,
-            mb: 4,
-          }}
+          sx={{ width: "100%", height: 400, borderRadius: 2, mb: 4 }}
         />
 
         <Dialog
@@ -240,11 +269,7 @@ const AdicionarLoja = () => {
           <DialogTitle>Adicionar Loja</DialogTitle>
           <DialogContent>
             {mensagem && (
-              <Alert
-                severity={tipoMensagem}
-                onClose={() => setMensagem(null)}
-                sx={{ mb: 2 }}
-              >
+              <Alert severity={tipoMensagem} onClose={() => setMensagem(null)} sx={{ mb: 2 }}>
                 {mensagem}
               </Alert>
             )}
@@ -270,20 +295,43 @@ const AdicionarLoja = () => {
                 fullWidth
                 label="Telefone"
                 value={novaLoja.telefone}
-                onChange={(e) => setNovaLoja({ ...novaLoja, telefone: e.target.value })}
+                onChange={(e) => {
+                  const valor = e.target.value;
+                  if (/^\d{0,9}$/.test(valor)) {
+                    setNovaLoja({ ...novaLoja, telefone: valor });
+                  }
+                }}
+                margin="normal"
+                required
+                inputProps={{ maxLength: 9 }}
+              />
+
+              <TextField
+                fullWidth
+                label="Horário de Abertura"
+                type="time"
+                value={novaLoja.horarioAbertura}
+                onChange={(e) => setNovaLoja({ ...novaLoja, horarioAbertura: e.target.value })}
                 margin="normal"
                 required
               />
+              <TextField
+                fullWidth
+                label="Horário de Fecho"
+                type="time"
+                value={novaLoja.horarioFecho}
+                onChange={(e) => setNovaLoja({ ...novaLoja, horarioFecho: e.target.value })}
+                margin="normal"
+                required
+              />
+
               <TextField
                 fullWidth
                 inputRef={inputRef}
                 label="Pesquisar Morada"
                 value={novaLoja.morada.rua}
                 onChange={(e) =>
-                  setNovaLoja((prev) => ({
-                    ...prev,
-                    morada: { ...prev.morada, rua: e.target.value },
-                  }))
+                  setNovaLoja((prev) => ({ ...prev, morada: { ...prev.morada, rua: e.target.value } }))
                 }
                 margin="normal"
                 required
@@ -293,10 +341,7 @@ const AdicionarLoja = () => {
                 label="Número da Porta"
                 value={novaLoja.morada.numero}
                 onChange={(e) =>
-                  setNovaLoja((prev) => ({
-                    ...prev,
-                    morada: { ...prev.morada, numero: e.target.value },
-                  }))
+                  setNovaLoja((prev) => ({ ...prev, morada: { ...prev.morada, numero: e.target.value } }))
                 }
                 margin="normal"
                 required
@@ -324,11 +369,28 @@ const AdicionarLoja = () => {
           <Box sx={{ mt: 4 }}>
             <Typography variant="h5">Lojas Registradas</Typography>
             {lojas.map((loja, i) => (
-              <Box key={i} sx={{ mt: 2 }}>
-                <Typography><strong>Nome:</strong> {loja.nome}</Typography>
-                <Typography><strong>Morada:</strong> {loja.morada}</Typography>
-                <Typography><strong>Telefone:</strong> {loja.telefone}</Typography>
-                <Typography><strong>Horário:</strong> {loja.horario}</Typography>
+              <Box
+                key={i}
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: 2,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                }}
+              >
+                <Typography>
+                  <strong>Nome:</strong> {loja.nome}
+                </Typography>
+                <Typography>
+                  <strong>Morada:</strong> {loja.morada}
+                </Typography>
+                <Typography>
+                  <strong>Telefone:</strong> {loja.telefone}
+                </Typography>
+                <Typography>
+                  <strong>Horário:</strong> {loja.horario}
+                </Typography>
               </Box>
             ))}
           </Box>
