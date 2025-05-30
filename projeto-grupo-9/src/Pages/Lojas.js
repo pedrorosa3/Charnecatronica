@@ -15,6 +15,10 @@ import {
 import Header from "../Components/Header";
 
 const AdicionarLoja = () => {
+  const formatarHorario = (textoHorario) => {
+  const [inicio, fim] = textoHorario.split(" - ");
+  return `${inicio.slice(0, 5)} - ${fim.slice(0, 5)}`;
+  };
   const [lojas, setLojas] = useState([]);
   const [mensagem, setMensagem] = useState(null); // mensagem para erros/alertas dentro do modal
   const [tipoMensagem, setTipoMensagem] = useState("success");
@@ -106,29 +110,32 @@ const AdicionarLoja = () => {
   }, [abrirModal]);
 
   const desenharMarcadores = (lista) => {
-    lista.forEach((loja) => {
-      const marker = new window.google.maps.Marker({
-        position: loja.posicao,
-        map: mapa.current,
-        title: loja.nome,
-      });
-
-      const info = new window.google.maps.InfoWindow({
-        content: `
-          <div>
-            <strong>${loja.nome}</strong><br/>
-            ${loja.morada}<br/>
-            ${loja.telefone}<br/>
-            <small>Horário: ${loja.horario}</small>
-          </div>
-        `,
-      });
-
-      marker.addListener("click", () => {
-        info.open(mapa.current, marker);
-      });
+  lista.forEach((loja) => {
+    const marker = new window.google.maps.Marker({
+      position: loja.posicao,
+      map: mapa.current,
+      title: loja.nome,
     });
-  };
+
+    const horarioFormatado = formatarHorario(loja.horario);
+
+    const info = new window.google.maps.InfoWindow({
+      content: `
+        <div>
+          <strong>${loja.nome}</strong><br/>
+          ${loja.morada}<br/>
+          ${loja.telefone}<br/>
+          <small>Horário: ${horarioFormatado}</small>
+        </div>
+      `,
+    });
+
+    marker.addListener("click", () => {
+      info.open(mapa.current, marker);
+    });
+  });
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -389,7 +396,7 @@ const AdicionarLoja = () => {
                   <strong>Telefone:</strong> {loja.telefone}
                 </Typography>
                 <Typography>
-                  <strong>Horário:</strong> {loja.horario}
+                  <strong>Horário:</strong> {formatarHorario(loja.horario)}
                 </Typography>
               </Box>
             ))}

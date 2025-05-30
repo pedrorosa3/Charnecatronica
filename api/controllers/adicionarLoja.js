@@ -1,6 +1,5 @@
 const db = require("../db");
 
-// Função para gerar NIPC aleatório e único
 const gerarNIPCAleatorioUnico = async () => {
   let tentativas = 0;
   let nipc;
@@ -20,7 +19,6 @@ const gerarNIPCAleatorioUnico = async () => {
   return nipc;
 };
 
-// Inserir loja com morada
 const insertLojaComMorada = async (req, res) => {
   console.log("➡️ Recebido POST /lojas");
   console.log("📦 Dados recebidos:", req.body);
@@ -93,12 +91,12 @@ const insertLojaComMorada = async (req, res) => {
   }
 };
 
-// Buscar todas as lojas
 const getLojas = async (req, res) => {
   try {
     const resultado = await db.query(
       `SELECT loja.nome, loja.numerotelefone AS telefone, loja.email,
-              loja.horaabertura, loja.horafecho,
+              TO_CHAR(loja.horaabertura, 'HH24:MI') AS horaabertura,
+              TO_CHAR(loja.horafecho, 'HH24:MI') AS horafecho,
               morada.latitude, morada.longitude,
               morada.rua, morada.numero, morada.localidade
        FROM loja

@@ -55,6 +55,10 @@ CREATE TABLE loja (
     moradaId INT REFERENCES morada(id)
 );
 
+ALTER TABLE loja
+ADD COLUMN horaabertura TIME NOT NULL,
+ADD COLUMN horafecho TIME NOT NULL;
+
 CREATE TABLE cliente (
     id SERIAL PRIMARY KEY,
     pessoaId INT REFERENCES pessoa(id)
