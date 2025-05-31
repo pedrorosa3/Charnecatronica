@@ -23,12 +23,13 @@ const ReparacoesEmpregado = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const [formData, setFormData] = useState({
-    clienteId: null,
+    clienteId: "",
     codBarras: "",
-    lojaNipc: null,
+    lojaNipc: "",
     descNaoFunciona: "",
+    dataRececaoEquipamento: new Date().toISOString().split("T")[0],
     dataEntregaAoCliente: new Date().toISOString().split("T")[0],
-    empregadoId: null,
+    empregadoId: "",
     orcamentoReparacao: 0,
     numPedidoOrcamento: 0,
     compraId: null,
@@ -67,23 +68,25 @@ const ReparacoesEmpregado = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    const parsedValue =
-      ["clienteId", "empregadoId", "lojaNipc"].includes(name) && value !== ""
-        ? parseInt(value)
-        : value;
-
-    setFormData((prev) => ({ ...prev, [name]: parsedValue }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Converter apenas os campos que devem ser numéricos
+    const dataToSubmit = {
+      ...formData,
+      clienteId: Number(formData.clienteId),
+      lojaNipc: Number(formData.lojaNipc),
+      empregadoId: Number(formData.empregadoId),
+    };
+
     try {
       const res = await fetch("http://localhost:9000/reparacoes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSubmit),
       });
 
       if (!res.ok) throw new Error("Erro na submissão");
@@ -166,12 +169,12 @@ const ReparacoesEmpregado = () => {
                 fullWidth
                 label="Loja"
                 name="lojaNipc"
-                value={formData.lojaNipc ?? ""}
+                value={formData.lojaNipc}
                 onChange={handleChange}
                 required
               >
                 {lojas.map((loja) => (
-                  <MenuItem key={loja.nipc} value={loja.nipc}>
+                  <MenuItem key={loja.nipc} value={loja.nipc.toString()}>
                     {loja.nome} - {loja.nipc}
                   </MenuItem>
                 ))}
@@ -221,10 +224,10 @@ const ReparacoesEmpregado = () => {
             <Grid item xs={12}>
               <TextField
                 label="Data de receção do equipamento:"
-                name="dataEntregaAoCliente"
+                name="dataRececaoEquipamento"
                 type="date"
                 fullWidth
-                value={formData.dataEntregaAoCliente}
+                value={formData.dataRececaoEquipamento}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
               />

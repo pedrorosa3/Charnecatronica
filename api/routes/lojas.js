@@ -1,11 +1,13 @@
-// routes/lojas.js
 const express = require("express");
 const router = express.Router();
-const {insertLojaComMorada} = require("../controllers/adicionarLoja");
-const { getLojas } = require("../controllers/adicionarLoja");
+const {
+  insertLojaComMorada,
+  getLojas,
+  getEmpregadosByLoja,
+} = require("../controllers/lojasController");
 
 router.post("/", insertLojaComMorada);
-router.get("/", getLojas); 
-
+router.get("/", getLojas);
+router.get("/:nipc/empregados", getEmpregadosByLoja);
 
 module.exports = router;
