@@ -24,9 +24,10 @@ import ComprasPage from "./Pages/ComprasPage";
 import DetalhesVenda from "./Pages/DetalhesVenda";
 import ReparacoesEmpregado from "./Pages/reparacoesEmpregado";
 import Lojas from "./Pages/Lojas";
-
-
-
+import ListaReparacoes from "./Pages/listaReparacoes";
+import DetalhesReparacao from "./Pages/DetalhesReparacao";
+import DiagnosticoReparacao from "./Pages/DiagnosticoReparacao";
+import EditarReparacao from "./Pages/EditarReparacao";
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -83,7 +84,13 @@ function App() {
             element={<ReparacoesEmpregado />}
           />
           <Route path="/lojas" element={<Lojas />} />
-          
+          <Route path="/listaReparacoes" element={<ListaReparacoes />} />
+          <Route path="/reparacoes/:id" element={<DetalhesReparacao />} />
+          <Route
+            path="/reparacoes/:id/diagnostico"
+            element={<DiagnosticoReparacao />}
+          />
+          <Route path="/reparacoes/:id/editar" element={<EditarReparacao />} />
         </Routes>
       </Router>
     </ThemeProvider>

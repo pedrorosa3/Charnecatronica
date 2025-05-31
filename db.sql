@@ -155,6 +155,7 @@ CREATE TABLE reparacao (
     dataEntregaAoCliente DATE,
     numPedidoOrcamento FLOAT,
     descNaoFunciona TEXT,
+    estado VARCHAR(999),
     orcamentoReparacao FLOAT,
     clienteId INT REFERENCES cliente(id),
     empregadoId INT REFERENCES empregado(numInterno),
@@ -199,6 +200,7 @@ CREATE TABLE especificacoes (
 
 CREATE TABLE pecasASubstituir (
     id SERIAL PRIMARY KEY,
+    estadoEquipamento TEXT,
     reparacaoId INT REFERENCES reparacao(id),
     peca TEXT NOT NULL,
     custo FLOAT NOT NULL
