@@ -22,17 +22,24 @@ const ReparacoesEmpregado = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  const formatDate = (date) => date.toISOString().split("T")[0];
+
+  const today = new Date();
+  const entregaPrevista = new Date(today);
+  entregaPrevista.setDate(entregaPrevista.getDate() + 14);
+
   const [formData, setFormData] = useState({
     clienteId: "",
     codBarras: "",
     lojaNipc: "",
     descNaoFunciona: "",
-    dataRececaoEquipamento: new Date().toISOString().split("T")[0],
-    dataEntregaAoCliente: new Date().toISOString().split("T")[0],
+    dataRececaoEquipamento: formatDate(today),
+    dataEntregaAoCliente: formatDate(entregaPrevista),
     empregadoId: "",
     orcamentoReparacao: 0,
     numPedidoOrcamento: 0,
     compraId: null,
+    estado: "Por orçamentar",
   });
 
   useEffect(() => {
@@ -66,6 +73,17 @@ const ReparacoesEmpregado = () => {
     fetchData();
   }, [formData.lojaNipc]);
 
+  useEffect(() => {
+    if (formData.dataRececaoEquipamento) {
+      const data = new Date(formData.dataRececaoEquipamento);
+      data.setDate(data.getDate() + 14);
+      setFormData((prev) => ({
+        ...prev,
+        dataEntregaAoCliente: formatDate(data),
+      }));
+    }
+  }, [formData.dataRececaoEquipamento]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -74,7 +92,6 @@ const ReparacoesEmpregado = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Converter apenas os campos que devem ser numéricos
     const dataToSubmit = {
       ...formData,
       clienteId: Number(formData.clienteId),
@@ -221,7 +238,7 @@ const ReparacoesEmpregado = () => {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Data de receção do equipamento:"
                 name="dataRececaoEquipamento"
@@ -233,22 +250,56 @@ const ReparacoesEmpregado = () => {
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Data de entrega prevista:"
+                name="dataEntregaAoCliente"
+                type="date"
                 fullWidth
-                sx={{
-                  backgroundColor: "#000",
-                  color: "#fff",
-                  borderRadius: "50px",
-                  fontWeight: "bold",
-                  padding: "10px",
-                  "&:hover": { backgroundColor: "#333" },
-                }}
-              >
-                Submeter Reparação
-              </Button>
+                value={formData.dataEntregaAoCliente}
+                onChange={handleChange}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    sx={{
+                      backgroundColor: "#000",
+                      color: "#fff",
+                      borderRadius: "50px",
+                      fontWeight: "bold",
+                      padding: "10px",
+                      "&:hover": { backgroundColor: "#333" },
+                    }}
+                    onClick={() => (window.location.href = "/listaReparacoes")}
+                  >
+                    Lista de Reparações
+                  </Button>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    sx={{
+                      backgroundColor: "#000",
+                      color: "#fff",
+                      borderRadius: "50px",
+                      fontWeight: "bold",
+                      padding: "10px",
+                      "&:hover": { backgroundColor: "#333" },
+                    }}
+                  >
+                    Submeter Reparação
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Box>
