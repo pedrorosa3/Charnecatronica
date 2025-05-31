@@ -52,12 +52,10 @@ CREATE TABLE loja (
     nome VARCHAR(255),
     numeroTelefone INT,
     email VARCHAR(255) UNIQUE,
-    moradaId INT REFERENCES morada(id)
+    moradaId INT REFERENCES morada(id),
+    horaabertura TIME NOT NULL,
+    horafecho TIME NOT NULL
 );
-
-ALTER TABLE loja
-ADD COLUMN horaabertura TIME NOT NULL,
-ADD COLUMN horafecho TIME NOT NULL;
 
 CREATE TABLE cliente (
     id SERIAL PRIMARY KEY,
@@ -153,6 +151,7 @@ CREATE TABLE doacao (
 
 CREATE TABLE reparacao (
     id SERIAL PRIMARY KEY,
+    dataRececaoEquipamento DATE,
     dataEntregaAoCliente DATE,
     numPedidoOrcamento FLOAT,
     descNaoFunciona TEXT,
@@ -254,9 +253,15 @@ INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNa
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (867741192, 36619372, 'Paulo Sá', 'Masculino', 965738718, 'tavaresvioleta@sousa.com', 'JFPDrm*x)n0L', '1996-02-29', 7);
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (967797300, 82232344, 'Luana Matias', 'Masculino', 965414110, 'marcos14@sapo.pt', 'b7OSOEt8WrT$', '1987-07-01', 6);
 
-INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId) VALUES (696115913, 'Loja 1', 242255732, 'trodrigues@melo.com', 6);
-INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId) VALUES (199915275, 'Loja 2', 249491631, 'aliciasa@goncalves.pt', 10);
-INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId) VALUES (694287057, 'Loja 3', 281259135, 'anita85@tavares.pt', 5);
+INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId, horaabertura, horafecho)
+VALUES (696115913, 'Loja 1', 242255732, 'trodrigues@melo.com', 6, '09:00:00', '18:00:00');
+
+INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId, horaabertura, horafecho)
+VALUES (199915275, 'Loja 2', 249491631, 'aliciasa@goncalves.pt', 10, '10:00:00', '19:00:00');
+
+INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId, horaabertura, horafecho)
+VALUES (694287057, 'Loja 3', 281259135, 'anita85@tavares.pt', 5, '08:30:00', '17:30:00');
+
 
 INSERT INTO equipamentos (estadoVenda, estado, preco, numeroSequenciaLoja, lojaNipc, dataDeDisponibilizacao, codBarras)
 VALUES
@@ -304,11 +309,6 @@ INSERT INTO pecas (tipo, preco) VALUES ('explicabo', 111.88);
 INSERT INTO pecas (tipo, preco) VALUES ('eveniet', 194.89);
 INSERT INTO pecas (tipo, preco) VALUES ('cumque', 81.92);
 
-INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId)
-VALUES 
-(12345678901234, 'Loja Exemplo Lisboa', 213456789, 'loja.lisboa@exemplo.com', 1),
-(98765432109876, 'Loja Exemplo Porto', 228765432, 'loja.porto@exemplo.com', 2);
-
 INSERT INTO cliente (pessoaId)
 VALUES 
 (1),
@@ -316,8 +316,8 @@ VALUES
 
 INSERT INTO empregado (lojaNipc, pessoaId)
 VALUES 
-(12345678901234, 1),
-(98765432109876, 2);
+(199915275, 1),
+(696115913, 2);
 
 INSERT INTO doador (pessoaId)
 VALUES 
@@ -336,24 +336,20 @@ VALUES
 
 INSERT INTO compra (data, estadoCompra, preco, clienteId, empregadoId, lojaNipc, estado, metodoPagamento, codBarras)
 VALUES 
-('2021-11-01','Por vender', 999.99, 1, 1, 12345678901234, 'Novo', 'MbWay', '1111111111111'),
-('2021-11-10','Por vender', 799.99, 2, 2, 98765432109876, 'Usado', 'MbWay', '1111111111111');
+('2021-11-01','Por vender', 999.99, 1, 1, 199915275, 'Novo', 'MbWay', '1111111111111'),
+('2021-11-10','Por vender', 799.99, 2, 2, 696115913, 'Usado', 'MbWay', '1111111111111');
 
 INSERT INTO venda (data, tipo, custoTransporte, lojaNipc, clienteId, empregadoId, estadoVenda)
 VALUES 
-('2021-12-01', 'Venda Direta', 10.0, 12345678901234, 1, 1, 'Entregue'),
-('2021-12-10', 'Venda Direta', 15.0, 98765432109876, 2, 2, 'Pago');
+('2021-12-01', 'Venda Direta', 10.0, 199915275, 1, 1, 'Entregue'),
+('2021-12-10', 'Venda Direta', 15.0, 696115913, 2, 2, 'Pago');
 
 
 INSERT INTO doacao (data, doadorId, lojaNipc, empregadoId, equipamentoId, projetoBeneficenciaId, compraId)
 VALUES 
-('2021-11-05', 1, 12345678901234, 1, 1, 1, 1),
-('2021-11-12', 2, 98765432109876, 2, 2, 2, 2);
+('2021-11-05', 1, 199915275, 1, 1, 1, 1),
+('2021-11-12', 2, 696115913, 2, 2, 2, 2);
 
-INSERT INTO reparacao (dataEntregaAoCliente,numPedidoOrcamento,descNaoFunciona,orcamentoReparacao,clienteId,empregadoId,lojaNipc,compraId)
-VALUES 
-('2021-11-20', 1001, 'Tela rachada', 120.0, 1, 1, 12345678901234, 1),
-('2021-12-01', 1002, 'Bateria descarregada', 50.0, 2, 2, 98765432109876, 2);
 
 
 
@@ -495,16 +491,16 @@ INSERT INTO projetoBeneficencia (
 ) VALUES
 ('Doação de Computadores para Escolas e Instituições Carenciadas',
  'A loja pode recolher computadores Usados, recondicioná-los e doá-los para escolas, bibliotecas ou centros comunitários que atendem crianças e jovens de baixa renda. Isso ajuda a reduzir a exclusão digital e a fornecer acesso à tecnologia para fins educacionais.',
- '2022-12-31', 100, 1, 12345678901234, '1111111111126', '/images/Instituicao-ensino.jpg'),
+ '2022-12-31', 100, 1, 199915275, '1111111111126', '/images/Instituicao-ensino.jpg'),
 
 ('Recolha e Reciclagem de Resíduos Eletrônicos',
  'A loja pode criar um ponto de recolha de equipamentos eletrônicos antigos (teclados, monitores, baterias, etc.), garantindo que sejam reciclados de forma ambientalmente responsável. Parte dos equipamentos pode ser recondicionada e doada.',
- '2023-06-30', 50, 2, 98765432109876, '1111111111122', '/images/residuos-eletronicos.jpg'),
+ '2023-06-30', 50, 2, 696115913, '1111111111122', '/images/residuos-eletronicos.jpg'),
 
 ('Requalificação Digital para Trabalhadores Desempregados',
  'Apoiar trabalhadores desempregados ou em transição de carreira a adquirirem novas competências digitais, aumentando suas oportunidades no mercado de trabalho.',
- '2023-06-30', 50, 2, 98765432109876, '1111111111124', '/images/requalificacao-trabalhadores.png'),
+ '2023-06-30', 50, 2, 696115913, '1111111111124', '/images/requalificacao-trabalhadores.png'),
 
 ('Inclusão Digital para Idosos',
  'Oferecer cursos e suporte para idosos aprenderem a utilizar computadores e smartphones, promovendo a inclusão digital e melhorando sua qualidade de vida.',
- '2024-12-31', 30, 3, 12345678901234, '1111111111123', '/images/inclusao-digital-idosos.jpg');
+ '2024-12-31', 30, 3, 199915275, '1111111111123', '/images/inclusao-digital-idosos.jpg');
