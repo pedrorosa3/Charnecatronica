@@ -23,7 +23,7 @@ const getEquipamentos = async (req, res) => {
         FROM imagensEquipamento
         ORDER BY codBarras, id
       ) i ON f.codBarras = i.codBarras
-      WHERE e.estadovenda = 'À venda'
+      WHERE e.estadoVenda = 'À venda'
     `);
 
     const equipamentos = result.rows.map((equip) => ({
@@ -163,7 +163,7 @@ const createEquipamento = async (req, res) => {
       `
       INSERT INTO equipamentos (
         estado,
-        estadovenda, -- ADICIONADO AQUI
+        estadoVenda, -- ADICIONADO AQUI
         preco,
         numeroSequenciaLoja,
         lojaNipc,
