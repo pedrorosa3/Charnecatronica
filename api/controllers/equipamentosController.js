@@ -52,7 +52,7 @@ const getEquipamentoById = async (req, res) => {
       SELECT 
         e.id,
         e.estado,
-        e.estadovenda, -- ADICIONADO AQUI
+        e.estadoVenda, -- ADICIONADO AQUI
         e.preco,
         e.numeroSequenciaLoja,
         e.dataDeDisponibilizacao,
@@ -163,7 +163,7 @@ const createEquipamento = async (req, res) => {
       `
       INSERT INTO equipamentos (
         estado,
-        estadoVenda, -- ADICIONADO AQUI
+        estadovenda, -- ADICIONADO AQUI
         preco,
         numeroSequenciaLoja,
         lojaNipc,

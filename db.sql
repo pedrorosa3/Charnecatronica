@@ -95,7 +95,7 @@ CREATE TABLE fichaDeEquipamento (
 
 CREATE TABLE equipamentos (
     id SERIAL PRIMARY KEY,
-    estadoVenda VARCHAR(50),
+    estadovenda VARCHAR(50),
     estado VARCHAR(50),
     preco DECIMAL(10,2),
     numeroSequenciaLoja VARCHAR(100),
