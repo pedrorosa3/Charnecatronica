@@ -6,8 +6,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SellIcon from "@mui/icons-material/Sell";
 import BuildIcon from "@mui/icons-material/Build";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
-import ShareLocationIcon from "@mui/icons-material/ShareLocation";
-import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import OfertasDestaqueSection from "../Components/OfertasDestaqueSection";
 
 const cards = [
@@ -34,18 +32,6 @@ const cards = [
     title: "Doações de equipamentos",
     description:
       "Doe equipamentos eletrónicos que não usa mais e contribua para iniciativas sociais, ajudando pessoas e instituições que precisam.",
-  },
-  {
-    icon: <ShareLocationIcon fontSize="large" />,
-    title: "Tracking",
-    description:
-      "Acompanhe o estado dos seus pedidos e serviços em tempo real com total transparência no processo de compra, venda ou reparação.",
-  },
-  {
-    icon: <RequestQuoteIcon fontSize="large" />,
-    title: "Orçamentos",
-    description:
-      "Solicite orçamentos personalizados para compra, venda ou reparação de equipamentos eletrónicos, garantindo sempre as melhores condições.",
   },
 ];
 
@@ -97,22 +83,22 @@ const HomePage = () => {
           sx={{ maxWidth: "1200px" }}
         >
           {cards.map((card, index) => (
-            <Grid item key={index} xs={12} sm={6} md={4}>
+            <Grid item key={index} xs={12} sm={6} md={3}>
               <Card
                 sx={{
                   backgroundColor: "#FFFFFF",
                   borderRadius: "15px",
                   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                  minHeight: "250px",
+                  height: "250px", // mesmo tamanho para todos
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
-                  padding: "20px",
                   textAlign: "center",
+                  padding: "20px",
                 }}
               >
-                <CardContent>
+                <CardContent sx={{ padding: 0 }}>
                   {card.icon}
                   <Typography
                     variant="h6"
