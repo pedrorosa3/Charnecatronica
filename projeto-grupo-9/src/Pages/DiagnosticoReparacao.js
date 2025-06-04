@@ -13,7 +13,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import Header from "../Components/Header";
+import Sidebar from "../Components/SideBarDashboard";
 import Footer from "../Components/Footer";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -127,7 +127,7 @@ const DiagnosticoReparacao = () => {
         backgroundColor: "#F8F8F8",
       }}
     >
-      <Header />
+      <Sidebar />
       <Container sx={{ flex: 1, padding: "30px", mt: 12, maxWidth: "800px" }}>
         <Typography
           variant="h4"
@@ -264,8 +264,24 @@ const DiagnosticoReparacao = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-
-      <Footer />
+<Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Footer />
+      </Box>
     </Box>
   );
 };
