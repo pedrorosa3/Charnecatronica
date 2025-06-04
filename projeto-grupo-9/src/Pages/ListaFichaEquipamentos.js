@@ -10,8 +10,10 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import Header from "../Components/Header";
-import SidebarComprar from "../Components/SidebarComprar"; 
+import SidebarComprar from "../Components/SidebarComprar";
+import Sidebar from "../Components/SideBarDashboard";
+import Footer from "../Components/Footer";
+
 
 const ListaFichaEquipamentos = () => {
   const [fichas, setFichas] = useState([]);
@@ -69,17 +71,8 @@ const ListaFichaEquipamentos = () => {
 
   return (
     <>
-      <Header />
-      <Box sx={{ display: "flex", paddingTop: "90px" }}>
-        <SidebarComprar
-          selectedCategories={selectedCategories}
-          setSelectedCategories={setSelectedCategories}
-          preco={preco}
-          setPreco={setPreco}
-          ordenacao={ordenacao}
-          setOrdenacao={setOrdenacao}
-        />
-
+      <Sidebar />
+      <Box sx={{ display: "flex", paddingTop: "50px", marginBottom: "60px" }}>
         <Container sx={{ mt: 2, mb: 4 }}>
           <Box
             display="flex"
@@ -151,6 +144,24 @@ const ListaFichaEquipamentos = () => {
             ))}
           </Grid>
         </Container>
+              <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Footer />
+      </Box>
       </Box>
     </>
   );

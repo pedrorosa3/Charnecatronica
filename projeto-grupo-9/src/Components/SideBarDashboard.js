@@ -49,7 +49,7 @@ const Sidebar = () => {
           <ListItemText primary="Dashboard" />
         </ListItem>
         {/* Reparações */}
-        <ListItem button onClick={() => navigate("/reparacoesEmpregado")}>
+        <ListItem button onClick={() => navigate("/listaReparacoes")}>
           <ListItemIcon><Build /></ListItemIcon>
           <ListItemText primary="Gestão de Reparações" />
         </ListItem>
@@ -87,7 +87,7 @@ const Sidebar = () => {
             <ListItem button onClick={() => navigate("/equipamentoscomprados")}>
               <ListItemText primary="Equipamentos Comprados" />
             </ListItem>
-            <ListItem button onClick={() => navigate("/fichas-equipamentos")}>
+            <ListItem button onClick={() => navigate("/fichas")}>
               <ListItemText primary="Fichas de Equipamentos" />
             </ListItem>
             <ListItem button onClick={() => navigate("/criarFichaEquipamento")}>
