@@ -27,9 +27,9 @@ const SidebarComprar = ({
 }) => {
   const handleCategoryChange = (categoria) => {
     setSelectedCategories((prev) =>
-      prev.includes(categoria)
-        ? prev.filter((c) => c !== categoria)
-        : [...prev, categoria]
+      (prev || []).includes(categoria)
+        ? (prev || []).filter((c) => c !== categoria)
+        : [...(prev || []), categoria]
     );
   };
 
@@ -46,9 +46,9 @@ const SidebarComprar = ({
 
   const handleEstadoChange = (estado) => {
     setSelectedEstados((prev) =>
-      prev.includes(estado)
-        ? prev.filter((e) => e !== estado)
-        : [...prev, estado]
+      (prev || []).includes(estado)
+        ? (prev || []).filter((e) => e !== estado)
+        : [...(prev || []), estado]
     );
   };
 
@@ -72,7 +72,7 @@ const SidebarComprar = ({
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={selectedCategories.includes(categoria)}
+                  checked={(selectedCategories || []).includes(categoria)}
                   onChange={() => handleCategoryChange(categoria)}
                 />
               }
@@ -96,7 +96,7 @@ const SidebarComprar = ({
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={selectedEstados.includes(estado)}
+                  checked={(selectedEstados || []).includes(estado)}
                   onChange={() => handleEstadoChange(estado)}
                 />
               }

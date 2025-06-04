@@ -173,28 +173,43 @@ const FichaEquipamentoPage = () => {
                 </Typography>
               </Box>
 
-              <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                justifyContent="flex-end"
+                sx={{ mt: 3 }}
+              >
                 <Button
                   variant="contained"
-                  sx={{
-                    backgroundColor: "#e53935",
-                    color: "#fff",
-                    borderRadius: 2,
-                    "&:hover": { backgroundColor: "#d32f2f" },
-                  }}
                   onClick={() => setDialogOpen(true)}
+                  sx={{
+                    backgroundColor: "#000",
+                    color: "#fff",
+                    borderRadius: "999px",
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    px: 3,
+                    "&:hover": {
+                      backgroundColor: "#222",
+                    },
+                  }}
                 >
                   Apagar
                 </Button>
                 <Button
                   variant="contained"
-                  sx={{
-                    backgroundColor: "#1976d2",
-                    color: "#fff",
-                    borderRadius: 2,
-                    "&:hover": { backgroundColor: "#1565c0" },
-                  }}
                   onClick={() => navigate(`/editarFicha/${ficha.codbarras}`)}
+                  sx={{
+                    backgroundColor: "#000",
+                    color: "#fff",
+                    borderRadius: "999px",
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    px: 3,
+                    "&:hover": {
+                      backgroundColor: "#222",
+                    },
+                  }}
                 >
                   Editar
                 </Button>
