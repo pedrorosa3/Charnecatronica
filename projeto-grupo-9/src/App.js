@@ -28,6 +28,7 @@ import ListaReparacoes from "./Pages/listaReparacoes";
 import DetalhesReparacao from "./Pages/DetalhesReparacao";
 import DiagnosticoReparacao from "./Pages/DiagnosticoReparacao";
 import EditarReparacao from "./Pages/EditarReparacao";
+import Dashboard from "./Pages/Dashboard";
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -91,6 +92,7 @@ function App() {
             element={<DiagnosticoReparacao />}
           />
           <Route path="/reparacoes/:id/editar" element={<EditarReparacao />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
     </ThemeProvider>

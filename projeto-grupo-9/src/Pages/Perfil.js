@@ -224,54 +224,105 @@ const Perfil = () => {
           <Typography variant="h6">Editar dados do utilizador</Typography>
 
           <TextField
+            label="Email"
+            value={userData.email}
+            disabled
+            fullWidth
+          />
+
+          <TextField
             label="Nome"
             value={userData.nome}
             onChange={(e) => setUserData({ ...userData, nome: e.target.value })}
+            fullWidth
           />
+
           <TextField
             label="NIF"
+            inputProps={{ maxLength: 9, inputMode: "numeric", pattern: "[0-9]*" }}
             value={userData.nif}
-            onChange={(e) => setUserData({ ...userData, nif: e.target.value })}
+            onChange={(e) => {
+              const onlyNums = e.target.value.replace(/\D/g, "");
+              setUserData({ ...userData, nif: onlyNums });
+            }}
+            fullWidth
           />
+
           <TextField
             label="NIC"
+            inputProps={{ maxLength: 8, inputMode: "numeric", pattern: "[0-9]*" }}
             value={userData.nic}
-            onChange={(e) => setUserData({ ...userData, nic: e.target.value })}
+            onChange={(e) => {
+              const onlyNums = e.target.value.replace(/\D/g, "");
+              setUserData({ ...userData, nic: onlyNums });
+            }}
+            fullWidth
           />
+
           <TextField
             label="Género"
             select
             value={userData.genero}
             onChange={(e) => setUserData({ ...userData, genero: e.target.value })}
+            fullWidth
           >
             <MenuItem value="Masculino">Masculino</MenuItem>
             <MenuItem value="Feminino">Feminino</MenuItem>
             <MenuItem value="Outro">Outro</MenuItem>
           </TextField>
+
           <TextField
             label="Telemóvel"
+            inputProps={{ maxLength: 9, inputMode: "numeric", pattern: "[0-9]*" }}
             value={userData.telemovel}
-            onChange={(e) => setUserData({ ...userData, telemovel: e.target.value })}
+            onChange={(e) => {
+              const onlyNums = e.target.value.replace(/\D/g, "");
+              setUserData({ ...userData, telemovel: onlyNums });
+            }}
+            fullWidth
           />
+
           <TextField
             label="Data de Nascimento"
             type="date"
             InputLabelProps={{ shrink: true }}
             value={userData.dataNascimento}
             onChange={(e) => setUserData({ ...userData, dataNascimento: e.target.value })}
+            fullWidth
           />
 
           <Button
             variant="contained"
-            onClick={() => {
-              setOpenModal(false);
-              console.log("Dados atualizados:", userData);
+            onClick={async () => {
+              try {
+                const response = await fetch("http://localhost:9000/perfil", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(userData),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                  alert(result.error || "Erro ao guardar os dados.");
+                  return;
+                }
+
+                alert(result.message || "Perfil guardado com sucesso!");
+                setOpenModal(false);
+              } catch (error) {
+                console.error("Erro ao enviar dados do perfil:", error);
+                alert("Erro ao comunicar com o servidor.");
+              }
             }}
           >
             Guardar alterações
           </Button>
         </Box>
       </Modal>
+
 
       <Footer />
     </Box>

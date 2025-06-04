@@ -10,7 +10,7 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import Header from "../Components/Header";
+import Sidebar from "../Components/SideBarDashboard";
 import Footer from "../Components/Footer";
 
 const ReparacoesEmpregado = () => {
@@ -128,16 +128,35 @@ const ReparacoesEmpregado = () => {
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundColor: "#F8F8F8",
-      }}
-    >
-      <Header />
-      <Box sx={{ flex: 1, padding: "20px", paddingTop: "100px", mt: 2 }}>
+    <>
+      {/* Sidebar fixa */}
+      <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "250px",
+          height: "calc(100vh - 60px)", // altura da viewport menos footer
+          bgcolor: "#f0f0f0",
+          overflowY: "auto",
+          borderRight: "1px solid #ddd",
+          zIndex: 1000,
+        }}
+      >
+        <Sidebar />
+      </Box>
+
+      {/* Conteúdo principal */}
+      <Box
+        component="main"
+        sx={{
+          marginLeft: "250px", // deixa espaço para a sidebar
+          padding: 4,
+          minHeight: "100vh",
+          paddingBottom: "60px", // espaço para o footer
+          bgcolor: "#fff",
+        }}
+      >
         <Typography variant="h4" gutterBottom>
           Registo de reparação
         </Typography>
@@ -212,9 +231,7 @@ const ReparacoesEmpregado = () => {
                 {!formData.lojaNipc ? (
                   <MenuItem value="">Indique a loja</MenuItem>
                 ) : empregados.length === 0 ? (
-                  <MenuItem value="">
-                    Nenhum empregado encontrado para esta loja
-                  </MenuItem>
+                  <MenuItem value="">Nenhum empregado encontrado para esta loja</MenuItem>
                 ) : (
                   empregados.map((emp) => (
                     <MenuItem key={emp.id} value={emp.id}>
@@ -305,6 +322,27 @@ const ReparacoesEmpregado = () => {
         </Box>
       </Box>
 
+      {/* Footer fixo no fundo */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Footer />
+      </Box>
+
+      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
@@ -319,9 +357,7 @@ const ReparacoesEmpregado = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-
-      <Footer />
-    </Box>
+    </>
   );
 };
 

@@ -23,7 +23,7 @@ const getEquipamentos = async (req, res) => {
         FROM imagensEquipamento
         ORDER BY codBarras, id
       ) i ON f.codBarras = i.codBarras
-      WHERE e.estadovenda = 'À venda'
+      WHERE e.estadoVenda = 'À venda'
     `);
 
     const equipamentos = result.rows.map((equip) => ({
@@ -52,7 +52,7 @@ const getEquipamentoById = async (req, res) => {
       SELECT 
         e.id,
         e.estado,
-        e.estadovenda, -- ADICIONADO AQUI
+        e.estadoVenda, -- ADICIONADO AQUI
         e.preco,
         e.numeroSequenciaLoja,
         e.dataDeDisponibilizacao,

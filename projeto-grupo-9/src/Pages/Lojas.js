@@ -12,7 +12,8 @@ import {
   DialogActions,
   Fade,
 } from "@mui/material";
-import Header from "../Components/Header";
+import Footer from "../Components/Footer";
+import Sidebar from "../Components/SideBarDashboard";
 
 const AdicionarLoja = () => {
   const formatarHorario = (textoHorario) => {
@@ -238,8 +239,8 @@ const AdicionarLoja = () => {
         }
       `}</style>
 
-      <Header />
-      <Container sx={{ mt: 12, position: "relative" }}>
+      <Sidebar />
+      <Container sx={{ mt: 5, position: "relative", marginBottom: "100px"}}>
         <Typography variant="h4" gutterBottom>
           Gestão de Lojas
         </Typography>
@@ -261,7 +262,7 @@ const AdicionarLoja = () => {
 
         <Box
           ref={mapRef}
-          sx={{ width: "100%", height: 400, borderRadius: 2, mb: 4 }}
+          sx={{ width: "100%", height: 400, borderRadius: 2, mb: 4, marginBottom: "50px", marginTop: "20px" }}
         />
 
         <Dialog
@@ -374,7 +375,7 @@ const AdicionarLoja = () => {
 
         {lojas.length > 0 && (
           <Box sx={{ mt: 4 }}>
-            <Typography variant="h5">Lojas Registradas</Typography>
+            <Typography variant="h5">Lojas Registadas</Typography>
             {lojas.map((loja, i) => (
               <Box
                 key={i}
@@ -403,6 +404,24 @@ const AdicionarLoja = () => {
           </Box>
         )}
       </Container>
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Footer />
+       </Box>
     </>
   );
 };

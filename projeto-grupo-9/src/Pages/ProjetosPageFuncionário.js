@@ -11,7 +11,7 @@ import {
   Button,
   Modal,
 } from "@mui/material";
-import Header from "../Components/Header";
+import Sidebar from "../Components/SideBarDashboard";
 import Footer from "../Components/Footer";
 
 const modalStyle = {
@@ -57,8 +57,7 @@ const ProjetosPageFuncionario = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
-      <Header />
-
+      <Sidebar />
       <Container sx={{ flex: 1, paddingTop: "80px", paddingBottom: "40px" }}>
         <Typography variant="h4" sx={{ marginTop: "40px", marginBottom: "20px", fontWeight: 600, textAlign: "center" }}>
           Projetos de Beneficência
@@ -145,6 +144,25 @@ const ProjetosPageFuncionario = () => {
           )}
         </Box>
       </Modal>
+    {/* Footer fixo no fundo */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+      <Footer />
+      </Box>
     </Box>
   );
 };
