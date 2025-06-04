@@ -81,14 +81,17 @@ const Sidebar = () => {
         </ListItem>
         <Collapse in={openGestaoEquipamentos} timeout="auto" unmountOnExit>
           <List component="div" disablePadding sx={{ pl: 4 }}>
-            <ListItem button onClick={() => navigate("/equipamentos-nao-venda")}>
-              <ListItemText primary="Equipamentos Não à Venda" />
+            <ListItem button onClick={() => navigate("/equipamentosVendidos")}>
+              <ListItemText primary="Equipamentos Vendidos" />
             </ListItem>
-            <ListItem button onClick={() => navigate("/equipamentos-comprados")}>
+            <ListItem button onClick={() => navigate("/equipamentoscomprados")}>
               <ListItemText primary="Equipamentos Comprados" />
             </ListItem>
             <ListItem button onClick={() => navigate("/fichas-equipamentos")}>
               <ListItemText primary="Fichas de Equipamentos" />
+            </ListItem>
+            <ListItem button onClick={() => navigate("/criarFichaEquipamento")}>
+              <ListItemText primary="Criar Nova Ficha" />
             </ListItem>
           </List>
         </Collapse>

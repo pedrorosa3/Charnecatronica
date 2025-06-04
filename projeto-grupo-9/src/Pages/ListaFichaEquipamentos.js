@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Header from "../Components/Header";
-import SidebarComprar from "../Components/SidebarComprar"; // ✅ importa a sidebar
+import SidebarComprar from "../Components/SidebarComprar"; 
 
 const ListaFichaEquipamentos = () => {
   const [fichas, setFichas] = useState([]);
