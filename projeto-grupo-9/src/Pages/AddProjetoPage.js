@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Container, TextField, Button, Typography, Card, CardContent } from "@mui/material";
-import Header from "../Components/Header";
+import Sidebar from "../Components/SideBarDashboard";
+
 import Footer from "../Components/Footer";
 import { useNavigate } from "react-router-dom";
 
@@ -71,8 +72,7 @@ const AdicionarProjetoPage = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
-      <Header />
-
+      <Sidebar />
       <Container maxWidth="md" sx={{ flex: 1, padding: "20px" }}>
         <Card sx={{ backgroundColor: "#FFFFFF", borderRadius: "10px", padding: "20px" }}>
           <CardContent>
