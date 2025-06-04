@@ -144,6 +144,25 @@ const ProjetosPageFuncionario = () => {
           )}
         </Box>
       </Modal>
+    {/* Footer fixo no fundo */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+      <Footer />
+      </Box>
     </Box>
   );
 };

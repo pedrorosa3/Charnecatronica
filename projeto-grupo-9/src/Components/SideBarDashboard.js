@@ -49,7 +49,7 @@ const Sidebar = () => {
           <ListItemText primary="Dashboard" />
         </ListItem>
         {/* Reparações */}
-        <ListItem button onClick={() => navigate("/gestao-reparacoes")}>
+        <ListItem button onClick={() => navigate("/reparacoesEmpregado")}>
           <ListItemIcon><Build /></ListItemIcon>
           <ListItemText primary="Gestão de Reparações" />
         </ListItem>
@@ -62,11 +62,11 @@ const Sidebar = () => {
         </ListItem>
         <Collapse in={openLojaFisica} timeout="auto" unmountOnExit>
           <List component="div" disablePadding sx={{ pl: 4 }}>
-            <ListItem button onClick={() => navigate("/realizar-venda")}>
+            <ListItem button onClick={() => navigate("/equipamentosVendidos")}>
               <ListItemIcon><ShoppingCart /></ListItemIcon>
               <ListItemText primary="Realizar Venda" />
             </ListItem>
-            <ListItem button onClick={() => navigate("/realizar-compra")}>
+            <ListItem button onClick={() => navigate("/comprarAoCliente")}>
               <ListItemIcon><Storefront /></ListItemIcon>
               <ListItemText primary="Realizar Compra" />
             </ListItem>
@@ -96,7 +96,7 @@ const Sidebar = () => {
         <Divider sx={{ my: 2 }} />
 
         {/* Outras gestões */}
-        <ListItem button onClick={() => navigate("/gestao-lojas")}>
+        <ListItem button onClick={() => navigate("/lojas")}>
           <ListItemIcon><Store /></ListItemIcon>
           <ListItemText primary="Gestão das Lojas" />
         </ListItem>

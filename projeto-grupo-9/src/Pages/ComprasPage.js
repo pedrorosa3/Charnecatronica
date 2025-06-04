@@ -19,7 +19,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import Header from "../Components/Header";
+import Sidebar from "../Components/SideBarDashboard";
 import Footer from "../Components/Footer";
 import { useNavigate } from "react-router-dom";
 
@@ -73,7 +73,7 @@ const VendasPage = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header />
+      <Sidebar />
       <Container sx={{ flex: 1, padding: "30px", mt: 12 }}>
         <Typography variant="h4" align="center" gutterBottom fontWeight="bold">
           Vendas Realizadas
@@ -200,6 +200,24 @@ const VendasPage = () => {
           </Box>
         </Box>
       </Modal>
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Footer />
+      </Box>
     </Box>
   );
 };

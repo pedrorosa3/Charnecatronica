@@ -16,8 +16,8 @@ import {
   InputLabel,
 } from "@mui/material";
 
-import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import Sidebar from "../Components/SideBarDashboard";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import StripePayment from "../Components/StripePayment";
@@ -213,10 +213,10 @@ const VenderPage = () => {
         flexDirection: "column",
         minHeight: "100vh",
         backgroundColor: "#F8F8F8",
-        marginTop: "100px",
+        marginTop: "px",
       }}
     >
-      <Header />
+      <Sidebar />
 
       <Box sx={{ display: "flex", flex: 1, paddingTop: "20px" }}>
         <Container maxWidth="md" sx={{ flex: 1, padding: "20px" }}>
@@ -462,7 +462,24 @@ const VenderPage = () => {
         </Container>
       </Box>
 
-      <Footer />
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Footer />
+      </Box>
     </Box>
   );
 };

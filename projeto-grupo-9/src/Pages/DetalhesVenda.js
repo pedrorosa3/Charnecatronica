@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
-import Header from "../Components/Header";
+import Sidebar from "../Components/SideBarDashboard";
 import Footer from "../Components/Footer";
 
 const DetalhesVendaPage = () => {
@@ -54,7 +54,7 @@ const DetalhesVendaPage = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8", marginTop: "85px" }}>
-      <Header />
+      <Sidebar />
       <Container sx={{ flex: 1, padding: "30px", maxWidth: "900px" }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold", mb: 3, textAlign: "center" }}>
           Detalhes da Venda 
@@ -193,7 +193,24 @@ const DetalhesVendaPage = () => {
           Voltar
         </Button>
       </Container>
-      <Footer />
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Footer />
+      </Box>
     </Box>
   );
 };
