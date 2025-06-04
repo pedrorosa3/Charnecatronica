@@ -8,19 +8,20 @@ import BuildIcon from "@mui/icons-material/Build";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import ShareLocationIcon from "@mui/icons-material/ShareLocation";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
+import OfertasDestaqueSection from "../Components/OfertasDestaqueSection";
 
 const cards = [
   {
     icon: <ShoppingCartIcon fontSize="large" />,
     title: "Compra de equipamentos",
     description:
-      "Explore uma ampla variedade de dispositivos eletrônicos usados, cuidadosamente selecionados para garantir qualidade e ótimo custo-benefício.",
+      "Explore uma ampla variedade de dispositivos eletrónicos usados, cuidadosamente selecionados para garantir qualidade e ótimo custo-benefício.",
   },
   {
     icon: <SellIcon fontSize="large" />,
     title: "Venda de equipamentos",
     description:
-      "Venda os seus equipamentos eletrônicos usados de maneira segura e eficiente, ajudando a reduzir o desperdício e promovendo a economia circular.",
+      "Venda os seus equipamentos eletrónicos usados de forma segura e eficiente, ajudando a reduzir o desperdício e promovendo a economia circular.",
   },
   {
     icon: <BuildIcon fontSize="large" />,
@@ -32,33 +33,28 @@ const cards = [
     icon: <VolunteerActivismIcon fontSize="large" />,
     title: "Doações de equipamentos",
     description:
-      "Doe equipamentos eletrônicos que não usa mais e contribua para iniciativas sociais, ajudando pessoas e instituições que precisam.",
+      "Doe equipamentos eletrónicos que não usa mais e contribua para iniciativas sociais, ajudando pessoas e instituições que precisam.",
   },
   {
     icon: <ShareLocationIcon fontSize="large" />,
     title: "Tracking",
     description:
-      "Acompanhe o status dos seus pedidos e serviços em andamento, garantindo total transparência no processo de compra, venda ou reparação.",
+      "Acompanhe o estado dos seus pedidos e serviços em tempo real com total transparência no processo de compra, venda ou reparação.",
   },
   {
     icon: <RequestQuoteIcon fontSize="large" />,
     title: "Orçamentos",
     description:
-      "Solicite orçamentos personalizados para compra, venda ou reparo de equipamentos eletrônicos, garantindo sempre as melhores condições do mercado.",
+      "Solicite orçamentos personalizados para compra, venda ou reparação de equipamentos eletrónicos, garantindo sempre as melhores condições.",
   },
 ];
 
 const HomePage = () => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundColor: "#F5F5F5",
-      }}
-    >
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header />
+
+      {/* Secção de boas-vindas */}
       <Box
         sx={{
           paddingTop: "120px",
@@ -82,18 +78,9 @@ const HomePage = () => {
         >
           CHARNECATRÓNICA
         </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            marginTop: "10px",
-            maxWidth: "600px",
-            marginX: "auto",
-            color: "#444",
-          }}
-        ></Typography>
       </Box>
 
-      {/*Box do grid com 2 linhas e 3 colunas */}
+      {/* Grid com funcionalidades */}
       <Box
         sx={{
           flex: 1,
@@ -134,7 +121,7 @@ const HomePage = () => {
                   >
                     {card.title}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary">
+                  <Typography variant="body2" color="text.secondary">
                     {card.description}
                   </Typography>
                 </CardContent>
@@ -142,6 +129,11 @@ const HomePage = () => {
             </Grid>
           ))}
         </Grid>
+      </Box>
+
+      {/* Ofertas em destaque */}
+      <Box id="destaques" sx={{ backgroundColor: "#f7f7f7", py: 6 }}>
+        <OfertasDestaqueSection />
       </Box>
 
       <Footer />

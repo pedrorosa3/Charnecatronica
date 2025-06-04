@@ -29,6 +29,8 @@ import DetalhesReparacao from "./Pages/DetalhesReparacao";
 import DiagnosticoReparacao from "./Pages/DiagnosticoReparacao";
 import EditarReparacao from "./Pages/EditarReparacao";
 import Dashboard from "./Pages/Dashboard";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function App() {
   // Estado para armazenar a resposta da API
