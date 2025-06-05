@@ -21,11 +21,8 @@ const Dashboard = () => {
   useEffect(() => {
     const numeroFromState = location.state?.numeroEmpregado;
     const numeroFromStorage = localStorage.getItem("numeroEmpregado");
-    
+
     const numeroFinal = numeroFromState || numeroFromStorage;
-
-
-    console.log(numeroFromState);
 
     if (!numeroFinal) {
       navigate("/loginempregado");
@@ -33,25 +30,52 @@ const Dashboard = () => {
       setNumeroEmpregado(numeroFinal);
       localStorage.setItem("numeroEmpregado", numeroFinal);
 
-      // Simulação de dados do funcionário
-      setFuncionario({
-        nome: "João Exemplo",
-        numero: numeroFinal,
+      // Buscar dados reais do funcionário
+      fetch("http://localhost:9000/dashboard", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ numeroEmpregado: numeroFinal }),
+      })
+      .then((res) => {
+        if (!res.ok) throw new Error("Erro ao buscar dados do empregado.");
+        return res.json();
+      })
+      .then((data) => {
+        setFuncionario({
+          nome: data.nome,
+          numero: data.numinterno,
+          email: data.email,
+          telemovel: data.telemovel,
+          loja: data.nomeloja,
+        });
+
+        setDadosDashboard({
+          produtosStock: 100,
+          reparacoes: 5,
+          clientes: 20,
+          projetosBeneficencia: 3,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        navigate("/loginempregado");
       });
 
-      // Simulação de dados do dashboard
-      setDadosDashboard({
-        produtosStock: 100,
-        reparacoes: 5,
-        clientes: 20,
-        projetosBeneficencia: 3,
-      });
     }
   }, [location.state, navigate]);
 
   if (!numeroEmpregado || !funcionario || !dadosDashboard) {
     return (
-      <Box sx={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <CircularProgress />
       </Box>
     );
@@ -68,6 +92,9 @@ const Dashboard = () => {
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
             Número do Funcionário: {funcionario.numero}
+          </Typography>
+          <Typography variant="subtitle2" color="text.secondary">
+            Loja: {funcionario.loja}
           </Typography>
         </Paper>
 
