@@ -267,25 +267,22 @@ VALUES ('Portugal', 'Esmoriz', 40.95773, -8.62753, 'Ville', 'Alameda de Cunha', 
 INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
 VALUES ('Portugal', 'Vila Nova de Gaia', 41.1336, -8.61742, 'Ville', 'Avenida Teixeira', '3105-183', 'Tarouca', 217, 'Vila Franca de Xira');
 
--- Morada 1 Charneca
 INSERT INTO morada (
     pais, localidade, latitude, longitude, freguesia, rua, codigoPostal, concelho, numero, distrito
 ) VALUES (
-    'Portugal', 'Monte da Caparica', 38.6633, -9.2000, 'Caparica e Trafaria', 'Rua da Liberdade', '2825-445', 'Almada', 12, 'Setúbal'
+    'Portugal', 'Charneca da Caparica', 38.6150, -9.1920, 'Charneca de Caparica e Sobreda', 'Rua da Ponderosa', '2820-567', 'Almada', 10, 'Setúbal'
 );
 
--- Morada 2 Charneca
 INSERT INTO morada (
     pais, localidade, latitude, longitude, freguesia, rua, codigoPostal, concelho, numero, distrito
 ) VALUES (
     'Portugal', 'Monte da Caparica', 38.6621, -9.2030, 'Caparica e Trafaria', 'Avenida Timor Lorosae', '2825-321', 'Almada', 45, 'Setúbal'
 );
 
--- Morada 3 Charneca
 INSERT INTO morada (
     pais, localidade, latitude, longitude, freguesia, rua, codigoPostal, concelho, numero, distrito
 ) VALUES (
-    'Portugal', 'Monte da Caparica', 38.6607, -9.1988, 'Caparica e Trafaria', 'Travessa da Universidade', '2825-149', 'Almada', 8, 'Setúbal'
+    'Portugal', 'Charneca da Caparica', 38.6192, -9.1836, 'Charneca de Caparica e Sobreda', 'Rua da Gama Barros', '2820-256', 'Almada', 25, 'Setúbal'
 );
 
 
@@ -306,13 +303,13 @@ INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNa
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (967797300, 82232344, 'Luana Matias', 'Masculino', 965414110, 'marcos14@sapo.pt', 'b7OSOEt8WrT$', '1987-07-01', 6);
 
 INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId, horaabertura, horafecho)
-VALUES (696115913, 'Loja 1', 242255732, 'trodrigues@melo.com', 11, '09:00:00', '18:00:00');
+VALUES (696115913, 'Charnecatrónica - Rua da Ponderosa', 242255732, 'trodrigues@melo.com', 11, '09:00:00', '18:00:00');
 
 INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId, horaabertura, horafecho)
-VALUES (199915275, 'Loja 2', 249491631, 'aliciasa@goncalves.pt', 12, '10:00:00', '19:00:00');
+VALUES (199915275, 'Charnecatrónica - Avenida Timor Lorosae', 249491631, 'aliciasa@goncalves.pt', 12, '10:00:00', '19:00:00');
 
 INSERT INTO loja (nipc, nome, numeroTelefone, email, moradaId, horaabertura, horafecho)
-VALUES (694287057, 'Loja 3', 281259135, 'anita85@tavares.pt', 13, '08:30:00', '17:30:00');
+VALUES (694287057, 'Charnecatrónica - Rua da Gama Barros', 281259135, 'anita85@tavares.pt', 13, '08:30:00', '17:30:00');
 
 
 INSERT INTO equipamentos (estadoVenda, estado, preco, numeroSequenciaLoja, lojaNipc, dataDeDisponibilizacao, codBarras)
