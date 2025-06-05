@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const {upsertPerfil } = require("../controllers/perfilcontroller");
+const { upsertPerfil, getPerfilByEmail } = require("../controllers/perfilController");
 
-router.post("/perfil", upsertPerfil);
+router.post("/", upsertPerfil);
+router.get("/", getPerfilByEmail);
 
 module.exports = router;

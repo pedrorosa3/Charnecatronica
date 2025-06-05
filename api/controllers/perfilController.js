@@ -71,6 +71,34 @@ const upsertPerfil = async (req, res) => {
   }
 };
 
+const getPerfilByEmail = async (req, res) => {
+  const email = req.query.email;
 
-module.exports = {upsertPerfil };
+  if (!email) {
+    return res.status(400).json({ error: "O email é obrigatório na query string." });
+  }
+
+  try {
+    const result = await db.query(
+      `SELECT nome, email, nif, nic, genero, telemovel, 
+              TO_CHAR(datadenascimento, 'YYYY-MM-DD') as datanascimento
+       FROM pessoa 
+       WHERE LOWER(email) = LOWER($1)
+       LIMIT 1`,
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Perfil não encontrado." });
+    }
+
+    return res.status(200).json(result.rows[0]);
+  } catch (err) {
+    console.error("Erro ao buscar perfil:", err);
+    return res.status(500).json({ error: "Erro no servidor ao buscar perfil." });
+  }
+};
+
+
+module.exports = {upsertPerfil, getPerfilByEmail };
 
