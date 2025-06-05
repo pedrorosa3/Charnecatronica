@@ -17,6 +17,7 @@ const vendaRoutes = require("./routes/venda");
 const vendaslistaRoutes = require("./routes/vendaslista");
 const reparacoesRoutes = require("./routes/reparacoes");
 const diagnosticoRoutes = require("./routes/diagnostico");
+const vendaFisicaRouter = require("./routes/vendaFisica");
 
 const app = express();
 const PORT = 9000;
@@ -41,6 +42,7 @@ app.use("/vendaslista", vendaslistaRoutes);
 app.use(paymentRoutes);
 app.use("/reparacoes", reparacoesRoutes);
 app.use("/pecasDiagnostico", diagnosticoRoutes);
+app.use("/vendaFisica", vendaFisicaRouter);
 app.get("/testAPI", (req, res) => {
   res.json({ message: "API a funcionar corretamente!" });
 });
