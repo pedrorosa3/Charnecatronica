@@ -58,7 +58,7 @@ const criarVendaFisica = async (req, res) => {
     // Inserir venda
     const insertVenda = await db.query(
       `INSERT INTO venda (tipo, custoTransporte, lojaNipc, empregadoId, clienteId, data, estadoVenda)
-      VALUES ($1, $2, $3, $4, $5, CURRENT_DATE, 'Pago') RETURNING numeroVenda`,
+      VALUES ($1, $2, $3, $4, $5, CURRENT_DATE, 'Entregue') RETURNING numeroVenda`,
       [metodoPagamento, 0, lojaNipc, empregadoId, clienteId]
     );
 
