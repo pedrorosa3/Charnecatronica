@@ -29,7 +29,8 @@ const Sidebar = () => {
   const [openGestaoEquipamentos, setOpenGestaoEquipamentos] = useState(false);
   const [openLojaFisica, setOpenLojaFisica] = useState(false);
 
-  const toggleEquipamentos = () => setOpenGestaoEquipamentos(!openGestaoEquipamentos);
+  const toggleEquipamentos = () =>
+    setOpenGestaoEquipamentos(!openGestaoEquipamentos);
   const toggleLojaFisica = () => setOpenLojaFisica(!openLojaFisica);
 
   return (
@@ -45,29 +46,39 @@ const Sidebar = () => {
       <List>
         {/* Dashboard */}
         <ListItem button onClick={() => navigate("/dashboard")}>
-          <ListItemIcon><DashboardIcon /></ListItemIcon>
+          <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
         {/* Reparações */}
         <ListItem button onClick={() => navigate("/listaReparacoes")}>
-          <ListItemIcon><Build /></ListItemIcon>
+          <ListItemIcon>
+            <Build />
+          </ListItemIcon>
           <ListItemText primary="Gestão de Reparações" />
         </ListItem>
 
         {/* Loja física */}
         <ListItem button onClick={toggleLojaFisica}>
-          <ListItemIcon><Store /></ListItemIcon>
+          <ListItemIcon>
+            <Store />
+          </ListItemIcon>
           <ListItemText primary="Loja Física" />
           {openLojaFisica ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={openLojaFisica} timeout="auto" unmountOnExit>
           <List component="div" disablePadding sx={{ pl: 4 }}>
             <ListItem button onClick={() => navigate("/equipamentosVendidos")}>
-              <ListItemIcon><ShoppingCart /></ListItemIcon>
+              <ListItemIcon>
+                <ShoppingCart />
+              </ListItemIcon>
               <ListItemText primary="Realizar Venda" />
             </ListItem>
             <ListItem button onClick={() => navigate("/comprarAoCliente")}>
-              <ListItemIcon><Storefront /></ListItemIcon>
+              <ListItemIcon>
+                <Storefront />
+              </ListItemIcon>
               <ListItemText primary="Realizar Compra" />
             </ListItem>
           </List>
@@ -75,7 +86,9 @@ const Sidebar = () => {
 
         {/* Equipamentos */}
         <ListItem button onClick={toggleEquipamentos}>
-          <ListItemIcon><Settings /></ListItemIcon>
+          <ListItemIcon>
+            <Settings />
+          </ListItemIcon>
           <ListItemText primary="Gestão de Equipamentos" />
           {openGestaoEquipamentos ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
@@ -99,13 +112,17 @@ const Sidebar = () => {
         <Divider sx={{ my: 2 }} />
 
         {/* Outras gestões */}
-        <ListItem button onClick={() => navigate("/lojas")}>
-          <ListItemIcon><Store /></ListItemIcon>
+        <ListItem button onClick={() => navigate("/lojasEmpregado")}>
+          <ListItemIcon>
+            <Store />
+          </ListItemIcon>
           <ListItemText primary="Gestão das Lojas" />
         </ListItem>
 
         <ListItem button onClick={() => navigate("/doarFuncionario")}>
-          <ListItemIcon><Favorite /></ListItemIcon>
+          <ListItemIcon>
+            <Favorite />
+          </ListItemIcon>
           <ListItemText primary="Projetos de Beneficência" />
         </ListItem>
       </List>
