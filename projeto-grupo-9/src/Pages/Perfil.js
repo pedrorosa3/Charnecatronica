@@ -11,9 +11,10 @@ import {
   Modal,
   TextField,
   MenuItem,
+  Snackbar,    // <-- importei Snackbar
+  Alert,       // <-- importei Alert
 } from "@mui/material";
 import {
-  /* Inventory, */
   VolunteerActivism,
   RequestQuote,
 } from "@mui/icons-material";
@@ -38,21 +39,17 @@ const Perfil = () => {
     dataNascimento: "",
   });
 
-  useEffect(() => {
-    const fetchEncomendas = async () => {
-      try {
-        const response = await fetch(`http://localhost:9000/encomendas/${user.email}`);
-        const data = await response.json();
-        setEncomendas(data);
-      } catch (error) {
-        console.error("Erro ao buscar encomendas:", error);
-      }
-    };
+  // Estado para Snackbar
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success", // success, error, warning, info
+  });
 
-    if (user?.email) {
-      fetchEncomendas();
-    }
-  }, [user]);
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
 
   if (isLoading) return <p>Carregando...</p>;
 
@@ -83,18 +80,30 @@ const Perfil = () => {
             {user?.nickname}
           </Typography>
           <Typography variant="body2">Tipo de Utilizador:</Typography>
-          <Typography variant="caption" color="textSecondary">Comprador</Typography>
+          <Typography variant="caption" color="textSecondary">
+            Comprador
+          </Typography>
 
           <Typography variant="body2">NIF:</Typography>
-          <Typography variant="body2" color="textSecondary" gutterBottom>{userData.nif}</Typography>
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            {userData.nif}
+          </Typography>
           <Typography variant="body2">NIC:</Typography>
-          <Typography variant="body2" color="textSecondary" gutterBottom>{userData.nic}</Typography>
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            {userData.nic}
+          </Typography>
           <Typography variant="body2">Género:</Typography>
-          <Typography variant="body2" color="textSecondary" gutterBottom>{userData.genero}</Typography>
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            {userData.genero}
+          </Typography>
           <Typography variant="body2">Telemóvel:</Typography>
-          <Typography variant="body2" color="textSecondary" gutterBottom>{userData.telemovel}</Typography>
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            {userData.telemovel}
+          </Typography>
           <Typography variant="body2">Nascimento:</Typography>
-          <Typography variant="body2" color="textSecondary" gutterBottom>{userData.dataNascimento}</Typography>
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            {userData.dataNascimento}
+          </Typography>
 
           <Button
             variant="outlined"
@@ -122,7 +131,9 @@ const Perfil = () => {
                 }}
               >
                 <VolunteerActivism fontSize="large" />
-                <Typography variant="h6" mt={2}>Doações</Typography>
+                <Typography variant="h6" mt={2}>
+                  Doações
+                </Typography>
               </Card>
             </Grid>
 
@@ -139,7 +150,9 @@ const Perfil = () => {
                 }}
               >
                 <RequestQuote fontSize="large" />
-                <Typography variant="h6" mt={2}>Reparações</Typography>
+                <Typography variant="h6" mt={2}>
+                  Reparações
+                </Typography>
               </Card>
             </Grid>
 
@@ -156,7 +169,8 @@ const Perfil = () => {
                   <Card key={enc.id} sx={{ marginBottom: 3, padding: 2 }}>
                     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                       <Typography>
-                        Encomenda feita: {new Date(enc.data_encomenda).toLocaleDateString()}
+                        Encomenda feita:{" "}
+                        {new Date(enc.data_encomenda).toLocaleDateString()}
                       </Typography>
                       <Typography>Total: {enc.total.toFixed(2)}€</Typography>
                       <Typography>Destinatário: {enc.destinatario}</Typography>
@@ -176,10 +190,16 @@ const Perfil = () => {
                       <Box>
                         <Typography fontWeight="bold">{enc.produto}</Typography>
                         <Typography variant="caption" color="textSecondary">
-                          Entregue em: {new Date(enc.data_entrega).toLocaleDateString()}
+                          Entregue em:{" "}
+                          {new Date(enc.data_entrega).toLocaleDateString()}
                         </Typography>
                         <Typography variant="caption" color="textSecondary" display="block">
-                          Devolução até: {new Date(new Date(enc.data_entrega).setMonth(new Date(enc.data_entrega).getMonth() + 1)).toLocaleDateString()}
+                          Devolução até:{" "}
+                          {new Date(
+                            new Date(enc.data_entrega).setMonth(
+                              new Date(enc.data_entrega).getMonth() + 1
+                            )
+                          ).toLocaleDateString()}
                         </Typography>
 
                         <Box sx={{ mt: 1 }}>
@@ -223,12 +243,7 @@ const Perfil = () => {
         >
           <Typography variant="h6">Editar dados do utilizador</Typography>
 
-          <TextField
-            label="Email"
-            value={userData.email}
-            disabled
-            fullWidth
-          />
+          <TextField label="Email" value={userData.email} disabled fullWidth />
 
           <TextField
             label="Nome"
@@ -306,15 +321,29 @@ const Perfil = () => {
                 const result = await response.json();
 
                 if (!response.ok) {
-                  alert(result.error || "Erro ao guardar os dados.");
+                  // Substitui alert por Snackbar
+                  setSnackbar({
+                    open: true,
+                    message: result.error || "Erro ao guardar os dados.",
+                    severity: "error",
+                  });
                   return;
                 }
 
-                alert(result.message || "Perfil guardado com sucesso!");
+                setSnackbar({
+                  open: true,
+                  message: result.message || "Perfil guardado com sucesso!",
+                  severity: "success",
+                });
                 setOpenModal(false);
               } catch (error) {
                 console.error("Erro ao enviar dados do perfil:", error);
-                alert("Erro ao comunicar com o servidor.");
+                // Substitui alert por Snackbar
+                setSnackbar({
+                  open: true,
+                  message: "Erro ao comunicar com o servidor.",
+                  severity: "error",
+                });
               }
             }}
           >
@@ -323,6 +352,22 @@ const Perfil = () => {
         </Box>
       </Modal>
 
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+          variant="filled"
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
 
       <Footer />
     </Box>

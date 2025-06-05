@@ -71,6 +71,6 @@ const upsertPerfil = async (req, res) => {
   }
 };
 
-module.exports = {
-  upsertPerfil,
-};
+
+module.exports = {upsertPerfil };
+
