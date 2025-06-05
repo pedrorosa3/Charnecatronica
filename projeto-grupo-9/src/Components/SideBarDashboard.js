@@ -69,10 +69,8 @@ const Sidebar = () => {
         </ListItem>
         <Collapse in={openLojaFisica} timeout="auto" unmountOnExit>
           <List component="div" disablePadding sx={{ pl: 4 }}>
-            <ListItem button onClick={() => navigate("/equipamentosVendidos")}>
-              <ListItemIcon>
-                <ShoppingCart />
-              </ListItemIcon>
+            <ListItem button onClick={() => navigate("/venderAoCliente")}>
+              <ListItemIcon><ShoppingCart /></ListItemIcon>
               <ListItemText primary="Realizar Venda" />
             </ListItem>
             <ListItem button onClick={() => navigate("/comprarAoCliente")}>

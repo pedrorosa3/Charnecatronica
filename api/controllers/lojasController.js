@@ -172,8 +172,46 @@ const getEmpregadosByLoja = async (req, res) => {
   }
 };
 
+// controllers/lojasController.js
+
+const getEquipamentosByLoja = async (req, res) => {
+  const { nipc } = req.params;
+
+  try {
+    const result = await db.query(`
+      SELECT 
+        e.id,
+        e.estadovenda,
+        e.estado,
+        e.preco,
+        e.numerosequencialoja,
+        e.datadedisponibilizacao,
+        f.codBarras,
+        f.marca,
+        f.modelo,
+        f.tipo,
+        f.precoBase,
+        f.anoLancamento
+      FROM equipamentos e
+      JOIN fichadeequipamento f ON e.codBarras = f.codBarras
+      WHERE e.lojanipc = $1
+        AND e.estadovenda = 'À venda'
+      ORDER BY e.id;
+    `, [nipc]);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("❌ Erro ao buscar equipamentos da loja:", error);
+    res.status(500).json({ error: "Erro ao buscar equipamentos da loja" });
+  }
+};
+
+
+
+
 module.exports = {
   insertLojaComMorada,
   getLojas,
   getEmpregadosByLoja,
+  getEquipamentosByLoja,
 };

@@ -30,6 +30,7 @@ import DiagnosticoReparacao from "./Pages/DiagnosticoReparacao";
 import EditarReparacao from "./Pages/EditarReparacao";
 import Dashboard from "./Pages/Dashboard";
 import LoginEmpregado from "./Pages/LoginEmpregado";
+import ComprarFisicaPage from "./Pages/ComprarFisicaPage";  
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import LojasCliente from "./Pages/LojasCliente";
@@ -103,6 +104,8 @@ function App() {
           <Route path="/loginempregado" element={<LoginEmpregado />} />
           <Route path="/reparacoesCliente" element={<ReparacoesCliente />} />
           <Route path="/venderCliente" element={<VenderCliente />} />
+          <Route path="/venderAoCliente" element={<ComprarFisicaPage />} />
+          {/* Adicione outras rotas conforme necessário */}
         </Routes>
       </Router>
     </ThemeProvider>
