@@ -29,6 +29,7 @@ import DetalhesReparacao from "./Pages/DetalhesReparacao";
 import DiagnosticoReparacao from "./Pages/DiagnosticoReparacao";
 import EditarReparacao from "./Pages/EditarReparacao";
 import Dashboard from "./Pages/Dashboard";
+import LoginEmpregado from "./Pages/LoginEmpregado";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -95,6 +96,7 @@ function App() {
           />
           <Route path="/reparacoes/:id/editar" element={<EditarReparacao />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/loginempregado" element={<LoginEmpregado />} />
         </Routes>
       </Router>
     </ThemeProvider>
