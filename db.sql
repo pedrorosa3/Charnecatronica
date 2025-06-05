@@ -1,23 +1,23 @@
-DROP TABLE IF EXISTS pecasASubstituir;
-DROP TABLE IF EXISTS especificacoes;
-DROP TABLE IF EXISTS imagensEquipamento;
-DROP TABLE IF EXISTS interesse;
-DROP TABLE IF EXISTS projetoBeneficencia;
-DROP TABLE IF EXISTS reparacao;
-DROP TABLE IF EXISTS doacao;
-DROP TABLE IF EXISTS venda_equipamento;
-DROP TABLE IF EXISTS venda;
-DROP TABLE IF EXISTS compra;
-DROP TABLE IF EXISTS equipamentos;
-DROP TABLE IF EXISTS fichaDeEquipamento;
-DROP TABLE IF EXISTS pecas;
-DROP TABLE IF EXISTS organizador;
-DROP TABLE IF EXISTS doador;
-DROP TABLE IF EXISTS empregado;
-DROP TABLE IF EXISTS cliente;
-DROP TABLE IF EXISTS loja;
-DROP TABLE IF EXISTS pessoa;
-DROP TABLE IF EXISTS morada;
+DROP TABLE IF EXISTS pecasASubstituir CASCADE;
+DROP TABLE IF EXISTS especificacoes CASCADE;
+DROP TABLE IF EXISTS imagensEquipamento CASCADE;
+DROP TABLE IF EXISTS interesse CASCADE;
+DROP TABLE IF EXISTS projetoBeneficencia CASCADE;
+DROP TABLE IF EXISTS reparacao CASCADE;
+DROP TABLE IF EXISTS doacao CASCADE;
+DROP TABLE IF EXISTS venda_equipamento CASCADE;
+DROP TABLE IF EXISTS venda CASCADE;
+DROP TABLE IF EXISTS compra CASCADE;
+DROP TABLE IF EXISTS equipamentos CASCADE;
+DROP TABLE IF EXISTS fichaDeEquipamento CASCADE;
+DROP TABLE IF EXISTS pecas CASCADE;
+DROP TABLE IF EXISTS organizador CASCADE;
+DROP TABLE IF EXISTS doador CASCADE;
+DROP TABLE IF EXISTS empregado CASCADE;
+DROP TABLE IF EXISTS cliente CASCADE;
+DROP TABLE IF EXISTS loja CASCADE;
+DROP TABLE IF EXISTS pessoa CASCADE;
+DROP TABLE IF EXISTS morada CASCADE;
 
 
 CREATE TABLE morada (
@@ -227,16 +227,46 @@ VALUES
 ('1111111111126', 'Microsoft', 'Surface Pro 9', 'Tablets', 1099.99, 2022),
 ('1111111111127', 'Amazon', 'Fire HD 10', 'Tablets', 199.99, 2020);
 
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Almeirim', -16.172379, -48.524686, 'Ville', 'Avenida Mia Vicente', '9600-133', 'Vila Real', 58, 'Vila Nova de Famalicão');
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Leiria', 30.5836345, 136.359605, 'Ville', 'R. Tavares', '5423-511', 'Chaves', 13, 'Pombal');
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Anadia', 33.325926, 107.885264, 'Ville', 'Avenida do Dr. Nuno Pinheiro Torres', '9593-103', 'Caniço', 141, 'Coimbra');
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Montemor-o-Novo', 31.711401, 161.280485, 'Ville', 'Largo Tiago Cruz', '1928-327', 'Miranda do Douro', 126, 'Paços de Ferreira');
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Lixa', -81.383158, -10.642433, 'Ville', 'Avenida de Cunha', '3767-242', 'Vila Real', 115, 'Ílhavo');
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Ílhavo', 17.213257, 14.345362, 'Ville', 'Praça Edgar Anjos', '2269-166', 'Valpaços', 72, 'Vila Nova de Gaia');
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Elvas', 54.141875, -36.749319, 'Ville', 'Travessa Matias', '7048-281', 'Torres Vedras', 53, 'Felgueiras');
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Fiães', 54.788454, 104.731459, 'Ville', 'Praça de Alves', '5430-391', 'Tarouca', 280, 'Vendas Novas');
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Esmoriz', 87.1005125, 75.165283, 'Ville', 'Alameda de Cunha', '4657-871', 'Lisboa', 45, 'Peso da Régua');
-INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito) VALUES ('Portugal', 'Vila Nova de Gaia', -28.229047, 135.916382, 'Ville', 'Avenida Teixeira', '3105-183', 'Tarouca', 217, 'Vila Franca de Xira');
+-- Almeirim
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Almeirim', 39.207558, -8.625919, 'Ville', 'Avenida Mia Vicente', '9600-133', 'Vila Real', 58, 'Vila Nova de Famalicão');
+
+-- Leiria
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Leiria', 39.74362, -8.80705, 'Ville', 'R. Tavares', '5423-511', 'Chaves', 13, 'Pombal');
+
+-- Anadia
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Anadia', 40.4371, -8.4386, 'Ville', 'Avenida do Dr. Nuno Pinheiro Torres', '9593-103', 'Caniço', 141, 'Coimbra');
+
+-- Montemor-o-Novo
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Montemor-o-Novo', 38.64812, -8.21455, 'Ville', 'Largo Tiago Cruz', '1928-327', 'Miranda do Douro', 126, 'Paços de Ferreira');
+
+-- Lixa
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Lixa', 41.2946, -8.1476, 'Ville', 'Avenida de Cunha', '3767-242', 'Vila Real', 115, 'Ílhavo');
+
+-- Ílhavo
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Ílhavo', 40.6040, -8.6689, 'Ville', 'Praça Edgar Anjos', '2269-166', 'Valpaços', 72, 'Vila Nova de Gaia');
+
+-- Elvas
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Elvas', 38.8811, -7.1628, 'Ville', 'Travessa Matias', '7048-281', 'Torres Vedras', 53, 'Felgueiras');
+
+-- Fiães
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Fiães', 40.99446, -8.52537, 'Ville', 'Praça de Alves', '5430-391', 'Tarouca', 280, 'Vendas Novas');
+
+-- Esmoriz
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Esmoriz', 40.95773, -8.62753, 'Ville', 'Alameda de Cunha', '4657-871', 'Lisboa', 45, 'Peso da Régua');
+
+-- Vila Nova de Gaia
+INSERT INTO morada (Pais, Localidade, Latitude, Longitude, Freguesia, Rua, CodigoPostal, Concelho, Numero, Distrito)
+VALUES ('Portugal', 'Vila Nova de Gaia', 41.1336, -8.61742, 'Ville', 'Avenida Teixeira', '3105-183', 'Tarouca', 217, 'Vila Franca de Xira');
+
 
 
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (242068763, 86644106, 'Luciana-Érica Monteiro', 'Masculino', 964190206, 'eduardobarbosa@sapo.pt', 'p6aN%flo^R_1', '1960-11-29', 1);
