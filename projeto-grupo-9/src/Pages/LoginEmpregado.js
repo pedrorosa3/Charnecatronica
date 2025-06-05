@@ -32,7 +32,7 @@ const LoginEmpregado = () => {
 
     try {
 
-      const response = await fetch("http://localhost:9000/api/loginempregado", {
+      const response = await fetch("http://localhost:9000/loginempregado", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
