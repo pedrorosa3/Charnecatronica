@@ -23,7 +23,7 @@ import Checkout from "./Pages/Checkout";
 import ComprasPage from "./Pages/ComprasPage";
 import DetalhesVenda from "./Pages/DetalhesVenda";
 import ReparacoesEmpregado from "./Pages/reparacoesEmpregado";
-import Lojas from "./Pages/Lojas";
+import LojasEmpregado from "./Pages/LojasEmpregado";
 import ListaReparacoes from "./Pages/listaReparacoes";
 import DetalhesReparacao from "./Pages/DetalhesReparacao";
 import DiagnosticoReparacao from "./Pages/DiagnosticoReparacao";
@@ -32,6 +32,9 @@ import Dashboard from "./Pages/Dashboard";
 import LoginEmpregado from "./Pages/LoginEmpregado";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import LojasCliente from "./Pages/LojasCliente";
+import ReparacoesCliente from "./Pages/reparacoesCliente";
+import VenderCliente from "./Pages/venderCliente";
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -87,7 +90,8 @@ function App() {
             path="/reparacoesEmpregado"
             element={<ReparacoesEmpregado />}
           />
-          <Route path="/lojas" element={<Lojas />} />
+          <Route path="/lojasEmpregado" element={<LojasEmpregado />} />
+          <Route path="/lojasCliente" element={<LojasCliente />} />
           <Route path="/listaReparacoes" element={<ListaReparacoes />} />
           <Route path="/reparacoes/:id" element={<DetalhesReparacao />} />
           <Route
@@ -97,6 +101,8 @@ function App() {
           <Route path="/reparacoes/:id/editar" element={<EditarReparacao />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/loginempregado" element={<LoginEmpregado />} />
+          <Route path="/reparacoesCliente" element={<ReparacoesCliente />} />
+          <Route path="/venderCliente" element={<VenderCliente />} />
         </Routes>
       </Router>
     </ThemeProvider>

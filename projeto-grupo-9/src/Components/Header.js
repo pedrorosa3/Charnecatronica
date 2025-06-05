@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { useCarrinho } from "../Context/CarrinhoContext";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -95,7 +94,7 @@ const Header = () => {
             </Typography>
           </Link>
 
-          <Box sx={{ position: "relative", width: "40%" }}>
+          <Box sx={{ position: "relative", width: "38%" }}>
             <TextField
               variant="outlined"
               placeholder="Pesquisar"
@@ -181,17 +180,17 @@ const Header = () => {
           <Box
             sx={{
               display: "flex",
-              gap: "60px",
+              gap: "45px",
               flexGrow: 1,
-              paddingLeft: "100px",
+              paddingLeft: "80px",
             }}
           >
             {[
               { label: "Comprar", path: "/comprar" },
+              { label: "Vender", path: "/venderCliente" },
+              { label: "Reparar", path: "/reparacoesCliente" },
               { label: "Doar", path: "/doar" },
-              { label: "Avarias", path: "/avarias" },
-              { label: "Tracking", path: "/tracking" },
-              { label: "Orcamento", path: "/orcamento" },
+              { label: "Onde estamos", path: "/lojasCliente" },
             ].map((item) => (
               <Link
                 key={item.path}
@@ -220,14 +219,14 @@ const Header = () => {
             {isAuthenticated ? (
               <>
                 <Link
-                  to="/perfil" // Defina o caminho para a página de perfil
+                  to="/perfil"
                   style={{ textDecoration: "none", color: "#000" }}
                 >
                   <Avatar src={user.picture} alt={user.name} />
                 </Link>
 
                 <Link
-                  to="/perfil" // Defina o caminho para a página de perfil
+                  to="/perfil"
                   style={{ textDecoration: "none", color: "#000" }}
                 >
                   <Typography
