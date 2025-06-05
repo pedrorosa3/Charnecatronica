@@ -146,6 +146,24 @@ const VendasPage = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+             <Box
+                sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
+              >
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#000",
+                    color: "#fff",
+                    "&:hover": { backgroundColor: "#333" }, // efeito hover suave
+                    borderRadius: "8px",
+                    paddingX: 3,
+                    paddingY: 1,
+                  }}
+                  onClick={() => navigate("/venderAoCliente")}
+                >
+                  Adicionar Venda
+                </Button>
+              </Box>
           </CardContent>
         </Card>
       </Container>
