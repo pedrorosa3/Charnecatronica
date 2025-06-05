@@ -45,12 +45,10 @@ const LoginEmpregado = () => {
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
-        // Guardar os dados localmente
-        localStorage.setItem("authEmpregado", "true");
-        localStorage.setItem("empregadoNome", data.nome);
-        localStorage.setItem("empregadoNumero", data.numInterno);
-        navigate("/dashboard");
+     if (response.ok && data.success) {
+        navigate("/dashboard", {
+        state: { numeroEmpregado: numInterno }
+        });     
       } else {
         setErro(data.message || "Erro ao fazer login.");
       }

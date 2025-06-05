@@ -1,21 +1,61 @@
-import React from "react";
-import { Box, Grid, Paper, Typography, Divider } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  Box,
+  Grid,
+  Paper,
+  Typography,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 import Sidebar from "../Components/SideBarDashboard";
 import Footer from "../Components/Footer";
 
 const Dashboard = () => {
-  // Dados estáticos simulados
-  const funcionario = {
-    nome: "João Silva",
-    numero: "EMP12345",
-  };
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [numeroEmpregado, setNumeroEmpregado] = useState(null);
+  const [funcionario, setFuncionario] = useState(null);
+  const [dadosDashboard, setDadosDashboard] = useState(null);
 
-  const dadosDashboard = {
-    produtosStock: 320,
-    reparacoes: 15,
-    clientes: 87,
-    projetosBeneficencia: 5,
-  };
+  useEffect(() => {
+    const numeroFromState = location.state?.numeroEmpregado;
+    const numeroFromStorage = localStorage.getItem("numeroEmpregado");
+    
+    const numeroFinal = numeroFromState || numeroFromStorage;
+
+
+    console.log(numeroFromState);
+
+    if (!numeroFinal) {
+      navigate("/loginempregado");
+    } else {
+      setNumeroEmpregado(numeroFinal);
+      localStorage.setItem("numeroEmpregado", numeroFinal);
+
+      // Simulação de dados do funcionário
+      setFuncionario({
+        nome: "João Exemplo",
+        numero: numeroFinal,
+      });
+
+      // Simulação de dados do dashboard
+      setDadosDashboard({
+        produtosStock: 100,
+        reparacoes: 5,
+        clientes: 20,
+        projetosBeneficencia: 3,
+      });
+    }
+  }, [location.state, navigate]);
+
+  if (!numeroEmpregado || !funcionario || !dadosDashboard) {
+    return (
+      <Box sx={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -82,6 +122,7 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Box>
+
       {/* Footer fixo no fundo */}
       <Box
         sx={{
