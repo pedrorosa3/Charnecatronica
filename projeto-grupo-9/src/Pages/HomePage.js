@@ -8,6 +8,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import OfertasDestaqueSection from "../Components/OfertasDestaqueSection";
 import { Link } from "react-router-dom";
+import Testemunhos from "../Components/Testemunhos";
 
 const cards = [
   {
@@ -165,6 +166,7 @@ const HomePage = () => {
       <Box id="destaques" sx={{ backgroundColor: "#f7f7f7", py: 6 }}>
         <OfertasDestaqueSection />
       </Box>
+      <Testemunhos />
 
       <Footer />
     </Box>
