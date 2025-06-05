@@ -51,11 +51,11 @@ const Dashboard = () => {
           loja: data.nomeloja,
         });
 
-        setDadosDashboard({
-          produtosStock: 100,
-          reparacoes: 5,
-          clientes: 20,
-          projetosBeneficencia: 3,
+         setDadosDashboard({
+          produtosStock: data.produtosStock,
+          reparacoes: data.reparacoes,
+          clientes: data.clientes,
+          projetosBeneficencia: data.projetosBeneficencia,
         });
       })
       .catch((err) => {
