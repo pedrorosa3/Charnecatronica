@@ -24,6 +24,8 @@ const Perfil = () => {
   const { user, isLoading } = useAuth0();
   const navigate = useNavigate();
 
+  const [clienteId, setClienteId] = useState(null);
+
   const [encomendas, setEncomendas] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [userData, setUserData] = useState({
@@ -72,6 +74,48 @@ const Perfil = () => {
 
     fetchPerfil();
   }, [user?.email]);
+
+
+  //IR BUSCAR O ID DO CLIENT
+
+  useEffect(() => {
+  async function fetchClienteId() {
+    if (!user?.email) return;
+
+    try {
+      const response = await fetch(`http://localhost:9000/perfil/clienteId?email=${user.email}`);
+      if (!response.ok) throw new Error("Cliente não encontrado");
+
+      const data = await response.json();
+      console.log("ClienteId:", data.clienteId);
+      // Aqui podes guardar no estado para usar no próximo passo
+      setClienteId(data.clienteId);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  fetchClienteId();
+}, [user?.email]);
+
+//IR BUSCAR O ID DAS VENDAS DO CLIENTE
+useEffect(() => {
+  async function fetchVendasCliente() {
+    if (!clienteId) return;
+
+    try {
+      const response = await fetch(`http://localhost:9000/vendaslista/cliente/${clienteId}`);
+      if (!response.ok) throw new Error("Erro ao buscar vendas do cliente");
+
+      const data = await response.json();
+      //setEncomendas(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  fetchVendasCliente();
+}, [clienteId]);
 
   if (isLoading) return <p>Carregando...</p>;
 

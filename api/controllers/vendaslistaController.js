@@ -1,4 +1,5 @@
 const db = require("../db");
+const pool = require("../db");
 
 // Função para listar todas as vendas
 const listarVendas = async (req, res) => {
@@ -148,10 +149,27 @@ const atualizarEstadoVenda = async (req, res) => {
   }
 };
 
+const listarVendasPorCliente = async (req, res) => {
+  const { clienteId } = req.params;
+  console.log("clienteId recebido:", clienteId);
+
+  try {
+    const result = await pool.query(
+      `SELECT * FROM venda WHERE clienteId = $1 ORDER BY data DESC`,
+      [clienteId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Erro na query:", err);
+    res.status(500).json({ error: "Erro ao buscar vendas do cliente" });
+  }
+}
+
 module.exports = {
   listarVendas,
   detalhesVenda,
-  atualizarEstadoVenda
+  atualizarEstadoVenda,
+  listarVendasPorCliente
 };
 
 

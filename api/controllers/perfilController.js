@@ -100,5 +100,34 @@ const getPerfilByEmail = async (req, res) => {
 };
 
 
-module.exports = {upsertPerfil, getPerfilByEmail };
+
+const getClientIdByEmail = async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email é obrigatório" });
+  }
+
+  try {
+    const query = `
+      SELECT c.id AS clienteId
+      FROM cliente c
+      JOIN pessoa p ON c.pessoaId = p.id
+      WHERE p.email = $1
+    `;
+    const result = await db.query(query, [email]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Cliente não encontrado para este email" });
+    }
+
+    return res.json({ clienteId: result.rows[0].clienteid });
+  } catch (error) {
+    console.error("Erro ao buscar cliente por email:", error);
+    return res.status(500).json({ error: "Erro ao buscar cliente" });
+  }
+};
+
+
+module.exports = {upsertPerfil, getPerfilByEmail, getClientIdByEmail };
 
