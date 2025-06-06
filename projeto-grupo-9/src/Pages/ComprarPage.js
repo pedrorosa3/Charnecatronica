@@ -34,7 +34,7 @@ const ComprarPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:9000/equipamentos")
+    fetch("/equipamentos")
       .then((res) => res.json())
       .then((data) => {
         const dadosCorrigidos = data.map((item) => ({
