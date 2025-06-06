@@ -36,6 +36,7 @@ import "slick-carousel/slick/slick-theme.css";
 import LojasCliente from "./Pages/LojasCliente";
 import ReparacoesCliente from "./Pages/reparacoesCliente";
 import VenderCliente from "./Pages/venderCliente";
+import DetalhesEncomendaPage from "./Pages/DetalhesEncomenda";
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -105,6 +106,11 @@ function App() {
           <Route path="/reparacoesCliente" element={<ReparacoesCliente />} />
           <Route path="/venderCliente" element={<VenderCliente />} />
           <Route path="/venderAoCliente" element={<ComprarFisicaPage />} />
+
+          <Route
+            path="/detalhesEncomenda/:numerovenda"
+            element={<DetalhesEncomendaPage />}
+          />
           {/* Adicione outras rotas conforme necessário */}
         </Routes>
       </Router>

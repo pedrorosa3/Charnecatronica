@@ -75,47 +75,44 @@ const Perfil = () => {
     fetchPerfil();
   }, [user?.email]);
 
-
-  //IR BUSCAR O ID DO CLIENT
-
+  // IR BUSCAR O ID DO CLIENTE
   useEffect(() => {
-  async function fetchClienteId() {
-    if (!user?.email) return;
+    async function fetchClienteId() {
+      if (!user?.email) return;
 
-    try {
-      const response = await fetch(`http://localhost:9000/perfil/clienteId?email=${user.email}`);
-      if (!response.ok) throw new Error("Cliente não encontrado");
+      try {
+        const response = await fetch(`http://localhost:9000/perfil/clienteId?email=${user.email}`);
+        if (!response.ok) throw new Error("Cliente não encontrado");
 
-      const data = await response.json();
-      console.log("ClienteId:", data.clienteId);
-      // Aqui podes guardar no estado para usar no próximo passo
-      setClienteId(data.clienteId);
-    } catch (error) {
-      console.error(error);
+        const data = await response.json();
+        console.log("ClienteId:", data.clienteId);
+        setClienteId(data.clienteId);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
 
-  fetchClienteId();
-}, [user?.email]);
+    fetchClienteId();
+  }, [user?.email]);
 
-//IR BUSCAR O ID DAS VENDAS DO CLIENTE
-useEffect(() => {
-  async function fetchVendasCliente() {
-    if (!clienteId) return;
+  // IR BUSCAR O ID DAS VENDAS DO CLIENTE
+  useEffect(() => {
+    async function fetchVendasCliente() {
+      if (!clienteId) return;
 
-    try {
-      const response = await fetch(`http://localhost:9000/vendaslista/cliente/${clienteId}`);
-      if (!response.ok) throw new Error("Erro ao buscar vendas do cliente");
+      try {
+        const response = await fetch(`http://localhost:9000/vendaslista/cliente/${clienteId}`);
+        if (!response.ok) throw new Error("Erro ao buscar vendas do cliente");
 
-      const data = await response.json();
-      //setEncomendas(data);
-    } catch (error) {
-      console.error(error);
+        const data = await response.json();
+        setEncomendas(data); // <-- Guardar as vendas no estado
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
 
-  fetchVendasCliente();
-}, [clienteId]);
+    fetchVendasCliente();
+  }, [clienteId]);
 
   if (isLoading) return <p>Carregando...</p>;
 
@@ -229,52 +226,31 @@ useEffect(() => {
                 <Typography>Ainda sem encomendas realizadas.</Typography>
               ) : (
                 encomendas.map((enc) => (
-                  <Card key={enc.id} sx={{ marginBottom: 3, padding: 2 }}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                  <Card
+                    key={enc.numerovenda}
+                    sx={{
+                      marginBottom: 3,
+                      padding: 2,
+                      cursor: "pointer",
+                      "&:hover": { backgroundColor: "#f0f0f0" },
+                    }}
+                    onClick={() => navigate(`/detalhesEncomenda/${enc.numerovenda}`)}
+                  >
+                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
                       <Typography>
-                        Encomenda feita: {new Date(enc.data_encomenda).toLocaleDateString()}
+                        Nº Encomenda - {enc.numerovenda}
                       </Typography>
-                      <Typography>Total: {enc.total.toFixed(2)}€</Typography>
-                      <Typography>Destinatário: {enc.destinatario}</Typography>
-                      <Typography>Encomenda # {enc.numero_encomenda}</Typography>
+                      <Typography>
+                        Data: {new Date(enc.data).toLocaleDateString()}
+                      </Typography>
                     </Box>
 
-                    <Divider sx={{ my: 2 }} />
+                    <Divider sx={{ my: 1 }} />
 
-                    <Box sx={{ display: "flex", alignItems: "flex-start" }}>
-                      {enc.imagem && (
-                        <img
-                          src={enc.imagem}
-                          alt="Produto"
-                          style={{ width: 100, height: 100, marginRight: 20, objectFit: "cover" }}
-                        />
-                      )}
-                      <Box>
-                        <Typography fontWeight="bold">{enc.produto}</Typography>
-                        <Typography variant="caption" color="textSecondary">
-                          Entregue em: {new Date(enc.data_entrega).toLocaleDateString()}
-                        </Typography>
-                        <Typography variant="caption" color="textSecondary" display="block">
-                          Devolução até:{" "}
-                          {new Date(
-                            new Date(enc.data_entrega).setMonth(
-                              new Date(enc.data_entrega).getMonth() + 1
-                            )
-                          ).toLocaleDateString()}
-                        </Typography>
-
-                        <Box sx={{ mt: 1 }}>
-                          <Button variant="outlined" size="small" sx={{ mr: 1 }}>
-                            Comprar novamente
-                          </Button>
-                          <Button variant="outlined" size="small" sx={{ mr: 1 }}>
-                            Ver produtos
-                          </Button>
-                          <Button variant="outlined" size="small">
-                            Seguir encomenda
-                          </Button>
-                        </Box>
-                      </Box>
+                    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                      <Typography>Método de Pagamento: {enc.tipo}</Typography>
+                      <Typography>Estado: {enc.estadovenda}</Typography>
+                      <Typography>Custo transporte: {enc.custotransporte.toFixed(2)}€</Typography>
                     </Box>
                   </Card>
                 ))

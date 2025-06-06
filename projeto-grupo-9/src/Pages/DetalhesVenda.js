@@ -53,7 +53,7 @@ const DetalhesVendaPage = () => {
     );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8", marginTop: "85px" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8"}}>
       <Sidebar />
       <Container sx={{ flex: 1, padding: "30px", maxWidth: "900px" }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold", mb: 3, textAlign: "center" }}>
