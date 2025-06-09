@@ -20,6 +20,7 @@ const diagnosticoRoutes = require("./routes/diagnostico");
 const loginEmpregadoRoutes = require("./routes/login_empregado");
 const vendaFisicaRouter = require("./routes/vendaFisica");
 const dashboardRouter = require("./routes/dashboard");
+const InteressesRouter = require("./routes/interesses")
 
 const app = express();
 const PORT = 9000;

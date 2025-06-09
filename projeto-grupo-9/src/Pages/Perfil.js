@@ -178,10 +178,30 @@ const Perfil = () => {
           </Button>
         </Box>
 
+        
+
+
         {/* Lado direito com opções e histórico */}
         <Container sx={{ flex: 1, padding: "30px" }}>
           <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={4}>
+              <Card
+                onClick={() => navigate("/interesses")}
+                sx={{
+                  padding: 3,
+                  textAlign: "center",
+                  cursor: "pointer",
+                  border: "2px solid #000",
+                  "&:hover": { backgroundColor: "#f9f9f9" },
+                }}
+              >
+                <VolunteerActivism fontSize="large" />
+                <Typography variant="h6" mt={2}>
+                  Interesses
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
               <Card
                 onClick={() => navigate("/vendaspage")}
                 sx={{
@@ -199,7 +219,7 @@ const Perfil = () => {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={4}>
               <Card
                 onClick={() => navigate(`/avarias?email=${user.email}`)}
                 sx={{

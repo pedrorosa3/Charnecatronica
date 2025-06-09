@@ -37,6 +37,8 @@ import LojasCliente from "./Pages/LojasCliente";
 import ReparacoesCliente from "./Pages/reparacoesCliente";
 import VenderCliente from "./Pages/venderCliente";
 import DetalhesEncomendaPage from "./Pages/DetalhesEncomenda";
+import Interesses from "./Pages/Interesses";
+import AdicionarInteresse from "./Pages/AdicionarInteresse";
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -111,6 +113,12 @@ function App() {
             path="/detalhesEncomenda/:numerovenda"
             element={<DetalhesEncomendaPage />}
           />
+          <Route path="/interesses" element={<Interesses />} />
+          <Route
+            path="/adicionar-interesse"
+            element={<AdicionarInteresse />}
+          />
+          
           {/* Adicione outras rotas conforme necessário */}
         </Routes>
       </Router>
