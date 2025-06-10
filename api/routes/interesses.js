@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { getInteressesLista } = require("../controllers/interessesController");
+const { getInteressesById } = require("../controllers/interessesController");
 
-router.get("/:id", getInteressesLista); 
+router.get("/", getInteressesById); 
 
 module.exports = router;

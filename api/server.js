@@ -20,7 +20,7 @@ const diagnosticoRoutes = require("./routes/diagnostico");
 const loginEmpregadoRoutes = require("./routes/login_empregado");
 const vendaFisicaRouter = require("./routes/vendaFisica");
 const dashboardRouter = require("./routes/dashboard");
-const InteressesRouter = require("./routes/interesses")
+const InteressesRouter = require("./routes/interesses");
 
 const app = express();
 const PORT = 9000;
@@ -48,6 +48,7 @@ app.use("/pecasDiagnostico", diagnosticoRoutes);
 app.use("/loginempregado", loginEmpregadoRoutes);
 app.use("/vendaFisica", vendaFisicaRouter);
 app.use("/dashboard", dashboardRouter);
+app.use("/interesses",InteressesRouter);
 app.get("/testAPI", (req, res) => {
   res.json({ message: "API a funcionar corretamente!" });
 });

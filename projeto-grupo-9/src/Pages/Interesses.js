@@ -108,10 +108,14 @@ const Interesses = () => {
             <List>
               {interesses.map((item, index) => (
                 <ListItem key={index}>
-                  <ListItemText primary={item} />
+                  <ListItemText
+                    primary={`${item.marca} ${item.modelo} (${item.tipo})`}
+                    secondary={`Preço: ${item.precobase}€ • Ano: ${item.anolancamento}`}
+                  />
                 </ListItem>
               ))}
             </List>
+
           )}
         </Container>
       </Box>
