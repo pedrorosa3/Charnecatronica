@@ -24,7 +24,7 @@ const getProjetosBeneficencia = async (req, res) => {
     `);
 
     const projetos = projetosResult.rows;
-
+/*
     // Pega imagens para todos os projetos retornados
     const imagensResult = await db.query(`
       SELECT projetoid, urlimagem
@@ -40,7 +40,7 @@ const getProjetosBeneficencia = async (req, res) => {
         .filter(img => img.projetoid === projeto.id)
         .map(img => img.urlimagem);
     });
-
+*/
     res.status(200).json(projetos);
   } catch (error) {
     console.error("Erro ao buscar projetos:", error);

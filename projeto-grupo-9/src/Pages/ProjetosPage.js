@@ -167,7 +167,12 @@ const ProjetosPage = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.4 }}
-              style={{ width: 420, maxHeight: "80vh", overflowY: "auto", backgroundColor: "transparent" }}
+              style={{
+                width: 640, // ← AQUI foi ajustada a largura do modal
+                maxHeight: "80vh",
+                overflowY: "auto",
+                backgroundColor: "transparent",
+              }}
             >
               <Box sx={modalStyle}>
                 <IconButton
