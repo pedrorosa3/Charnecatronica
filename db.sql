@@ -539,17 +539,17 @@ INSERT INTO projetoBeneficencia (
   organizadorId, lojaNipc, fichaEquipamentoCodBarras, imagem
 ) VALUES
 ('Doação de Computadores para Escolas e Instituições Carenciadas',
- 'A loja pode recolher computadores Usados, recondicioná-los e doá-los para escolas, bibliotecas ou centros comunitários que atendem crianças e jovens de baixa renda. Isso ajuda a reduzir a exclusão digital e a fornecer acesso à tecnologia para fins educacionais.',
+ 'Este projeto visa a coleta de computadores usados junto às lojas, que serão submetidos a um processo rigoroso de recondicionamento, garantindo a plena funcionalidade dos equipamentos. Posteriormente, os dispositivos serão doados a escolas, bibliotecas e centros comunitários que atendem crianças, adolescentes e jovens em situação de vulnerabilidade socioeconômica. A iniciativa tem como objetivo primordial reduzir a exclusão digital, promovendo o acesso à tecnologia como ferramenta fundamental para o desenvolvimento educacional, a inclusão social e o fortalecimento da comunidade local.',
  '2022-12-31', 100, 1, 199915275, '1111111111126', '/images/Instituicao-ensino.jpg'),
 
 ('Recolha e Reciclagem de Resíduos Eletrônicos',
- 'A loja pode criar um ponto de recolha de equipamentos eletrônicos antigos (teclados, monitores, baterias, etc.), garantindo que sejam reciclados de forma ambientalmente responsável. Parte dos equipamentos pode ser recondicionada e doada.',
+ 'O presente projeto institui um sistema sustentável de recolha de equipamentos eletrônicos obsoletos e descartados, tais como teclados, monitores, baterias e demais periféricos. Estes resíduos serão encaminhados para reciclagem conforme as normas ambientais vigentes, assegurando a destinação correta e a minimização dos impactos ambientais decorrentes do descarte inadequado. Parte dos equipamentos recolhidos, após avaliação técnica, será submetida a processos de recondicionamento e reutilização, com o intuito de ampliar a oferta de recursos tecnológicos para doação a instituições necessitadas, promovendo, assim, a economia circular e a responsabilidade socioambiental.',
  '2023-06-30', 50, 2, 696115913, '1111111111122', '/images/residuos-eletronicos.jpg'),
 
 ('Requalificação Digital para Trabalhadores Desempregados',
- 'Apoiar trabalhadores desempregados ou em transição de carreira a adquirirem novas competências digitais, aumentando suas oportunidades no mercado de trabalho.',
+ 'Este programa é direcionado a trabalhadores em situação de desemprego ou em processo de transição profissional, oferecendo formação especializada em competências digitais contemporâneas. O curso contempla o desenvolvimento de habilidades técnicas e digitais essenciais para a inserção e competitividade no mercado de trabalho atual, incluindo o uso de softwares, ferramentas digitais e plataformas colaborativas. A iniciativa pretende aumentar as oportunidades de emprego e contribuir para a reinserção laboral através da capacitação contínua, fortalecendo a autonomia e a empregabilidade dos participantes.',
  '2023-06-30', 50, 2, 696115913, '1111111111124', '/images/requalificacao-trabalhadores.png'),
 
 ('Inclusão Digital para Idosos',
- 'Oferecer cursos e suporte para idosos aprenderem a utilizar computadores e smartphones, promovendo a inclusão digital e melhorando sua qualidade de vida.',
+ 'Este projeto tem como finalidade promover a inclusão digital da população idosa, por meio da oferta de cursos e suporte técnico personalizados para o uso de computadores, smartphones e outras tecnologias digitais. As atividades são elaboradas para facilitar o aprendizado e a familiarização com dispositivos eletrônicos, visando ampliar a autonomia, a comunicação e a participação social dos idosos. Ao promover a alfabetização digital, o projeto busca melhorar a qualidade de vida, estimular a saúde mental e proporcionar um maior acesso a serviços e informações essenciais na era digital.',
  '2024-12-31', 30, 3, 199915275, '1111111111123', '/images/inclusao-digital-idosos.jpg');
