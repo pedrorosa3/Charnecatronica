@@ -12,13 +12,12 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import Footer from "../Components/Footer";
 import Header from "../Components/Header";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 
 const AdicionarInteressePage = () => {
-    const { user, isLoading } = useAuth0();
+    const { user, } = useAuth0();
     const navigate = useNavigate();
   const [formData, setFormData] = useState({
     
@@ -71,13 +70,20 @@ const AdicionarInteressePage = () => {
       const res = await fetch("http://localhost:9000/interesses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          email: user?.email,
+          marca: formData.marca,
+          modelo: formData.modelo,
+        }),
       });
 
       if (res.ok) {
         showSnackbar("Interesse adicionado com sucesso!");
         setFormData({ marca: "", modelo: "" });
         setModelosFiltrados([]);
+        setTimeout(() => {
+          navigate("/interesses");
+        }, 1500);
       } else {
         const err = await res.json();
         showSnackbar(`Erro: ${err.error || "Erro ao adicionar interesse."}`, "error");
@@ -89,44 +95,50 @@ const AdicionarInteressePage = () => {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    
+    <Box sx={{ display: "flex", flex: 1, mt: 12 }}>
       <Header />
+      {/* Sidebar */}
+      <Box
+        sx={{
+          width: "280px",
+          backgroundColor: "#fff",
+          padding: "20px",
+          borderRight: "1px solid #ddd",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar
+          src={user?.picture}
+          alt={user?.name}
+          sx={{ width: 100, height: 100, mb: 2 }}
+        />
+        <Typography variant="h6">{user?.name}</Typography>
+        <Typography variant="body2" color="textSecondary">{user?.email}</Typography>
 
-
-      <Box sx={{ display: "flex", flex: 1, paddingTop: "80px" }}>
-        {/* Lado esquerdo com dados do utilizador */}
-        <Box
-          sx={{
-            width: "280px",
-            backgroundColor: "#fff",
-            padding: "20px",
-            borderRight: "1px solid #ddd",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => navigate("/perfil")}
+          sx={{ mt: 2, borderColor: "#000", color: "#000" }}
         >
-          <Avatar
-            src={user?.picture}
-            alt={user?.name}
-            sx={{ width: 100, height: 100, mb: 2 }}
-          />
-          <Typography variant="h6">{user?.name}</Typography>
-          <Typography variant="body2" color="textSecondary">{user?.email}</Typography>
-
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => navigate("/perfil")}
-            sx={{ mt: 2, borderColor: "#000", color: "#000" }}
-          >
-            Voltar ao Perfil
-          </Button>
-        </Box>
+          Voltar ao Perfil
+        </Button>
       </Box>
 
-      <Box sx={{ display: "flex", flex: 1, paddingTop: "20px" }}>
-        <Container maxWidth="sm" sx={{ flex: 1 }}>
+      {/* Formulário */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          mt: 12,
+        }}
+      >
+        <Container maxWidth="sm">
           <Card sx={{ backgroundColor: "#fff", borderRadius: "10px", padding: "20px" }}>
             <CardContent>
               <Typography variant="h5" align="center" gutterBottom sx={{ fontWeight: "bold" }}>
@@ -134,8 +146,6 @@ const AdicionarInteressePage = () => {
               </Typography>
 
               <form onSubmit={(e) => e.preventDefault()}>
-                
-
                 <Autocomplete
                   options={marcas}
                   getOptionLabel={(option) => option}
@@ -163,8 +173,6 @@ const AdicionarInteressePage = () => {
                   disabled={!formData.marca}
                 />
 
-                
-
                 <Button
                   fullWidth
                   variant="contained"
@@ -179,31 +187,11 @@ const AdicionarInteressePage = () => {
           </Card>
         </Container>
       </Box>
-
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          height: "50px",
-          bgcolor: "#222",
-          color: "#fff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1500,
-          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
-        }}
-      >
-        <Footer />
-      </Box>
-
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={4000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
@@ -213,7 +201,9 @@ const AdicionarInteressePage = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      
     </Box>
+
   );
 };
 

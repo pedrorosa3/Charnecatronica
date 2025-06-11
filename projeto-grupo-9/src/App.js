@@ -39,6 +39,8 @@ import VenderCliente from "./Pages/venderCliente";
 import DetalhesEncomendaPage from "./Pages/DetalhesEncomenda";
 import Interesses from "./Pages/Interesses";
 import AdicionarInteresse from "./Pages/AdicionarInteresse";
+import { InteressesProvider } from "./Context/InteressesContext";
+
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -59,6 +61,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+    <InteressesProvider>
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -122,6 +125,7 @@ function App() {
           {/* Adicione outras rotas conforme necessário */}
         </Routes>
       </Router>
+    </InteressesProvider>
     </ThemeProvider>
   );
 }

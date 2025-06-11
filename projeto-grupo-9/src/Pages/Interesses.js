@@ -5,7 +5,6 @@ import {
   Typography,
   Container,
   Avatar,
-  Card,
   Button,
   Snackbar,
   Alert,
@@ -17,6 +16,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 const Interesses = () => {
   const { user, isLoading } = useAuth0();
@@ -24,6 +26,7 @@ const Interesses = () => {
 
   const [interesses, setInteresses] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [disponiveis, setDisponiveis] = useState(0);
 
   const handleCloseSnackbar = (_, reason) => {
     if (reason === "clickaway") return;
@@ -36,15 +39,44 @@ const Interesses = () => {
         const res = await fetch(`http://localhost:9000/interesses?email=${user?.email}`);
         if (!res.ok) throw new Error("Erro ao buscar interesses.");
         const data = await res.json();
-        setInteresses(data || []);
+        setInteresses(data.interesses || []);
+        setDisponiveis(data.interesses.filter(item => item.disponivel).length);
+
       } catch (error) {
         console.error(error);
         setSnackbar({ open: true, message: "Erro ao carregar interesses", severity: "error" });
       }
     };
-
     if (user?.email) fetchInteresses();
+    const interval = setInterval(fetchInteresses, 1000); 
+    return () => clearInterval(interval);
+
+    
   }, [user?.email]);
+
+  const handleRemoverInteresse = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:9000/interesses/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("Erro ao remover interesse.");
+
+      setInteresses((prev) => prev.filter((item) => item.id !== id));
+      setSnackbar({
+        open: true,
+        message: "Interesse removido com sucesso.",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error(error);
+      setSnackbar({
+        open: true,
+        message: "Erro ao remover interesse.",
+        severity: "error",
+      });
+    }
+  };
 
   if (isLoading) return <p>Carregando...</p>;
 
@@ -72,6 +104,13 @@ const Interesses = () => {
           />
           <Typography variant="h6">{user?.name}</Typography>
           <Typography variant="body2" color="textSecondary">{user?.email}</Typography>
+
+          <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+            <InventoryIcon sx={{ mr: 1 }} color="primary" />
+            <Typography variant="body2">
+              Disponíveis: {disponiveis}
+            </Typography>
+          </Box>
 
           <Button
             variant="outlined"
@@ -107,12 +146,38 @@ const Interesses = () => {
           ) : (
             <List>
               {interesses.map((item, index) => (
-                <ListItem key={index}>
-                  <ListItemText
-                    primary={`${item.marca} ${item.modelo} (${item.tipo})`}
-                    secondary={`Preço: ${item.precobase}€ • Ano: ${item.anolancamento}`}
-                  />
+                <ListItem
+                  key={item.id}
+                  secondaryAction={
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleRemoverInteresse(item.id)}
+                    >
+                      Remover
+                    </Button>
+                  }
+                >
+                    <ListItemText
+                      primary={
+                        <>
+                          {item.marca} {item.modelo} ({item.tipo}){" "}
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            {item.disponivel ? (
+                              <CheckCircleIcon color="success" />
+                            ) : (
+                              <CancelIcon color="error" />
+                            )}
+                            <Typography variant="body2">
+                              {item.disponivel ? "Disponível" : "Indisponível"}
+                            </Typography>
+                          </Box>
+                        </>
+                      }
+                      secondary={`Ano: ${item.anolancamento}`}
+                    />
                 </ListItem>
+
               ))}
             </List>
 

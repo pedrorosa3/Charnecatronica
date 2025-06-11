@@ -19,6 +19,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Link, useNavigate } from "react-router-dom";
 import { useCarrinho } from "../Context/CarrinhoContext";
 import { useAuth0 } from "@auth0/auth0-react";
+import IconInteresses from "../Components/IconInteresses";
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -207,6 +208,7 @@ const Header = () => {
             ))}
           </Box>
 
+
           <Box
             sx={{
               display: "flex",
@@ -280,6 +282,7 @@ const Header = () => {
               </Button>
             )}
 
+            <IconInteresses />
             <Box
               component={Link}
               to="/carrinho"
