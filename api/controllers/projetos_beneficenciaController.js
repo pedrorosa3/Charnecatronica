@@ -1,8 +1,8 @@
+// controllers/projetoController.js
 const db = require("../db");
 
 const getProjetosBeneficencia = async (req, res) => {
   try {
-    // Pega projetos básicos + dados organizador e loja
     const projetosResult = await db.query(`
       SELECT 
         pb.id, 
@@ -24,23 +24,6 @@ const getProjetosBeneficencia = async (req, res) => {
     `);
 
     const projetos = projetosResult.rows;
-/*
-    // Pega imagens para todos os projetos retornados
-    const imagensResult = await db.query(`
-      SELECT projetoid, urlimagem
-      FROM projetoimagens
-      WHERE projetoid = ANY($1)
-    `, [projetos.map(p => p.id)]);
-
-    const imagens = imagensResult.rows;
-
-    // Adiciona array de imagens em cada projeto
-    projetos.forEach(projeto => {
-      projeto.imagens = imagens
-        .filter(img => img.projetoid === projeto.id)
-        .map(img => img.urlimagem);
-    });
-*/
     res.status(200).json(projetos);
   } catch (error) {
     console.error("Erro ao buscar projetos:", error);
@@ -48,4 +31,23 @@ const getProjetosBeneficencia = async (req, res) => {
   }
 };
 
-module.exports = { getProjetosBeneficencia };
+const deleteProjetoBeneficencia = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleteResult = await db.query(
+      "DELETE FROM projetoBeneficencia WHERE id = $1 RETURNING *",
+      [id]
+    );
+
+    if (deleteResult.rowCount === 0) {
+      return res.status(404).json({ error: "Projeto não encontrado" });
+    }
+
+    res.status(200).json({ message: "Projeto excluído com sucesso" });
+  } catch (error) {
+    console.error("Erro ao excluir projeto:", error);
+    res.status(500).json({ error: "Erro ao excluir projeto" });
+  }
+};
+
+module.exports = { getProjetosBeneficencia, deleteProjetoBeneficencia };

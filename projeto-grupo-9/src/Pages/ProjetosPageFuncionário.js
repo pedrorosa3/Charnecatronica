@@ -52,6 +52,26 @@ const ProjetosPageFuncionario = () => {
     setModalAberto(true);
   };
 
+  const handleExcluirProjeto = async (id) => {
+    if (!window.confirm("Tem certeza que deseja excluir este projeto?")) return;
+
+    try {
+      const response = await fetch(`http://localhost:9000/projetos_beneficencia/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert("Erro ao excluir projeto: " + (errorData.error || response.statusText));
+        return;
+      }
+
+      setProjetos((prev) => prev.filter((proj) => proj.id !== id));
+    } catch (error) {
+      alert("Erro ao excluir projeto: " + error.message);
+    }
+  };
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
       <Sidebar />
@@ -123,6 +143,19 @@ const ProjetosPageFuncionario = () => {
                       onClick={() => handleAbrirDetalhes(projeto)}
                     >
                       Mais detalhes
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      sx={{
+                        mt: 1,
+                        borderRadius: "50px",
+                        fontWeight: "bold",
+                        textTransform: "none",
+                      }}
+                      onClick={() => handleExcluirProjeto(projeto.id)}
+                    >
+                      Excluir
                     </Button>
                   </CardContent>
                 </Card>
