@@ -10,6 +10,12 @@ import {
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { motion } from "framer-motion";
+
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
 
 const ProjetoDetalhesPage = () => {
   const { id } = useParams();
@@ -52,15 +58,17 @@ const ProjetoDetalhesPage = () => {
       <Box sx={{ minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
         <Header />
         <Container maxWidth="md" sx={{ pt: "130px", pb: 5, textAlign: "center" }}>
-          <Typography variant="h5" color="error" gutterBottom>
-            Erro ao carregar projeto
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            {erro}
-          </Typography>
-          <IconButton onClick={() => navigate(-1)} sx={{ mt: 2 }}>
-            <ArrowBackIcon /> Voltar
-          </IconButton>
+          <motion.div initial="hidden" animate="visible" variants={fadeIn}>
+            <Typography variant="h5" color="error" gutterBottom>
+              Erro ao carregar projeto
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {erro}
+            </Typography>
+            <IconButton onClick={() => navigate(-1)} sx={{ mt: 2 }}>
+              <ArrowBackIcon /> Voltar
+            </IconButton>
+          </motion.div>
         </Container>
         <Footer />
       </Box>
@@ -71,53 +79,67 @@ const ProjetoDetalhesPage = () => {
     <Box sx={{ minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
       <Header />
       <Container maxWidth="md" sx={{ pt: "130px", pb: 5 }}>
-        <IconButton onClick={() => navigate(-1)} sx={{ mb: 2 }}>
-          <ArrowBackIcon /> Voltar
-        </IconButton>
+        <motion.div initial="hidden" animate="visible" variants={fadeIn}>
+          <IconButton onClick={() => navigate(-1)} sx={{ mb: 2 }}>
+            <ArrowBackIcon /> Voltar
+          </IconButton>
 
-        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-          {projeto.nome}
-        </Typography>
-
-        {projeto.imagem && (
-          <Box sx={{ mb: 2, textAlign: "center" }}>
-            <img
-              src={projeto.imagem}
-              alt={`Imagem do projeto ${projeto.nome}`}
-              style={{ maxWidth: "100%", borderRadius: 8 }}
-            />
-          </Box>
-        )}
-
-        <Typography variant="body1" sx={{ mb: 1 }}>
-          <strong>Descrição:</strong> {projeto.descricao}
-        </Typography>
-        <Typography variant="body1">
-          <strong>Data Limite:</strong> {new Date(projeto.datalimite).toLocaleDateString()}
-        </Typography>
-        <Typography variant="body1">
-          <strong>Quantidade de Equipamentos:</strong> {projeto.quantidadeequipamentos}
-        </Typography>
-        <Typography variant="body1">
-          <strong>Organizador:</strong> {projeto.nomeorganizador}
-        </Typography>
-        <Typography variant="body1" sx={{ mb: 2 }}>
-          <strong>Loja:</strong> {projeto.nomeloja}
-        </Typography>
-
-        <Box
-          sx={{
-            bgcolor: "#e3f2fd",
-            borderRadius: "8px",
-            p: 1,
-            mt: 2,
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="body2" sx={{ fontWeight: "bold", color: "#0d47a1" }}>
-            Dirija-se a uma das nossas lojas para doar o seu equipamento!
+          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
+            {projeto.nome}
           </Typography>
-        </Box>
+
+          {projeto.imagem && (
+            <Box sx={{ mb: 2, textAlign: "center" }}>
+              <motion.img
+                src={projeto.imagem}
+                alt={`Imagem do projeto ${projeto.nome}`}
+                style={{ maxWidth: "100%", borderRadius: 8 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+              />
+            </Box>
+          )}
+
+          <motion.div initial="hidden" animate="visible" variants={fadeIn}>
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              <strong>Descrição:</strong> {projeto.descricao}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Data Limite:</strong> {new Date(projeto.datalimite).toLocaleDateString()}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Quantidade de Equipamentos:</strong> {projeto.quantidadeequipamentos}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Organizador:</strong> {projeto.nomeorganizador}
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 2 }}>
+              <strong>Loja:</strong> {projeto.nomeloja}
+            </Typography>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            transition={{ delay: 0.3 }}
+          >
+            <Box
+              sx={{
+                bgcolor: "#e3f2fd",
+                borderRadius: "8px",
+                p: 1,
+                mt: 2,
+                textAlign: "center",
+              }}
+            >
+              <Typography variant="body2" sx={{ fontWeight: "bold", color: "#0d47a1" }}>
+                Dirija-se a uma das nossas lojas para doar o seu equipamento!
+              </Typography>
+            </Box>
+          </motion.div>
+        </motion.div>
       </Container>
       <Footer />
     </Box>
