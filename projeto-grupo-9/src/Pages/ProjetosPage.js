@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CloseIcon from '@mui/icons-material/Close';
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import { useNavigate } from "react-router-dom"; // ⬅️ Importado aqui
 
 const modalStyle = {
   position: "relative",
@@ -31,6 +32,7 @@ const ProjetosPage = () => {
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [imagemAtual, setImagemAtual] = useState(0);
+  const navigate = useNavigate(); // ⬅️ Hook para navegação
 
   useEffect(() => {
     const fetchProjetos = async () => {
@@ -47,10 +49,8 @@ const ProjetosPage = () => {
     fetchProjetos();
   }, []);
 
-  const handleAbrirDetalhes = (projeto) => {
-    setProjetoSelecionado(projeto);
-    setImagemAtual(0);
-    setModalAberto(true);
+  const handleAbrirDetalhes = (projetoId) => {
+    navigate(`/projeto/${projetoId}`); // ⬅️ Redireciona para a rota de detalhes
   };
 
   const handleFecharModal = () => {
@@ -138,7 +138,7 @@ const ProjetosPage = () => {
                             mt: 2,
                             "&:hover": { backgroundColor: "#333" },
                           }}
-                          onClick={() => handleAbrirDetalhes(projeto)}
+                          onClick={() => handleAbrirDetalhes(projeto.id)} // ⬅️ Atualizado aqui
                         >
                           Mais detalhes
                         </Button>
@@ -154,6 +154,7 @@ const ProjetosPage = () => {
 
       <Footer />
 
+      {/* Modal permanece aqui, mas já não será usado neste fluxo (mantido conforme pedido) */}
       <AnimatePresence>
         {modalAberto && projetoSelecionado && (
           <Modal
@@ -168,7 +169,7 @@ const ProjetosPage = () => {
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.4 }}
               style={{
-                width: 640, // ← AQUI foi ajustada a largura do modal
+                width: 640,
                 maxHeight: "80vh",
                 overflowY: "auto",
                 backgroundColor: "transparent",

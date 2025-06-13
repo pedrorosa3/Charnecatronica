@@ -1,0 +1,127 @@
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  Box,
+  Container,
+  Typography,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
+import Header from "../Components/Header";
+import Footer from "../Components/Footer";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+const ProjetoDetalhesPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [projeto, setProjeto] = useState(null);
+  const [erro, setErro] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjeto = async () => {
+      console.log("ID do projeto na URL:", id);
+      try {
+        const response = await fetch(`http://localhost:9000/projetos_beneficencia/${id}`);
+        if (!response.ok) {
+          throw new Error(`Erro ${response.status}: Projeto não encontrado.`);
+        }
+        const data = await response.json();
+        setProjeto(Array.isArray(data) ? data[0] : data);
+      } catch (err) {
+        console.error("Erro ao carregar projeto:", err.message);
+        setErro(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjeto();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (erro) {
+    return (
+      <Box sx={{ minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
+        <Header />
+        <Container maxWidth="md" sx={{ pt: "130px", pb: 5, textAlign: "center" }}>
+          <Typography variant="h5" color="error" gutterBottom>
+            Erro ao carregar projeto
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            {erro}
+          </Typography>
+          <IconButton onClick={() => navigate(-1)} sx={{ mt: 2 }}>
+            <ArrowBackIcon /> Voltar
+          </IconButton>
+        </Container>
+        <Footer />
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
+      <Header />
+      <Container maxWidth="md" sx={{ pt: "130px", pb: 5 }}>
+        <IconButton onClick={() => navigate(-1)} sx={{ mb: 2 }}>
+          <ArrowBackIcon /> Voltar
+        </IconButton>
+
+        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
+          {projeto.nome}
+        </Typography>
+
+        {projeto.imagem && (
+          <Box sx={{ mb: 2, textAlign: "center" }}>
+            <img
+              src={projeto.imagem}
+              alt={`Imagem do projeto ${projeto.nome}`}
+              style={{ maxWidth: "100%", borderRadius: 8 }}
+            />
+          </Box>
+        )}
+
+        <Typography variant="body1" sx={{ mb: 1 }}>
+          <strong>Descrição:</strong> {projeto.descricao}
+        </Typography>
+        <Typography variant="body1">
+          <strong>Data Limite:</strong> {new Date(projeto.datalimite).toLocaleDateString()}
+        </Typography>
+        <Typography variant="body1">
+          <strong>Quantidade de Equipamentos:</strong> {projeto.quantidadeequipamentos}
+        </Typography>
+        <Typography variant="body1">
+          <strong>Organizador:</strong> {projeto.nomeorganizador}
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          <strong>Loja:</strong> {projeto.nomeloja}
+        </Typography>
+
+        <Box
+          sx={{
+            bgcolor: "#e3f2fd",
+            borderRadius: "8px",
+            p: 1,
+            mt: 2,
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="body2" sx={{ fontWeight: "bold", color: "#0d47a1" }}>
+            Dirija-se a uma das nossas lojas para doar o seu equipamento!
+          </Typography>
+        </Box>
+      </Container>
+      <Footer />
+    </Box>
+  );
+};
+
+export default ProjetoDetalhesPage;

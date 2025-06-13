@@ -7,6 +7,7 @@ import ComprarPage from "./Pages/ComprarPage";
 import VenderPage from "./Pages/VenderPage";
 import OrcamentoPage from "./Pages/OrcamentoPage";
 import ProjetosPage from "./Pages/ProjetosPage";
+import ProjetoDetalhesPage from "./Pages/ProjetosDetalhesPage"; // NOVO
 import VendasPage from "./Pages/VendasPage";
 import LoginPage from "./Pages/LoginPage";
 import Carrinho from "./Pages/Carrinho";
@@ -68,7 +69,11 @@ function App() {
           <Route path="/comprar" element={<ComprarPage />} />
           <Route path="/comprarAoCliente" element={<VenderPage />} />
           <Route path="/orcamento" element={<OrcamentoPage />} />
+          
           <Route path="/doar" element={<ProjetosPage />} />
+
+          <Route path="/projeto/:id" element={<ProjetoDetalhesPage />} />
+
           <Route path="/equipamentosComprados" element={<VendasPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/carrinho" element={<Carrinho />} />
