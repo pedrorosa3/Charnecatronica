@@ -6,6 +6,7 @@ import {
   Typography,
   IconButton,
   CircularProgress,
+  Button,
 } from "@mui/material";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
@@ -28,7 +29,9 @@ const ProjetoDetalhesPage = () => {
     const fetchProjeto = async () => {
       console.log("ID do projeto na URL:", id);
       try {
-        const response = await fetch(`http://localhost:9000/projetos_beneficencia/${id}`);
+        const response = await fetch(
+          `http://localhost:9000/projetos_beneficencia/${id}`
+        );
         if (!response.ok) {
           throw new Error(`Erro ${response.status}: Projeto não encontrado.`);
         }
@@ -47,7 +50,14 @@ const ProjetoDetalhesPage = () => {
 
   if (loading) {
     return (
-      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <CircularProgress />
       </Box>
     );
@@ -57,7 +67,10 @@ const ProjetoDetalhesPage = () => {
     return (
       <Box sx={{ minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
         <Header />
-        <Container maxWidth="md" sx={{ pt: "130px", pb: 5, textAlign: "center" }}>
+        <Container
+          maxWidth="md"
+          sx={{ pt: "130px", pb: 5, textAlign: "center" }}
+        >
           <motion.div initial="hidden" animate="visible" variants={fadeIn}>
             <Typography variant="h5" color="error" gutterBottom>
               Erro ao carregar projeto
@@ -65,9 +78,24 @@ const ProjetoDetalhesPage = () => {
             <Typography variant="body1" gutterBottom>
               {erro}
             </Typography>
-            <IconButton onClick={() => navigate(-1)} sx={{ mt: 2 }}>
-              <ArrowBackIcon /> Voltar
-            </IconButton>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{
+                backgroundColor: "#000",
+                color: "#fff",
+                borderRadius: "50px",
+                textTransform: "none",
+                fontWeight: "bold",
+                mt: 2,
+                mb: 4,
+                "&:hover": { backgroundColor: "#333" },
+              }}
+              onClick={() => navigate(-1)}
+              startIcon={<ArrowBackIcon />}
+            >
+              Voltar
+            </Button>
           </motion.div>
         </Container>
         <Footer />
@@ -80,9 +108,25 @@ const ProjetoDetalhesPage = () => {
       <Header />
       <Container maxWidth="md" sx={{ pt: "130px", pb: 5 }}>
         <motion.div initial="hidden" animate="visible" variants={fadeIn}>
-          <IconButton onClick={() => navigate(-1)} sx={{ mb: 2 }}>
-            <ArrowBackIcon /> Voltar
-          </IconButton>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#000",
+              color: "#fff",
+              borderRadius: "50px",
+              textTransform: "none",
+              fontWeight: "bold",
+              mb: 1,
+              px: 4, // padding horizontal maior
+              py: 1.2, // padding vertical maior
+              fontSize: "1rem", // tamanho do texto um pouco maior
+              "&:hover": { backgroundColor: "#333" },
+            }}
+            onClick={() => navigate(-1)}
+            startIcon={<ArrowBackIcon />}
+          >
+            Voltar
+          </Button>
 
           <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
             {projeto.nome}
@@ -106,10 +150,12 @@ const ProjetoDetalhesPage = () => {
               <strong>Descrição:</strong> {projeto.descricao}
             </Typography>
             <Typography variant="body1">
-              <strong>Data Limite:</strong> {new Date(projeto.datalimite).toLocaleDateString()}
+              <strong>Data Limite:</strong>{" "}
+              {new Date(projeto.datalimite).toLocaleDateString()}
             </Typography>
             <Typography variant="body1">
-              <strong>Quantidade de Equipamentos:</strong> {projeto.quantidadeequipamentos}
+              <strong>Quantidade de Equipamentos:</strong>{" "}
+              {projeto.quantidadeequipamentos}
             </Typography>
             <Typography variant="body1">
               <strong>Organizador:</strong> {projeto.nomeorganizador}
@@ -134,7 +180,10 @@ const ProjetoDetalhesPage = () => {
                 textAlign: "center",
               }}
             >
-              <Typography variant="body2" sx={{ fontWeight: "bold", color: "#0d47a1" }}>
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: "bold", color: "#0d47a1" }}
+              >
                 Dirija-se a uma das nossas lojas para doar o seu equipamento!
               </Typography>
             </Box>

@@ -183,7 +183,7 @@ const Header = () => {
               display: "flex",
               gap: "45px",
               flexGrow: 1,
-              paddingLeft: "80px",
+              paddingLeft: "30px",
             }}
           >
             {[
@@ -207,7 +207,6 @@ const Header = () => {
               </Link>
             ))}
           </Box>
-
 
           <Box
             sx={{

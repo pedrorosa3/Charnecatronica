@@ -12,10 +12,10 @@ import {
   IconButton,
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import { useNavigate } from "react-router-dom"; // ⬅️ Importado aqui
+import { useNavigate } from "react-router-dom";
 
 const modalStyle = {
   position: "relative",
@@ -32,12 +32,14 @@ const ProjetosPage = () => {
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [imagemAtual, setImagemAtual] = useState(0);
-  const navigate = useNavigate(); // ⬅️ Hook para navegação
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjetos = async () => {
       try {
-        const response = await fetch("http://localhost:9000/projetos_beneficencia");
+        const response = await fetch(
+          "http://localhost:9000/projetos_beneficencia"
+        );
         if (!response.ok) throw new Error("Erro ao buscar projetos");
         const data = await response.json();
         setProjetos(data);
@@ -50,7 +52,7 @@ const ProjetosPage = () => {
   }, []);
 
   const handleAbrirDetalhes = (projetoId) => {
-    navigate(`/projeto/${projetoId}`); // ⬅️ Redireciona para a rota de detalhes
+    navigate(`/projeto/${projetoId}`);
   };
 
   const handleFecharModal = () => {
@@ -60,21 +62,36 @@ const ProjetosPage = () => {
 
   const handleNextImage = () => {
     if (!projetoSelecionado) return;
-    setImagemAtual((prev) => (prev + 1) % (projetoSelecionado.imagens.length || 1));
+    setImagemAtual(
+      (prev) => (prev + 1) % (projetoSelecionado.imagens.length || 1)
+    );
   };
 
   const handlePrevImage = () => {
     if (!projetoSelecionado) return;
-    setImagemAtual((prev) =>
-      (prev - 1 + (projetoSelecionado.imagens.length || 1)) % (projetoSelecionado.imagens.length || 1)
+    setImagemAtual(
+      (prev) =>
+        (prev - 1 + (projetoSelecionado.imagens.length || 1)) %
+        (projetoSelecionado.imagens.length || 1)
     );
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        backgroundColor: "#F8F8F8",
+      }}
+    >
       <Header />
 
-      <Container maxWidth="lg" sx={{ flex: 1, pt: "130px", pb: 5 }}>
+      <Container
+        maxWidth="xl"
+        disableGutters
+        sx={{ flex: 1, pt: "130px", pb: 5 }}
+      >
         <Typography
           variant="h4"
           sx={{ mb: 6, fontWeight: 600, textAlign: "center" }}
@@ -82,28 +99,47 @@ const ProjetosPage = () => {
           Projetos de Beneficência
         </Typography>
 
-        <Box sx={{ maxHeight: 500, overflowY: "auto", pr: 1 }}>
-          <Grid container spacing={4}>
+        <Box
+          sx={{
+            width: "100%",
+            maxHeight: "calc(100vh - 250px)",
+            overflowY: "auto",
+          }}
+        >
+          <Grid container spacing={3} justifyContent="center">
             {projetos.map((projeto, index) => (
-              <Grid item xs={12} sm={6} md={6} key={projeto.id}>
+              <Grid item xs={12} sm={6} md={4} key={projeto.id}>
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   style={{ height: "100%" }}
                 >
-                  <Card sx={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 350 }}>
+                  <Card
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%",
+                      minHeight: 350,
+                    }}
+                  >
                     <CardMedia
                       component="img"
                       height="250"
                       image={projeto.imagem || "/images/default.jpg"}
                       alt={projeto.nome}
                     />
-                    <CardContent sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                    <CardContent
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flexGrow: 1,
+                      }}
+                    >
                       <Typography variant="h6">{projeto.nome}</Typography>
-
                       <Typography variant="body2" sx={{ mt: 1 }}>
-                        <strong>Data Limite:</strong> {new Date(projeto.datalimite).toLocaleDateString()}
+                        <strong>Data Limite:</strong>{" "}
+                        {new Date(projeto.datalimite).toLocaleDateString()}
                       </Typography>
                       <Typography variant="body2">
                         <strong>Organizador:</strong> {projeto.nomeorganizador}
@@ -121,8 +157,12 @@ const ProjetosPage = () => {
                             textAlign: "center",
                           }}
                         >
-                          <Typography variant="body2" sx={{ fontWeight: "bold", color: "#0d47a1" }}>
-                            Dirija-se a uma das nossas lojas para doar o seu equipamento!
+                          <Typography
+                            variant="body2"
+                            sx={{ fontWeight: "bold", color: "#0d47a1" }}
+                          >
+                            Dirija-se a uma das nossas lojas para doar o seu
+                            equipamento!
                           </Typography>
                         </Box>
 
@@ -138,7 +178,7 @@ const ProjetosPage = () => {
                             mt: 2,
                             "&:hover": { backgroundColor: "#333" },
                           }}
-                          onClick={() => handleAbrirDetalhes(projeto.id)} // ⬅️ Atualizado aqui
+                          onClick={() => handleAbrirDetalhes(projeto.id)}
                         >
                           Mais detalhes
                         </Button>
@@ -154,14 +194,17 @@ const ProjetosPage = () => {
 
       <Footer />
 
-      {/* Modal permanece aqui, mas já não será usado neste fluxo (mantido conforme pedido) */}
       <AnimatePresence>
         {modalAberto && projetoSelecionado && (
           <Modal
             open={modalAberto}
             onClose={handleFecharModal}
             closeAfterTransition
-            sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: -30 }}
@@ -188,31 +231,53 @@ const ProjetosPage = () => {
                   {projetoSelecionado.nome}
                 </Typography>
 
-                {projetoSelecionado.imagens && projetoSelecionado.imagens.length > 0 ? (
-                  <Box sx={{ position: "relative", mb: 2, textAlign: "center" }}>
+                {projetoSelecionado.imagens?.length > 0 ? (
+                  <Box
+                    sx={{ position: "relative", mb: 2, textAlign: "center" }}
+                  >
                     <img
                       src={projetoSelecionado.imagens[imagemAtual]}
-                      alt={`${projetoSelecionado.nome} - imagem ${imagemAtual + 1}`}
-                      style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 8 }}
+                      alt={`${projetoSelecionado.nome} - imagem ${
+                        imagemAtual + 1
+                      }`}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: 200,
+                        borderRadius: 8,
+                      }}
                     />
                     {projetoSelecionado.imagens.length > 1 && (
                       <>
                         <Button
                           onClick={handlePrevImage}
-                          sx={{ position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)" }}
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: 0,
+                            transform: "translateY(-50%)",
+                          }}
                         >
                           ‹
                         </Button>
                         <Button
                           onClick={handleNextImage}
-                          sx={{ position: "absolute", top: "50%", right: 0, transform: "translateY(-50%)" }}
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            right: 0,
+                            transform: "translateY(-50%)",
+                          }}
                         >
                           ›
                         </Button>
                       </>
                     )}
-                    <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
-                      Imagem {imagemAtual + 1} de {projetoSelecionado.imagens.length}
+                    <Typography
+                      variant="caption"
+                      sx={{ display: "block", mt: 1 }}
+                    >
+                      Imagem {imagemAtual + 1} de{" "}
+                      {projetoSelecionado.imagens.length}
                     </Typography>
                   </Box>
                 ) : (
@@ -225,13 +290,16 @@ const ProjetosPage = () => {
                   <strong>Descrição:</strong> {projetoSelecionado.descricao}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Data Limite:</strong> {new Date(projetoSelecionado.datalimite).toLocaleDateString()}
+                  <strong>Data Limite:</strong>{" "}
+                  {new Date(projetoSelecionado.datalimite).toLocaleDateString()}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Quantidade de Equipamentos:</strong> {projetoSelecionado.quantidadeequipamentos}
+                  <strong>Quantidade de Equipamentos:</strong>{" "}
+                  {projetoSelecionado.quantidadeequipamentos}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Organizador:</strong> {projetoSelecionado.nomeorganizador}
+                  <strong>Organizador:</strong>{" "}
+                  {projetoSelecionado.nomeorganizador}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 2 }}>
                   <strong>Loja:</strong> {projetoSelecionado.nomeloja}
@@ -246,8 +314,12 @@ const ProjetosPage = () => {
                     textAlign: "center",
                   }}
                 >
-                  <Typography variant="body2" sx={{ fontWeight: "bold", color: "#0d47a1" }}>
-                    Dirija-se a uma das nossas lojas para doar o seu equipamento!
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: "bold", color: "#0d47a1" }}
+                  >
+                    Dirija-se a uma das nossas lojas para doar o seu
+                    equipamento!
                   </Typography>
                 </Box>
 
