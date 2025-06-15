@@ -33,18 +33,12 @@ const getProjetosBeneficencia = async (req, res) => {
 // Buscar projeto por ID
 const getProjetoById = async (req, res) => {
   const { id } = req.params;
-  
+
   if (!/^\d+$/.test(id)) {
     return res.status(400).json({ error: "ID inválido." });
   }
 
   const idNumerico = Number(id);
-  
-  console.log("ID recebido na URL:", idNumerico);
-
-
-  console.log("=== ROTA GET /:id ===");
-  console.log("ID recebido na URL:", id, "Tipo:", typeof id, "ID numérico:", idNumerico);
 
   try {
     const projetoQuery = `
@@ -63,15 +57,13 @@ const getProjetoById = async (req, res) => {
     }
 
     const projetoBase = projetoResult.rows[0];
-    console.log("Projeto base:", projetoBase);
 
     // Buscar imagens adicionais
-    const imagensQuery = `SELECT url FROM imagemProjeto WHERE projetoId = $1`;
-    console.log("Executando query de imagens...");
+    const imagensQuery = `SELECT urls FROM imagemProjeto WHERE projetoId = $1`;
     const imagensResult = await db.query(imagensQuery, [idNumerico]);
 
     // Obter array de URLs da tabela imagemProjeto
-    let imagens = imagensResult.rows.map((row) => row.url);
+    let imagens = imagensResult.rows.map((row) => row.urls);
 
     // Se a imagem principal existe e não está duplicada, adicioná-la no início
     if (projetoBase.imagem && !imagens.includes(projetoBase.imagem)) {
@@ -84,7 +76,6 @@ const getProjetoById = async (req, res) => {
       imagens,
     };
 
-    console.log("Projeto final enviado:", projeto);
     res.status(200).json(projeto);
   } catch (error) {
     console.error("Erro:", error);

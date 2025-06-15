@@ -10,7 +10,7 @@ import {
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -34,10 +34,8 @@ const ProjetoDetalhesPage = () => {
         }
         const data = await response.json();
         const projetoRecebido = Array.isArray(data) ? data[0] : data;
-        console.log("Projeto recebido:", projetoRecebido);
         setProjeto(projetoRecebido);
       } catch (err) {
-        console.error("Erro ao carregar projeto:", err.message);
         setErro(err.message);
       } finally {
         setLoading(false);
@@ -92,16 +90,12 @@ const ProjetoDetalhesPage = () => {
     );
   }
 
-  // ✅ Correção importante: garantir que as imagens estão corretamente extraídas
   let imagens = [];
-
   if (Array.isArray(projeto?.imagens) && projeto.imagens.length > 0) {
     imagens = projeto.imagens;
   } else if (projeto?.imagem) {
     imagens = [projeto.imagem];
   }
-
-  console.log("✅ Imagens carregadas:", imagens);
 
   const proximaImagem = () => {
     setImagemIndex((i) => (i + 1) % imagens.length);
@@ -124,7 +118,7 @@ const ProjetoDetalhesPage = () => {
               borderRadius: "50px",
               textTransform: "none",
               fontWeight: "bold",
-              mb: 1,
+              mb: 2,
               px: 4,
               py: 1.2,
               fontSize: "1rem",
@@ -141,16 +135,38 @@ const ProjetoDetalhesPage = () => {
           </Typography>
 
           {imagens.length > 0 && (
-            <Box sx={{ mb: 2, textAlign: "center", position: "relative" }}>
-              <motion.img
-                key={imagemIndex}
-                src={imagens[imagemIndex]}
-                alt={`Imagem ${imagemIndex + 1} do projeto ${projeto?.nome}`}
-                style={{ maxWidth: "100%", borderRadius: 8 }}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-              />
+            <Box sx={{ mb: 3, textAlign: "center", position: "relative" }}>
+              <Box
+                sx={{
+                  width: "100%",
+                  height: 450,
+                  overflow: "hidden",
+                  position: "relative",
+                  borderRadius: 2,
+                }}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={imagemIndex}
+                    src={imagens[imagemIndex]}
+                    alt={`Imagem ${imagemIndex + 1}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: 8,
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6 }}
+                  />
+                </AnimatePresence>
+              </Box>
+
               {imagens.length > 1 && (
                 <Box
                   sx={{
@@ -164,12 +180,8 @@ const ProjetoDetalhesPage = () => {
                     transform: "translateY(-50%)",
                   }}
                 >
-                  <Button onClick={imagemAnterior} variant="contained" size="small">
-                    ⬅
-                  </Button>
-                  <Button onClick={proximaImagem} variant="contained" size="small">
-                    ➡
-                  </Button>
+                  <Button onClick={imagemAnterior} variant="contained" size="small">⬅</Button>
+                  <Button onClick={proximaImagem} variant="contained" size="small">➡</Button>
                 </Box>
               )}
             </Box>
@@ -180,8 +192,7 @@ const ProjetoDetalhesPage = () => {
               <strong>Descrição:</strong> {projeto?.descricao}
             </Typography>
             <Typography variant="body1">
-              <strong>Data Limite:</strong>{" "}
-              {new Date(projeto?.datalimite).toLocaleDateString()}
+              <strong>Data Limite:</strong> {new Date(projeto?.datalimite).toLocaleDateString()}
             </Typography>
             <Typography variant="body1">
               <strong>Quantidade de Equipamentos:</strong> {projeto?.quantidadeequipamentos}
