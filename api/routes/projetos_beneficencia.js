@@ -5,6 +5,5 @@ const { getProjetosBeneficencia, getProjetoById } = require("../controllers/proj
 router.get("/", getProjetosBeneficencia);
 
 router.get("/:id", getProjetoById);
-//router.delete("/:id", deleteProjetoBeneficencia);
 
 module.exports = router;

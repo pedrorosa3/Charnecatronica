@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS cliente CASCADE;
 DROP TABLE IF EXISTS loja CASCADE;
 DROP TABLE IF EXISTS pessoa CASCADE;
 DROP TABLE IF EXISTS morada CASCADE;
+DROP TABLE IF EXISTS imagemProjeto CASCADE;
 
 
 CREATE TABLE morada (
@@ -176,6 +177,13 @@ CREATE TABLE projetoBeneficencia (
     fichaEquipamentoCodBarras VARCHAR(50) REFERENCES fichaDeEquipamento(codBarras),
     imagem VARCHAR(500)
 );
+
+CREATE TABLE imagemProjeto (
+    id SERIAL PRIMARY KEY,
+    projetoid INT REFERENCES projetoBeneficencia(id) ON DELETE CASCADE,
+    urls VARCHAR(500) NOT NULL
+);
+
 
 CREATE TABLE interesse (
     id SERIAL PRIMARY KEY,
@@ -553,3 +561,23 @@ INSERT INTO projetoBeneficencia (
 ('Inclusão Digital para Idosos',
  'Este projeto tem como finalidade promover a inclusão digital da população idosa, por meio da oferta de cursos e suporte técnico personalizados para o uso de computadores, smartphones e outras tecnologias digitais. As atividades são elaboradas para facilitar o aprendizado e a familiarização com dispositivos eletrônicos, visando ampliar a autonomia, a comunicação e a participação social dos idosos. Ao promover a alfabetização digital, o projeto busca melhorar a qualidade de vida, estimular a saúde mental e proporcionar um maior acesso a serviços e informações essenciais na era digital.',
  '2024-12-31', 30, 3, 199915275, '1111111111123', '/images/inclusao-digital-idosos.jpg');
+
+-- Projeto 1
+INSERT INTO imagemProjeto (projetoid, urls) VALUES
+(1, '/images/doar2.jpg'),
+(1, '/images/doar3.jpg');
+
+-- Projeto 2
+INSERT INTO imagemProjeto (projetoid, urls) VALUES
+(2, '/images/lixo.jpg'),
+(2, '/images/lixo2.jpg');
+
+-- Projeto 3
+INSERT INTO imagemProjeto (projetoid, urls) VALUES
+(3, '/images/pessoas.jpg'),
+(3, '/images/computadoresss.jpeg');
+
+-- Projeto 4
+INSERT INTO imagemProjeto (projetoid, urls) VALUES
+(4, '/images/idosos.jpg'),
+(4, '/images/idosa.jpg');
