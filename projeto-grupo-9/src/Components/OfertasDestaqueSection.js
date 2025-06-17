@@ -54,7 +54,7 @@ const OfertasDestaqueSection = () => {
 
   const fetchEquipamentos = async () => {
     try {
-      const response = await fetch("http://localhost:9000/equipamentos");
+      const response = await fetch(process.env.REACT_APP_URL_HOST+"/equipamentos");
       const data = await response.json();
       const filtrados = data
         .filter((eq) => eq.estadovenda === "À venda")

@@ -34,7 +34,7 @@ const DiagnosticoReparacao = () => {
   useEffect(() => {
     const fetchDiagnostico = async () => {
       try {
-        const response = await fetch(`http://localhost:9000/reparacoes/${id}`);
+        const response = await fetch(process.env.REACT_APP_URL_HOST+`/reparacoes/${id}`);
         const data = await response.json();
 
         if (data.estadoDiagnostico) {
@@ -87,7 +87,7 @@ const DiagnosticoReparacao = () => {
   const handleSubmit = async () => {
     try {
       const response = await fetch(
-        `http://localhost:9000/pecasDiagnostico/${id}`,
+        process.env.REACT_APP_URL_HOST+`/pecasDiagnostico/${id}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -46,7 +46,7 @@ const AdicionarInteressePage = () => {
 
     const fetchEquipamentos = async () => {
       try {
-        const res = await fetch("http://localhost:9000/fichas");
+        const res = await fetch(process.env.REACT_APP_URL_HOST+"/fichas");
         const data = await res.json();
         setEquipamentos(data);
         const marcasUnicas = [...new Set(data.map((e) => e.marca))];
@@ -67,7 +67,7 @@ const AdicionarInteressePage = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:9000/interesses", {
+      const res = await fetch(process.env.REACT_APP_URL_HOST+"/interesses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

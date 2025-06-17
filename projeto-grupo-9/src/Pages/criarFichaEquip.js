@@ -27,7 +27,7 @@ const CriarFichaEquip = () => {
   const [tipoMensagem, setTipoMensagem] = useState("success"); // 'error' ou 'success'
 
   useEffect(() => {
-    fetch("http://localhost:9000/fichas/tipos")
+    fetch(process.env.REACT_APP_URL_HOST+"/fichas/tipos")
       .then((res) => res.json())
       .then((data) => setTipos(data))
       .catch((err) => {
@@ -84,7 +84,7 @@ const CriarFichaEquip = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:9000/fichas", {
+      const response = await fetch(process.env.REACT_APP_URL_HOST+"/fichas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -54,7 +54,7 @@ const AdicionarLoja = () => {
   useEffect(() => {
     const fetchLojas = async () => {
       try {
-        const res = await fetch("http://localhost:9000/lojas");
+        const res = await fetch(process.env.REACT_APP_URL_HOST+"/lojas");
         if (!res.ok) throw new Error("Erro ao buscar lojas");
         const data = await res.json();
         setLojas(data);
@@ -147,7 +147,7 @@ const AdicionarLoja = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:9000/lojas", {
+      const res = await fetch(process.env.REACT_APP_URL_HOST+"/lojas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

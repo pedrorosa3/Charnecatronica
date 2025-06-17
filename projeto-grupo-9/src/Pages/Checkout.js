@@ -153,7 +153,7 @@ const CheckoutPagamento = () => {
 
     try {
       // Envia a morada
-      const responseMorada = await fetch("http://localhost:9000/morada", {
+      const responseMorada = await fetch(process.env.REACT_APP_URL_HOST+"/morada", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -175,7 +175,7 @@ const CheckoutPagamento = () => {
       const moradaId = dataMorada.id || dataMorada.moradaId;
 
       // Envia os dados da pessoa
-      const responsePessoa = await fetch("http://localhost:9000/pessoa", {
+      const responsePessoa = await fetch(process.env.REACT_APP_URL_HOST+"/pessoa", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -196,7 +196,7 @@ const CheckoutPagamento = () => {
 
       // NOVO: evitar chamada para MBWay ao backend create-payment-intent
       if (metodoPagamento !== "mbway") {
-        const paymentIntentResponse = await fetch("http://localhost:9000/create-payment-intent", {
+        const paymentIntentResponse = await fetch(process.env.REACT_APP_URL_HOST+"/create-payment-intent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -221,7 +221,7 @@ const CheckoutPagamento = () => {
       }
 
       // Regista a venda no backend (independente do método)
-      const responseVenda = await fetch("http://localhost:9000/venda", {
+      const responseVenda = await fetch(process.env.REACT_APP_URL_HOST+"/venda", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

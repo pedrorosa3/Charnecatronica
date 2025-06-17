@@ -47,7 +47,7 @@ const DetalhesCompra = () => {
   useEffect(() => {
     const fetchCompra = async () => {
       try {
-        const response = await fetch(`http://localhost:9000/compraslista/${id}`);
+        const response = await fetch(process.env.REACT_APP_URL_HOST+`/compraslista/${id}`);
         const data = await response.json();
         setCompra(data);
       } catch (error) {
@@ -83,7 +83,7 @@ const DetalhesCompra = () => {
   };
 
   try {
-    const response = await fetch("http://localhost:9000/equipamentos", {
+    const response = await fetch(process.env.REACT_APP_URL_HOST+"/equipamentos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(equipamentoParaVender),

@@ -34,7 +34,7 @@ const Header = () => {
     useAuth0();
 
   useEffect(() => {
-    fetch("http://localhost:9000/equipamentos")
+    fetch(process.env.REACT_APP_URL_HOST+"/equipamentos")
       .then((res) => res.json())
       .then((data) => setEquipamentos(data))
       .catch((err) => console.error("Erro ao buscar equipamentos:", err));

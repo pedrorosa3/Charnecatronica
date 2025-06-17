@@ -28,7 +28,7 @@ const ProjetoDetalhesPage = () => {
   useEffect(() => {
     const fetchProjeto = async () => {
       try {
-        const response = await fetch(`http://localhost:9000/projetos_beneficencia/${id}`);
+        const response = await fetch(process.env.REACT_APP_URL_HOST+`/projetos_beneficencia/${id}`);
         if (!response.ok) {
           throw new Error(`Erro ${response.status}: Projeto não encontrado.`);
         }

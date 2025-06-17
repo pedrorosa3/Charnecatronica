@@ -36,7 +36,7 @@ const Interesses = () => {
   useEffect(() => {
     const fetchInteresses = async () => {
       try {
-        const res = await fetch(`http://localhost:9000/interesses?email=${user?.email}`);
+        const res = await fetch(process.env.REACT_APP_URL_HOST+`/interesses?email=${user?.email}`);
         if (!res.ok) throw new Error("Erro ao buscar interesses.");
         const data = await res.json();
         setInteresses(data.interesses || []);
@@ -56,7 +56,7 @@ const Interesses = () => {
 
   const handleRemoverInteresse = async (id) => {
     try {
-      const res = await fetch(`http://localhost:9000/interesses/${id}`, {
+      const res = await fetch(process.env.REACT_APP_URL_HOST+`/interesses/${id}`, {
         method: "DELETE",
       });
 

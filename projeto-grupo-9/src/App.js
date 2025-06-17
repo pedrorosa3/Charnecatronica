@@ -43,13 +43,15 @@ import AdicionarInteresse from "./Pages/AdicionarInteresse";
 import { InteressesProvider } from "./Context/InteressesContext";
 
 
+
+
 function App() {
   // Estado para armazenar a resposta da API
   const [apiResponse, setApiResponse] = useState("");
 
   // Função para chamar a API
   const callAPI = () => {
-    fetch("http://localhost:9000/testAPI")
+    fetch(process.env.REACT_APP_URL_HOST+"/testAPI")
       .then((res) => res.text())
       .then((res) => setApiResponse(res))
       .catch((err) => console.error("Erro ao chamar API:", err));

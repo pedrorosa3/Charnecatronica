@@ -16,7 +16,7 @@ const DetalhesVendaPage = () => {
   useEffect(() => {
     const fetchDetalhesVenda = async () => {
       try {
-        const response = await fetch(`http://localhost:9000/vendaslista/${numerovenda}`);
+        const response = await fetch(process.env.REACT_APP_URL_HOST+`/vendaslista/${numerovenda}`);
         const data = await response.json();
         setVenda(data);
       } catch (error) {

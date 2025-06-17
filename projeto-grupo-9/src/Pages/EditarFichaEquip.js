@@ -35,7 +35,7 @@ const EditarFichaEquip = () => {
 
   useEffect(() => {
     // Buscar dados da ficha
-    fetch(`http://localhost:9000/fichas/${id}`)
+    fetch(process.env.REACT_APP_URL_HOST+`/fichas/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setFormData({
@@ -53,7 +53,7 @@ const EditarFichaEquip = () => {
       });
 
     // Buscar tipos de equipamento
-    fetch("http://localhost:9000/fichas/tipos")
+    fetch(process.env.REACT_APP_URL_HOST+"/fichas/tipos")
       .then((res) => res.json())
       .then((data) => setTipos(data))
       .catch((err) => {
@@ -73,7 +73,7 @@ const EditarFichaEquip = () => {
 
   const handleEdit = async () => {
     try {
-      const response = await fetch(`http://localhost:9000/fichas/${id}`, {
+      const response = await fetch(process.env.REACT_APP_URL_HOST+`/fichas/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -25,7 +25,7 @@ const DetalhesReparacao = () => {
   useEffect(() => {
     const fetchReparacao = async () => {
       try {
-        const response = await fetch(`http://localhost:9000/reparacoes/${id}`);
+        const response = await fetch(process.env.REACT_APP_URL_HOST+`/reparacoes/${id}`);
         const data = await response.json();
         setReparacao(data);
       } catch (error) {

@@ -36,7 +36,7 @@ const VendasPage = () => {
 
   const fetchVendas = async () => {
     try {
-      const response = await fetch("http://localhost:9000/vendaslista");
+      const response = await fetch(process.env.REACT_APP_URL_HOST+"/vendaslista");
       const data = await response.json();
       setVendas(data);
     } catch (error) {
@@ -58,7 +58,7 @@ const VendasPage = () => {
 
   const confirmarAlteracao = async () => {
     try {
-      await fetch(`http://localhost:9000/vendaslista/${vendaSelecionada.numerovenda}/estado`, {
+      await fetch(process.env.REACT_APP_URL_HOST+`/vendaslista/${vendaSelecionada.numerovenda}/estado`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estadovenda: novoEstado }),

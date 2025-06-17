@@ -28,7 +28,7 @@ const DetalhesProduto = () => {
   const { adicionarAoCarrinho, carrinho } = useCarrinho();
 
   useEffect(() => {
-    fetch(`http://localhost:9000/equipamentos/${id}`)
+    fetch(process.env.REACT_APP_URL_HOST+`/equipamentos/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setProduto(data);

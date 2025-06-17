@@ -56,7 +56,7 @@ const Perfil = () => {
 
       try {
         const res = await fetch(
-          `http://localhost:9000/perfil?email=${user.email}`
+          process.env.REACT_APP_URL_HOST+`/perfil?email=${user.email}`
         );
         if (!res.ok) throw new Error("Erro ao obter dados do perfil");
         const data = await res.json();
@@ -84,7 +84,7 @@ const Perfil = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:9000/perfil/clienteId?email=${user.email}`
+          process.env.REACT_APP_URL_HOST+`/perfil/clienteId?email=${user.email}`
         );
         if (!response.ok) throw new Error("Cliente não encontrado");
 
@@ -106,7 +106,7 @@ const Perfil = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:9000/vendaslista/cliente/${clienteId}`
+          process.env.REACT_APP_URL_HOST+`/vendaslista/cliente/${clienteId}`
         );
         if (!response.ok) throw new Error("Erro ao buscar vendas do cliente");
 
@@ -396,7 +396,7 @@ const Perfil = () => {
             variant="contained"
             onClick={async () => {
               try {
-                const response = await fetch("http://localhost:9000/perfil", {
+                const response = await fetch(process.env.REACT_APP_URL_HOST+"/perfil", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",

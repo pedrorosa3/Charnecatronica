@@ -12,7 +12,7 @@ export const InteressesProvider = ({ children }) => {
   const fetchInteresses = async () => {
     try {
       if (!user?.email) return;
-      const res = await fetch(`http://localhost:9000/interesses?email=${user.email}`);
+      const res = await fetch(process.env.REACT_APP_URL_HOST+`/interesses?email=${user.email}`);
       const interesses = await res.json();
       
 

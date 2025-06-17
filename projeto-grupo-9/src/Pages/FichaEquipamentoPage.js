@@ -28,7 +28,7 @@ const FichaEquipamentoPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:9000/fichas/${id}`)
+    fetch(process.env.REACT_APP_URL_HOST+`/fichas/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setFicha(data);
@@ -40,7 +40,7 @@ const FichaEquipamentoPage = () => {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:9000/fichas/${id}`, {
+      const res = await fetch(process.env.REACT_APP_URL_HOST+`/fichas/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {

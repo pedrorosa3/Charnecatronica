@@ -35,7 +35,7 @@ const ProjetosPageFuncionario = () => {
   useEffect(() => {
     const fetchProjetos = async () => {
       try {
-        const response = await fetch("http://localhost:9000/projetos_beneficencia");
+        const response = await fetch(process.env.REACT_APP_URL_HOST+"/projetos_beneficencia");
         if (!response.ok) throw new Error("Erro ao buscar projetos");
         const data = await response.json();
         setProjetos(data);
@@ -56,7 +56,7 @@ const ProjetosPageFuncionario = () => {
     if (!window.confirm("Tem certeza que deseja excluir este projeto?")) return;
 
     try {
-      const response = await fetch(`http://localhost:9000/projetos_beneficencia/${id}`, {
+      const response = await fetch(process.env.REACT_APP_URL_HOST+`/projetos_beneficencia/${id}`, {
         method: "DELETE",
       });
 

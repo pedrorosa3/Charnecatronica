@@ -38,7 +38,7 @@ const ProjetosPage = () => {
     const fetchProjetos = async () => {
       try {
         const response = await fetch(
-          "http://localhost:9000/projetos_beneficencia"
+          process.env.REACT_APP_URL_HOST+"/projetos_beneficencia"
         );
         if (!response.ok) throw new Error("Erro ao buscar projetos");
         const data = await response.json();
