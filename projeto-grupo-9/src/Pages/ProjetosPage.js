@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { styled } from "@mui/system";
 import {
   Box,
   Container,
@@ -10,35 +9,38 @@ import {
   CardMedia,
   Button,
   Modal,
+  IconButton,
 } from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
+import CloseIcon from "@mui/icons-material/Close";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import { useNavigate } from "react-router-dom";
 
-// Estilo do Modal
 const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
+  position: "relative",
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
   borderRadius: "10px",
+  maxHeight: "80vh",
+  overflowY: "auto",
 };
 
 const ProjetosPage = () => {
   const [projetos, setProjetos] = useState([]);
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
+  const [imagemAtual, setImagemAtual] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjetos = async () => {
       try {
-        const response = await fetch("http://localhost:9000/projetos_beneficencia");
-        if (!response.ok) {
-          throw new Error("Erro ao buscar projetos");
-        }
+        const response = await fetch(
+          process.env.REACT_APP_URL_HOST+"/projetos_beneficencia"
+        );
+        if (!response.ok) throw new Error("Erro ao buscar projetos");
         const data = await response.json();
         setProjetos(data);
       } catch (error) {
@@ -49,51 +51,141 @@ const ProjetosPage = () => {
     fetchProjetos();
   }, []);
 
-  // Função para abrir o modal com os detalhes do projeto
-  const handleAbrirDetalhes = (projeto) => {
-    setProjetoSelecionado(projeto);
-    setModalAberto(true);
+  const handleAbrirDetalhes = (projetoId) => {
+    navigate(`/projeto/${projetoId}`);
+  };
+
+  const handleFecharModal = () => {
+    setModalAberto(false);
+    setProjetoSelecionado(null);
+  };
+
+  const handleNextImage = () => {
+    if (!projetoSelecionado) return;
+    setImagemAtual(
+      (prev) => (prev + 1) % (projetoSelecionado.imagens.length || 1)
+    );
+  };
+
+  const handlePrevImage = () => {
+    if (!projetoSelecionado) return;
+    setImagemAtual(
+      (prev) =>
+        (prev - 1 + (projetoSelecionado.imagens.length || 1)) %
+        (projetoSelecionado.imagens.length || 1)
+    );
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        backgroundColor: "#F8F8F8",
+      }}
+    >
       <Header />
 
-      <Container sx={{ flex: 1, paddingTop: "80px", paddingBottom: "40px" }}>
-        <Typography variant="h4" sx={{ marginTop: "40px", marginBottom: "50px", fontWeight: 600, textAlign: "center" }}>
+      <Container
+        maxWidth="xl"
+        disableGutters
+        sx={{ flex: 1, pt: "130px", pb: 5 }}
+      >
+        <Typography
+          variant="h4"
+          sx={{ mb: 6, fontWeight: 600, textAlign: "center" }}
+        >
           Projetos de Beneficência
         </Typography>
 
-        {/* Box com Scroll */}
-        <Box sx={{ maxHeight: "500px", overflowY: "auto", paddingRight: "10px", }}>
-          <Grid container spacing={4}>
-            {projetos.map((projeto) => (
+        <Box
+          sx={{
+            width: "100%",
+            maxHeight: "calc(100vh - 250px)",
+            overflowY: "auto",
+          }}
+        >
+          <Grid container spacing={3} justifyContent="center">
+            {projetos.map((projeto, index) => (
               <Grid item xs={12} sm={6} md={4} key={projeto.id}>
-                <Card sx={{ maxWidth: 345, height: "100%", display: "flex", flexDirection: "column" }}>
-                  <CardMedia component="img" height="200" image={projeto.imagem || "/images/default.jpg"} alt={projeto.nome} />
-                  <CardContent>
-                    <Typography variant="h6">{projeto.nome}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {projeto.descricao}
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      fullWidth
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  style={{ height: "100%" }}
+                >
+                  <Card
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%",
+                      minHeight: 350,
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      height="250"
+                      image={projeto.imagem || "/images/default.jpg"}
+                      alt={projeto.nome}
+                    />
+                    <CardContent
                       sx={{
-                        backgroundColor: "#000",
-                        color: "#FFFFFF",
-                        borderRadius: "50px",
-                        textTransform: "none",
-                        fontWeight: "bold",
-                        marginTop: "15px",
-                        "&:hover": { backgroundColor: "#333" },
+                        display: "flex",
+                        flexDirection: "column",
+                        flexGrow: 1,
                       }}
-                      onClick={() => handleAbrirDetalhes(projeto)}
                     >
-                      Mais detalhes
-                    </Button>
-                  </CardContent>
-                </Card>
+                      <Typography variant="h6">{projeto.nome}</Typography>
+                      <Typography variant="body2" sx={{ mt: 1 }}>
+                        <strong>Data Limite:</strong>{" "}
+                        {new Date(projeto.datalimite).toLocaleDateString()}
+                      </Typography>
+                      <Typography variant="body2">
+                        <strong>Organizador:</strong> {projeto.nomeorganizador}
+                      </Typography>
+                      <Typography variant="body2">
+                        <strong>Loja:</strong> {projeto.nomeloja}
+                      </Typography>
+
+                      <Box sx={{ mt: "auto" }}>
+                        <Box
+                          sx={{
+                            bgcolor: "#e3f2fd",
+                            borderRadius: "8px",
+                            p: 1,
+                            textAlign: "center",
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{ fontWeight: "bold", color: "#0d47a1" }}
+                          >
+                            Dirija-se a uma das nossas lojas para doar o seu
+                            equipamento!
+                          </Typography>
+                        </Box>
+
+                        <Button
+                          variant="contained"
+                          fullWidth
+                          sx={{
+                            backgroundColor: "#000",
+                            color: "#fff",
+                            borderRadius: "50px",
+                            textTransform: "none",
+                            fontWeight: "bold",
+                            mt: 2,
+                            "&:hover": { backgroundColor: "#333" },
+                          }}
+                          onClick={() => handleAbrirDetalhes(projeto.id)}
+                        >
+                          Mais detalhes
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               </Grid>
             ))}
           </Grid>
@@ -102,41 +194,152 @@ const ProjetosPage = () => {
 
       <Footer />
 
-      {/* Modal para exibir detalhes do projeto */}
-      <Modal open={modalAberto} onClose={() => setModalAberto(false)}>
-        <Box sx={modalStyle}>
-          {projetoSelecionado && (
-            <>
-              <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
-                {projetoSelecionado.nome}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Descrição:</strong> {projetoSelecionado.descricao}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Data Limite:</strong> {new Date(projetoSelecionado.datalimite).toLocaleDateString()}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Quantidade de Equipamentos:</strong> {projetoSelecionado.quantidadeequipamentos}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Organizador:</strong> {projetoSelecionado.nomeorganizador}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Loja:</strong> {projetoSelecionado.nomeloja}
-              </Typography>
-              <Button
-                variant="contained"
-                fullWidth
-                sx={{ marginTop: 2, backgroundColor: "#000", "&:hover": { backgroundColor: "#333" } }}
-                onClick={() => setModalAberto(false)}
-              >
-                Fechar
-              </Button>
-            </>
-          )}
-        </Box>
-      </Modal>
+      <AnimatePresence>
+        {modalAberto && projetoSelecionado && (
+          <Modal
+            open={modalAberto}
+            onClose={handleFecharModal}
+            closeAfterTransition
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -20 }}
+              transition={{ duration: 0.4 }}
+              style={{
+                width: 640,
+                maxHeight: "80vh",
+                overflowY: "auto",
+                backgroundColor: "transparent",
+              }}
+            >
+              <Box sx={modalStyle}>
+                <IconButton
+                  onClick={handleFecharModal}
+                  sx={{ position: "absolute", top: 8, right: 8 }}
+                  aria-label="fechar"
+                >
+                  <CloseIcon />
+                </IconButton>
+
+                <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+                  {projetoSelecionado.nome}
+                </Typography>
+
+                {projetoSelecionado.imagens?.length > 0 ? (
+                  <Box
+                    sx={{ position: "relative", mb: 2, textAlign: "center" }}
+                  >
+                    <img
+                      src={projetoSelecionado.imagens[imagemAtual]}
+                      alt={`${projetoSelecionado.nome} - imagem ${
+                        imagemAtual + 1
+                      }`}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: 200,
+                        borderRadius: 8,
+                      }}
+                    />
+                    {projetoSelecionado.imagens.length > 1 && (
+                      <>
+                        <Button
+                          onClick={handlePrevImage}
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: 0,
+                            transform: "translateY(-50%)",
+                          }}
+                        >
+                          ‹
+                        </Button>
+                        <Button
+                          onClick={handleNextImage}
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            right: 0,
+                            transform: "translateY(-50%)",
+                          }}
+                        >
+                          ›
+                        </Button>
+                      </>
+                    )}
+                    <Typography
+                      variant="caption"
+                      sx={{ display: "block", mt: 1 }}
+                    >
+                      Imagem {imagemAtual + 1} de{" "}
+                      {projetoSelecionado.imagens.length}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography variant="body2" sx={{ mb: 2 }}>
+                    Sem imagens adicionais.
+                  </Typography>
+                )}
+
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Descrição:</strong> {projetoSelecionado.descricao}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Data Limite:</strong>{" "}
+                  {new Date(projetoSelecionado.datalimite).toLocaleDateString()}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Quantidade de Equipamentos:</strong>{" "}
+                  {projetoSelecionado.quantidadeequipamentos}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Organizador:</strong>{" "}
+                  {projetoSelecionado.nomeorganizador}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                  <strong>Loja:</strong> {projetoSelecionado.nomeloja}
+                </Typography>
+
+                <Box
+                  sx={{
+                    bgcolor: "#e3f2fd",
+                    borderRadius: "8px",
+                    p: 1,
+                    mt: 2,
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: "bold", color: "#0d47a1" }}
+                  >
+                    Dirija-se a uma das nossas lojas para doar o seu
+                    equipamento!
+                  </Typography>
+                </Box>
+
+                <Button
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    mt: 1,
+                    backgroundColor: "#000",
+                    "&:hover": { backgroundColor: "#333" },
+                  }}
+                  onClick={handleFecharModal}
+                >
+                  Fechar
+                </Button>
+              </Box>
+            </motion.div>
+          </Modal>
+        )}
+      </AnimatePresence>
     </Box>
   );
 };

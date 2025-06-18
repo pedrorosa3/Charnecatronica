@@ -40,7 +40,7 @@ const AdicionarProjetoPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:9000/adicionar-projeto", {
+      const response = await fetch(process.env.REACT_APP_URL_HOST+"/adicionar-projeto", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

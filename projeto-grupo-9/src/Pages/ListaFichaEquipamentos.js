@@ -24,7 +24,7 @@ const ListaFichaEquipamentos = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:9000/fichas")
+    fetch(process.env.REACT_APP_URL_HOST+"/fichas")
       .then((res) => res.json())
       .then((data) => {
         setFichas(data);

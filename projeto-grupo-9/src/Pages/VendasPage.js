@@ -28,7 +28,7 @@ const ComprasPage = () => {
 
   const fetchCompras = async () => {
     try {
-      const response = await fetch("http://localhost:9000/compraslista");
+      const response = await fetch(process.env.REACT_APP_URL_HOST+"/compraslista");
       const data = await response.json();
       setCompras(data);
     } catch (error) {

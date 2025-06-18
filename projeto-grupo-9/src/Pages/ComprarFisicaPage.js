@@ -67,7 +67,7 @@ const ComprarFisicaPage = () => {
   useEffect(() => {
     const fetchLojas = async () => {
       try {
-        const res = await fetch("http://localhost:9000/lojas");
+        const res = await fetch(process.env.REACT_APP_URL_HOST+"/lojas");
         const data = await res.json();
         setLojas(data);
       } catch (err) {
@@ -82,7 +82,7 @@ const ComprarFisicaPage = () => {
       const fetchEmpregados = async () => {
         try {
           const res = await fetch(
-            `http://localhost:9000/lojas/${formData.lojaNipc}/empregados`
+            process.env.REACT_APP_URL_HOST+`/lojas/${formData.lojaNipc}/empregados`
           );
           const data = await res.json();
           setEmpregados(data);
@@ -97,7 +97,7 @@ const ComprarFisicaPage = () => {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const res = await fetch("http://localhost:9000/clientes");
+        const res = await fetch(process.env.REACT_APP_URL_HOST+"/clientes");
         const data = await res.json();
         setClientes(data);
       } catch (err) {
@@ -111,7 +111,7 @@ const ComprarFisicaPage = () => {
     if (formData.lojaNipc) {
         const fetchEquipamentos = async () => {
         try {
-            const res = await fetch(`http://localhost:9000/lojas/${formData.lojaNipc}/equipamentos`);
+            const res = await fetch(process.env.REACT_APP_URL_HOST+`/lojas/${formData.lojaNipc}/equipamentos`);
             const data = await res.json();
             setEquipamentos(data);
 
@@ -138,7 +138,7 @@ const ComprarFisicaPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:9000/vendaFisica", {
+      const response = await fetch(process.env.REACT_APP_URL_HOST+"/vendaFisica", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -175,7 +175,7 @@ const ComprarFisicaPage = () => {
       registarCompra(); // MBWay não usa Stripe
     } else if (metodoPagamento === "multibanco") {
       try {
-        const res = await fetch("http://localhost:9000/create-payment-intent", {
+        const res = await fetch(process.env.REACT_APP_URL_HOST+"/create-payment-intent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

@@ -1,43 +1,79 @@
-const db = require("../db"); // Importando a configuração do banco de dados
+const db = require("../db"); // Configuração do banco de dados
 
-// Função para inserir a morada no banco
 const adicionarMorada = async (req, res) => {
-  const { rua, numero, codigoPostal, cidade } = req.body;
+  const {
+    pais,
+    localidade,
+    latitude,
+    longitude,
+    freguesia,
+    rua,
+    codigopostal,
+    concelho,
+    numero,
+    distrito,
+  } = req.body;
 
-  // Verificando se os campos obrigatórios estão preenchidos
-  if (!rua || !numero || !codigoPostal || !cidade) {
-    return res.status(400).json({ success: false, message: "Todos os campos são obrigatórios." });
+  // Verifique os campos obrigatórios mínimos
+  if (!rua || !numero || !codigopostal || !localidade) {
+    return res.status(400).json({
+      success: false,
+      message: "Os campos rua, número, código postal e localidade são obrigatórios.",
+    });
   }
 
   try {
-    // Definindo o valor do campo pais como "Portugal" diretamente
-    const pais = "Portugal";
-
-    // Inserindo a morada no banco de dados
     const query = `
-      INSERT INTO morada (pais, rua, numero, codigopostal, localidade)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO morada (
+        pais, localidade, latitude, longitude, freguesia,
+        rua, codigopostal, concelho, numero, distrito
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING id;
     `;
-    const values = [pais, rua, numero, codigoPostal, cidade];
+
+    // Se pais não vier, define "Portugal" como default
+    const paisValue = pais || "Portugal";
+
+    const values = [
+      paisValue,
+      localidade || null,
+      latitude || null,
+      longitude || null,
+      freguesia || null,
+      rua,
+      codigopostal,
+      concelho || null,
+      numero,
+      distrito || null,
+    ];
 
     const result = await db.query(query, values);
 
     if (result.rows.length > 0) {
-      // Retorna o sucesso com o ID da morada inserida
-      res.status(201).json({ success: true, message: "Morada inserida com sucesso", id: result.rows[0].id });
+      return res.status(201).json({
+        success: true,
+        message: "Morada inserida com sucesso",
+        id: result.rows[0].id,
+      });
     } else {
-      // Caso não insira com sucesso
-      res.status(500).json({ success: false, message: "Erro ao inserir a morada" });
+      return res.status(500).json({
+        success: false,
+        message: "Erro ao inserir a morada",
+      });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Erro interno do servidor" });
+    console.error("Erro ao inserir morada:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Erro interno do servidor",
+    });
   }
 };
 
 module.exports = {
   adicionarMorada,
 };
+
 
 

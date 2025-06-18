@@ -55,7 +55,9 @@ const Perfil = () => {
       if (!user?.email) return;
 
       try {
-        const res = await fetch(`http://localhost:9000/perfil?email=${user.email}`);
+        const res = await fetch(
+          process.env.REACT_APP_URL_HOST+`/perfil?email=${user.email}`
+        );
         if (!res.ok) throw new Error("Erro ao obter dados do perfil");
         const data = await res.json();
         setUserData({
@@ -81,7 +83,9 @@ const Perfil = () => {
       if (!user?.email) return;
 
       try {
-        const response = await fetch(`http://localhost:9000/perfil/clienteId?email=${user.email}`);
+        const response = await fetch(
+          process.env.REACT_APP_URL_HOST+`/perfil/clienteId?email=${user.email}`
+        );
         if (!response.ok) throw new Error("Cliente não encontrado");
 
         const data = await response.json();
@@ -101,7 +105,9 @@ const Perfil = () => {
       if (!clienteId) return;
 
       try {
-        const response = await fetch(`http://localhost:9000/vendaslista/cliente/${clienteId}`);
+        const response = await fetch(
+          process.env.REACT_APP_URL_HOST+`/vendaslista/cliente/${clienteId}`
+        );
         if (!response.ok) throw new Error("Erro ao buscar vendas do cliente");
 
         const data = await response.json();
@@ -181,9 +187,26 @@ const Perfil = () => {
         {/* Lado direito com opções e histórico */}
         <Container sx={{ flex: 1, padding: "30px" }}>
           <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={4}>
               <Card
-                onClick={() => navigate("/vendaspage")}
+                onClick={() => navigate("/interesses")}
+                sx={{
+                  padding: 3,
+                  textAlign: "center",
+                  cursor: "pointer",
+                  border: "2px solid #000",
+                  "&:hover": { backgroundColor: "#f9f9f9" },
+                }}
+              >
+                <VolunteerActivism fontSize="large" />
+                <Typography variant="h6" mt={2}>
+                  Interesses
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Card
+                onClick={() => navigate("/doar")}
                 sx={{
                   padding: 3,
                   textAlign: "center",
@@ -199,9 +222,9 @@ const Perfil = () => {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={4}>
               <Card
-                onClick={() => navigate(`/avarias?email=${user.email}`)}
+                onClick={() => navigate(`/reparacoesCliente`)}
                 sx={{
                   padding: 3,
                   textAlign: "center",
@@ -234,12 +257,18 @@ const Perfil = () => {
                       cursor: "pointer",
                       "&:hover": { backgroundColor: "#f0f0f0" },
                     }}
-                    onClick={() => navigate(`/detalhesEncomenda/${enc.numerovenda}`)}
+                    onClick={() =>
+                      navigate(`/detalhesEncomenda/${enc.numerovenda}`)
+                    }
                   >
-                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                      <Typography>
-                        Nº Encomenda - {enc.numerovenda}
-                      </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        mb: 1,
+                      }}
+                    >
+                      <Typography>Nº Encomenda - {enc.numerovenda}</Typography>
                       <Typography>
                         Data: {new Date(enc.data).toLocaleDateString()}
                       </Typography>
@@ -247,10 +276,14 @@ const Perfil = () => {
 
                     <Divider sx={{ my: 1 }} />
 
-                    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Box
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
                       <Typography>Método de Pagamento: {enc.tipo}</Typography>
                       <Typography>Estado: {enc.estadovenda}</Typography>
-                      <Typography>Custo transporte: {enc.custotransporte.toFixed(2)}€</Typography>
+                      <Typography>
+                        Custo transporte: {enc.custotransporte.toFixed(2)}€
+                      </Typography>
                     </Box>
                   </Card>
                 ))
@@ -291,7 +324,11 @@ const Perfil = () => {
 
           <TextField
             label="NIF"
-            inputProps={{ maxLength: 9, inputMode: "numeric", pattern: "[0-9]*" }}
+            inputProps={{
+              maxLength: 9,
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+            }}
             value={userData.nif}
             onChange={(e) => {
               const onlyNums = e.target.value.replace(/\D/g, "");
@@ -302,7 +339,11 @@ const Perfil = () => {
 
           <TextField
             label="NIC"
-            inputProps={{ maxLength: 8, inputMode: "numeric", pattern: "[0-9]*" }}
+            inputProps={{
+              maxLength: 8,
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+            }}
             value={userData.nic}
             onChange={(e) => {
               const onlyNums = e.target.value.replace(/\D/g, "");
@@ -315,7 +356,9 @@ const Perfil = () => {
             label="Género"
             select
             value={userData.genero}
-            onChange={(e) => setUserData({ ...userData, genero: e.target.value })}
+            onChange={(e) =>
+              setUserData({ ...userData, genero: e.target.value })
+            }
             fullWidth
           >
             <MenuItem value="Masculino">Masculino</MenuItem>
@@ -325,7 +368,11 @@ const Perfil = () => {
 
           <TextField
             label="Telemóvel"
-            inputProps={{ maxLength: 9, inputMode: "numeric", pattern: "[0-9]*" }}
+            inputProps={{
+              maxLength: 9,
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+            }}
             value={userData.telemovel}
             onChange={(e) => {
               const onlyNums = e.target.value.replace(/\D/g, "");
@@ -339,7 +386,9 @@ const Perfil = () => {
             type="date"
             InputLabelProps={{ shrink: true }}
             value={userData.dataNascimento}
-            onChange={(e) => setUserData({ ...userData, dataNascimento: e.target.value })}
+            onChange={(e) =>
+              setUserData({ ...userData, dataNascimento: e.target.value })
+            }
             fullWidth
           />
 
@@ -347,7 +396,7 @@ const Perfil = () => {
             variant="contained"
             onClick={async () => {
               try {
-                const response = await fetch("http://localhost:9000/perfil", {
+                const response = await fetch(process.env.REACT_APP_URL_HOST+"/perfil", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",

@@ -19,6 +19,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Link, useNavigate } from "react-router-dom";
 import { useCarrinho } from "../Context/CarrinhoContext";
 import { useAuth0 } from "@auth0/auth0-react";
+import IconInteresses from "../Components/IconInteresses";
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,7 +65,7 @@ useEffect(() => {
 
 
   useEffect(() => {
-    fetch("http://localhost:9000/equipamentos")
+    fetch(process.env.REACT_APP_URL_HOST+"/equipamentos")
       .then((res) => res.json())
       .then((data) => setEquipamentos(data))
       .catch((err) => console.error("Erro ao buscar equipamentos:", err));
@@ -213,7 +214,7 @@ useEffect(() => {
               display: "flex",
               gap: "45px",
               flexGrow: 1,
-              paddingLeft: "80px",
+              paddingLeft: "30px",
             }}
           >
             {[
@@ -311,6 +312,7 @@ useEffect(() => {
               </Button>
             )}
 
+            <IconInteresses />
             <Box
               component={Link}
               to="/carrinho"

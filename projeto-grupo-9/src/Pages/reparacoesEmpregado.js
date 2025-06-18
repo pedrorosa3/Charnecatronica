@@ -46,9 +46,9 @@ const ReparacoesEmpregado = () => {
     const fetchData = async () => {
       try {
         const [resClientes, resFichas, resLojas] = await Promise.all([
-          fetch("http://localhost:9000/clientes"),
-          fetch("http://localhost:9000/fichas"),
-          fetch("http://localhost:9000/lojas"),
+          fetch(process.env.REACT_APP_URL_HOST+"/clientes"),
+          fetch(process.env.REACT_APP_URL_HOST+"/fichas"),
+          fetch(process.env.REACT_APP_URL_HOST+"/lojas"),
         ]);
 
         setClientes(await resClientes.json());
@@ -57,7 +57,7 @@ const ReparacoesEmpregado = () => {
 
         if (formData.lojaNipc) {
           const resEmpregados = await fetch(
-            `http://localhost:9000/lojas/${formData.lojaNipc}/empregados`
+            process.env.REACT_APP_URL_HOST+`/lojas/${formData.lojaNipc}/empregados`
           );
           setEmpregados(await resEmpregados.json());
         } else {
@@ -100,7 +100,7 @@ const ReparacoesEmpregado = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:9000/reparacoes", {
+      const res = await fetch(process.env.REACT_APP_URL_HOST+"/reparacoes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSubmit),

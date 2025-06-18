@@ -7,6 +7,7 @@ import ComprarPage from "./Pages/ComprarPage";
 import VenderPage from "./Pages/VenderPage";
 import OrcamentoPage from "./Pages/OrcamentoPage";
 import ProjetosPage from "./Pages/ProjetosPage";
+import ProjetoDetalhesPage from "./Pages/ProjetosDetalhesPage"; // NOVO
 import VendasPage from "./Pages/VendasPage";
 import LoginPage from "./Pages/LoginPage";
 import Carrinho from "./Pages/Carrinho";
@@ -37,6 +38,12 @@ import LojasCliente from "./Pages/LojasCliente";
 import ReparacoesCliente from "./Pages/reparacoesCliente";
 import VenderCliente from "./Pages/venderCliente";
 import DetalhesEncomendaPage from "./Pages/DetalhesEncomenda";
+import Interesses from "./Pages/Interesses";
+import AdicionarInteresse from "./Pages/AdicionarInteresse";
+import { InteressesProvider } from "./Context/InteressesContext";
+
+
+
 
 function App() {
   // Estado para armazenar a resposta da API
@@ -44,7 +51,7 @@ function App() {
 
   // Função para chamar a API
   const callAPI = () => {
-    fetch("http://localhost:9000/testAPI")
+    fetch(process.env.REACT_APP_URL_HOST+"/testAPI")
       .then((res) => res.text())
       .then((res) => setApiResponse(res))
       .catch((err) => console.error("Erro ao chamar API:", err));
@@ -57,13 +64,18 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+    <InteressesProvider>
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/comprar" element={<ComprarPage />} />
           <Route path="/comprarAoCliente" element={<VenderPage />} />
           <Route path="/orcamento" element={<OrcamentoPage />} />
+          
           <Route path="/doar" element={<ProjetosPage />} />
+
+          <Route path="/projeto/:id" element={<ProjetoDetalhesPage />} />
+
           <Route path="/equipamentosComprados" element={<VendasPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/carrinho" element={<Carrinho />} />
@@ -111,9 +123,16 @@ function App() {
             path="/detalhesEncomenda/:numerovenda"
             element={<DetalhesEncomendaPage />}
           />
+          <Route path="/interesses" element={<Interesses />} />
+          <Route
+            path="/adicionar-interesse"
+            element={<AdicionarInteresse />}
+          />
+          
           {/* Adicione outras rotas conforme necessário */}
         </Routes>
       </Router>
+    </InteressesProvider>
     </ThemeProvider>
   );
 }

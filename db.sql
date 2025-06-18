@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS cliente CASCADE;
 DROP TABLE IF EXISTS loja CASCADE;
 DROP TABLE IF EXISTS pessoa CASCADE;
 DROP TABLE IF EXISTS morada CASCADE;
+DROP TABLE IF EXISTS imagemProjeto CASCADE;
 
 
 CREATE TABLE morada (
@@ -176,6 +177,13 @@ CREATE TABLE projetoBeneficencia (
     fichaEquipamentoCodBarras VARCHAR(50) REFERENCES fichaDeEquipamento(codBarras),
     imagem VARCHAR(500)
 );
+
+CREATE TABLE imagemProjeto (
+    id SERIAL PRIMARY KEY,
+    projetoid INT REFERENCES projetoBeneficencia(id) ON DELETE CASCADE,
+    urls VARCHAR(500) NOT NULL
+);
+
 
 CREATE TABLE interesse (
     id SERIAL PRIMARY KEY,
@@ -538,18 +546,47 @@ INSERT INTO projetoBeneficencia (
   nome, descricao, dataLimite, quantidadeEquipamentos,
   organizadorId, lojaNipc, fichaEquipamentoCodBarras, imagem
 ) VALUES
-('Doação de Computadores para Escolas e Instituições Carenciadas',
- 'A loja pode recolher computadores Usados, recondicioná-los e doá-los para escolas, bibliotecas ou centros comunitários que atendem crianças e jovens de baixa renda. Isso ajuda a reduzir a exclusão digital e a fornecer acesso à tecnologia para fins educacionais.',
- '2022-12-31', 100, 1, 199915275, '1111111111126', '/images/Instituicao-ensino.jpg'),
+(
+  'Doação de Computadores para Escolas e Instituições Carenciadas',
+  'Este projeto tem como propósito estabelecer uma rede solidária de recolha, recondicionamento e redistribuição de equipamentos informáticos usados, com foco na inclusão digital de instituições educacionais e sociais em contextos socioeconómicos vulneráveis. Através de parcerias com lojas de tecnologia, empresas e particulares, serão angariados computadores, portáteis e periféricos que, após uma triagem rigorosa e manutenção técnica especializada, serão reconfigurados para garantir desempenho e segurança adequados. Posteriormente, os equipamentos serão distribuídos de forma gratuita a escolas públicas, bibliotecas comunitárias e organizações não-governamentais que atuam na promoção da educação e da cidadania digital. Para além do acesso físico à tecnologia, o projeto contempla a disponibilização de materiais pedagógicos digitais e acompanhamento técnico para os beneficiários, assegurando a utilização eficaz dos dispositivos. A iniciativa procura assim combater a exclusão digital e promover o desenvolvimento equitativo através do acesso universal a ferramentas tecnológicas essenciais.',
+  '2022-12-31', 100, 1, 199915275, '1111111111126', '/images/Instituicao-ensino.jpg'
+),
 
-('Recolha e Reciclagem de Resíduos Eletrônicos',
- 'A loja pode criar um ponto de recolha de equipamentos eletrônicos antigos (teclados, monitores, baterias, etc.), garantindo que sejam reciclados de forma ambientalmente responsável. Parte dos equipamentos pode ser recondicionada e doada.',
- '2023-06-30', 50, 2, 696115913, '1111111111122', '/images/residuos-eletronicos.jpg'),
+(
+  'Recolha e Reciclagem de Resíduos Eletrônicos',
+  'Este projeto propõe a implementação de um programa abrangente e sustentável de gestão de resíduos eletrónicos, com ênfase na responsabilidade ambiental, na reutilização consciente e na promoção da economia circular. O sistema operacionaliza pontos de recolha em parceria com entidades comerciais e públicas, onde a população poderá entregar equipamentos eletrónicos obsoletos ou danificados, incluindo cabos, monitores, baterias, impressoras e outros componentes. Todo o material recolhido será sujeito a uma triagem técnica: os itens inutilizáveis serão encaminhados para empresas certificadas de reciclagem, garantindo a separação adequada dos materiais e o seu reencaminhamento para processos industriais limpos. Já os equipamentos com potencial de reaproveitamento serão recondicionados e posteriormente distribuídos a instituições sociais. Esta iniciativa visa mitigar os impactos ambientais do lixo eletrónico, reduzir a procura por matérias-primas virgens e fomentar práticas de consumo mais conscientes e sustentáveis.',
+  '2023-06-30', 50, 2, 696115913, '1111111111122', '/images/residuos-eletronicos.jpg'
+),
 
-('Requalificação Digital para Trabalhadores Desempregados',
- 'Apoiar trabalhadores desempregados ou em transição de carreira a adquirirem novas competências digitais, aumentando suas oportunidades no mercado de trabalho.',
- '2023-06-30', 50, 2, 696115913, '1111111111124', '/images/requalificacao-trabalhadores.png'),
+(
+  'Requalificação Digital para Trabalhadores Desempregados',
+  'Este programa foi concebido com o objetivo de capacitar trabalhadores desempregados ou em transição profissional, por meio de formação intensiva e orientada nas principais competências digitais exigidas no mercado atual. O plano formativo inclui módulos sobre ferramentas de produtividade, plataformas de trabalho remoto, segurança digital, comunicação online e noções de programação e design. As formações são ministradas por profissionais experientes e acompanhadas de sessões de orientação vocacional e preparação para entrevistas. O projeto prevê também a criação de parcerias com empresas que procuram perfis digitais, facilitando o encaminhamento dos formandos para novas oportunidades laborais. Ao apostar na qualificação contínua e na literacia digital, esta iniciativa contribui para o reforço da empregabilidade, para o combate ao desemprego de longa duração e para a promoção de uma economia mais inclusiva e preparada para os desafios tecnológicos do século XXI.',
+  '2023-06-30', 50, 2, 696115913, '1111111111124', '/images/requalificacao-trabalhadores.png'
+),
 
-('Inclusão Digital para Idosos',
- 'Oferecer cursos e suporte para idosos aprenderem a utilizar computadores e smartphones, promovendo a inclusão digital e melhorando sua qualidade de vida.',
- '2024-12-31', 30, 3, 199915275, '1111111111123', '/images/inclusao-digital-idosos.jpg');
+(
+  'Inclusão Digital para Idosos',
+  'Este projeto visa promover a inclusão digital da população idosa, oferecendo formação personalizada e adaptada às necessidades específicas deste grupo etário. O programa contempla sessões práticas sobre o uso de computadores, tablets e smartphones, com foco em aplicações úteis como comunicações (e-mail, videochamadas), acesso a serviços públicos digitais (Saúde, Finanças, Segurança Social), redes sociais e segurança na Internet. As atividades são desenvolvidas em pequenos grupos e conduzidas por formadores com experiência em ensino intergeracional, promovendo um ambiente de aprendizagem acolhedor e respeitador. Além da formação, o projeto oferece suporte técnico contínuo e orientação presencial ou remota. Através da alfabetização digital, pretende-se combater o isolamento social, aumentar a autonomia dos idosos e melhorar a sua qualidade de vida, garantindo o seu pleno exercício de cidadania na era digital.',
+  '2024-12-31', 30, 3, 199915275, '1111111111123', '/images/inclusao-digital-idosos.jpg'
+);
+
+
+-- Projeto 1
+INSERT INTO imagemProjeto (projetoid, urls) VALUES
+(1, '/images/doar2.jpg'),
+(1, '/images/doar3.jpg');
+
+-- Projeto 2
+INSERT INTO imagemProjeto (projetoid, urls) VALUES
+(2, '/images/lixo.jpg'),
+(2, '/images/lixo2.jpg');
+
+-- Projeto 3
+INSERT INTO imagemProjeto (projetoid, urls) VALUES
+(3, '/images/pessoas.jpg'),
+(3, '/images/computadoresss.jpeg');
+
+-- Projeto 4
+INSERT INTO imagemProjeto (projetoid, urls) VALUES
+(4, '/images/idosos.jpg'),
+(4, '/images/idosa.jpg');

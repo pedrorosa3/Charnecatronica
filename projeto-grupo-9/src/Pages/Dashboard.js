@@ -31,7 +31,7 @@ const Dashboard = () => {
       localStorage.setItem("numeroEmpregado", numeroFinal);
 
       // Buscar dados reais do funcionário
-      fetch("http://localhost:9000/dashboard", {
+      fetch(process.env.REACT_APP_URL_HOST+"/dashboard", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

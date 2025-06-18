@@ -28,7 +28,7 @@ const ListaReparacoes = () => {
 
   const fetchReparacoes = async () => {
     try {
-      const response = await fetch("http://localhost:9000/reparacoes/lista");
+      const response = await fetch(process.env.REACT_APP_URL_HOST+"/reparacoes/lista");
       const data = await response.json();
       setReparacoes(data);
     } catch (error) {

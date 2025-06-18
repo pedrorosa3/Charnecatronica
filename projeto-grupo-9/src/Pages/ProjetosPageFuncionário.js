@@ -19,7 +19,7 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 600,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
@@ -30,15 +30,13 @@ const ProjetosPageFuncionario = () => {
   const [projetos, setProjetos] = useState([]);
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
-  const navigate = useNavigate(); // Para redirecionar
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjetos = async () => {
       try {
-        const response = await fetch("http://localhost:9000/projetos_beneficencia");
-        if (!response.ok) {
-          throw new Error("Erro ao buscar projetos");
-        }
+        const response = await fetch(process.env.REACT_APP_URL_HOST+"/projetos_beneficencia");
+        if (!response.ok) throw new Error("Erro ao buscar projetos");
         const data = await response.json();
         setProjetos(data);
       } catch (error) {
@@ -49,31 +47,87 @@ const ProjetosPageFuncionario = () => {
     fetchProjetos();
   }, []);
 
-  // Abrir detalhes
   const handleAbrirDetalhes = (projeto) => {
     setProjetoSelecionado(projeto);
     setModalAberto(true);
   };
 
+  const handleExcluirProjeto = async (id) => {
+    if (!window.confirm("Tem certeza que deseja excluir este projeto?")) return;
+
+    try {
+      const response = await fetch(process.env.REACT_APP_URL_HOST+`/projetos_beneficencia/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert("Erro ao excluir projeto: " + (errorData.error || response.statusText));
+        return;
+      }
+
+      setProjetos((prev) => prev.filter((proj) => proj.id !== id));
+    } catch (error) {
+      alert("Erro ao excluir projeto: " + error.message);
+    }
+  };
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#F8F8F8" }}>
       <Sidebar />
-      <Container sx={{ flex: 1, paddingTop: "80px", paddingBottom: "40px" }}>
-        <Typography variant="h4" sx={{ marginTop: "40px", marginBottom: "20px", fontWeight: 600, textAlign: "center" }}>
-          Projetos de Beneficência
-        </Typography>
+      <Container maxWidth="lg" sx={{ flex: 1, pt: "100px", pb: 5, pl: 10 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 4,
+          }}
+        >
+          <Typography variant="h4" sx={{ fontWeight: 600 }}>
+            Projetos de Beneficência
+          </Typography>
 
-        {/* Lista de Projetos com Scroll */}
-        <Box sx={{ maxHeight: "500px", overflowY: "auto", paddingRight: "10px" }}>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#000",
+              color: "#fff",
+              borderRadius: "50px",
+              fontWeight: "bold",
+              px: 3,
+              py: 1.5,
+              textTransform: "none",
+              "&:hover": { backgroundColor: "#333" },
+            }}
+            onClick={() => navigate("/adicionar-projeto")}
+          >
+            Adicionar Novo Projeto
+          </Button>
+        </Box>
+
+        <Box sx={{ maxHeight: "500px", overflowY: "auto", pr: 1 }}>
           <Grid container spacing={4}>
             {projetos.map((projeto) => (
               <Grid item xs={12} sm={6} md={4} key={projeto.id}>
-                <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-                  <CardMedia component="img" height="200" image={projeto.imagem || "/images/default.jpg"} alt={projeto.nome} />
-                  <CardContent sx={{ flex: 1 }}>
-                    <Typography variant="h6">{projeto.nome}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {projeto.descricao}
+                <Card
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    minHeight: "320px",
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={projeto.imagem || "/images/default.jpg"}
+                    alt={projeto.nome}
+                  />
+                  <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                    <Typography variant="h6" gutterBottom>
+                      {projeto.nome}
                     </Typography>
                     <Button
                       variant="contained"
@@ -84,12 +138,24 @@ const ProjetosPageFuncionario = () => {
                         borderRadius: "50px",
                         textTransform: "none",
                         fontWeight: "bold",
-                        marginTop: "15px",
                         "&:hover": { backgroundColor: "#333" },
                       }}
                       onClick={() => handleAbrirDetalhes(projeto)}
                     >
                       Mais detalhes
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      sx={{
+                        mt: 1,
+                        borderRadius: "50px",
+                        fontWeight: "bold",
+                        textTransform: "none",
+                      }}
+                      onClick={() => handleExcluirProjeto(projeto.id)}
+                    >
+                      Excluir
                     </Button>
                   </CardContent>
                 </Card>
@@ -97,34 +163,13 @@ const ProjetosPageFuncionario = () => {
             ))}
           </Grid>
         </Box>
-
-        {/* Botão para Adicionar Novo Projeto (alinhado à direita) */}
-        <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#000",
-              color: "#FFFFFF",
-              borderRadius: "50px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              "&:hover": { backgroundColor: "#333" },
-            }}
-            onClick={() => navigate("/adicionar-projeto")}
-          >
-            Adicionar Novo Projeto
-          </Button>
-        </Box>
       </Container>
 
-      <Footer />
-
-      {/* Modal de Detalhes */}
       <Modal open={modalAberto} onClose={() => setModalAberto(false)}>
         <Box sx={modalStyle}>
           {projetoSelecionado && (
             <>
-              <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
+              <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
                 {projetoSelecionado.nome}
               </Typography>
               <Typography><strong>Descrição:</strong> {projetoSelecionado.descricao}</Typography>
@@ -135,16 +180,17 @@ const ProjetosPageFuncionario = () => {
               <Button
                 variant="contained"
                 fullWidth
-                sx={{ marginTop: 2, backgroundColor: "#000", "&:hover": { backgroundColor: "#333" } }}
+                sx={{ mt: 3, backgroundColor: "#000", "&:hover": { backgroundColor: "#333" } }}
                 onClick={() => setModalAberto(false)}
-                >
+              >
                 Fechar
-                </Button>
+              </Button>
             </>
           )}
         </Box>
       </Modal>
-    {/* Footer fixo no fundo */}
+
+      {/* Footer fixo */}
       <Box
         sx={{
           position: "fixed",
@@ -161,14 +207,10 @@ const ProjetosPageFuncionario = () => {
           boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
         }}
       >
-      <Footer />
+        <Footer />
       </Box>
     </Box>
   );
 };
 
 export default ProjetosPageFuncionario;
-
-
-
-

@@ -68,7 +68,7 @@ const VenderPage = () => {
   useEffect(() => {
     const fetchLojas = async () => {
       try {
-        const res = await fetch("http://localhost:9000/lojas");
+        const res = await fetch(process.env.REACT_APP_URL_HOST+"/lojas");
         const data = await res.json();
         setLojas(data);
       } catch (err) {
@@ -83,7 +83,7 @@ const VenderPage = () => {
       const fetchEmpregados = async () => {
         try {
           const res = await fetch(
-            `http://localhost:9000/lojas/${formData.lojaNipc}/empregados`
+            process.env.REACT_APP_URL_HOST+`/lojas/${formData.lojaNipc}/empregados`
           );
           const data = await res.json();
           setEmpregados(data);
@@ -98,7 +98,7 @@ const VenderPage = () => {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const res = await fetch("http://localhost:9000/clientes");
+        const res = await fetch(process.env.REACT_APP_URL_HOST+"/clientes");
         const data = await res.json();
         setClientes(data);
       } catch (err) {
@@ -111,7 +111,7 @@ const VenderPage = () => {
   useEffect(() => {
     const fetchEquipamentos = async () => {
       try {
-        const res = await fetch("http://localhost:9000/fichas");
+        const res = await fetch(process.env.REACT_APP_URL_HOST+"/fichas");
         const data = await res.json();
         setEquipamentos(data);
         const marcasUnicas = [...new Set(data.map((e) => e.marca))];
@@ -135,7 +135,7 @@ const VenderPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:9000/compras", {
+      const response = await fetch(process.env.REACT_APP_URL_HOST+"/compras", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -173,7 +173,7 @@ const VenderPage = () => {
       registarCompra(); // MBWay não usa Stripe
     } else if (metodoPagamento === "multibanco") {
       try {
-        const res = await fetch("http://localhost:9000/create-payment-intent", {
+        const res = await fetch(process.env.REACT_APP_URL_HOST+"/create-payment-intent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

@@ -43,14 +43,14 @@ const EditarReparacao = () => {
     const fetchData = async () => {
       try {
         const resReparacao = await fetch(
-          `http://localhost:9000/reparacoes/${id}`
+          process.env.REACT_APP_URL_HOST+`/reparacoes/${id}`
         );
         const reparacao = await resReparacao.json();
 
         const [resClientes, resFichas, resLojas] = await Promise.all([
-          fetch("http://localhost:9000/clientes"),
-          fetch("http://localhost:9000/fichas"),
-          fetch("http://localhost:9000/lojas"),
+          fetch(process.env.REACT_APP_URL_HOST+"/clientes"),
+          fetch(process.env.REACT_APP_URL_HOST+"/fichas"),
+          fetch(process.env.REACT_APP_URL_HOST+"/lojas"),
         ]);
 
         const [clientesData, fichasData, lojasData] = await Promise.all([
@@ -60,7 +60,7 @@ const EditarReparacao = () => {
         ]);
 
         const resEmpregados = await fetch(
-          `http://localhost:9000/lojas/${reparacao.lojanipc}/empregados`
+          process.env.REACT_APP_URL_HOST+`/lojas/${reparacao.lojanipc}/empregados`
         );
         const empregadosData = await resEmpregados.json();
 
@@ -100,7 +100,7 @@ const EditarReparacao = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:9000/reparacoes/${id}`, {
+      const res = await fetch(process.env.REACT_APP_URL_HOST+`/reparacoes/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

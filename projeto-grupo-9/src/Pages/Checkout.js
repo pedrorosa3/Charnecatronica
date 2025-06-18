@@ -27,12 +27,71 @@ const CheckoutPagamento = () => {
   const [formData, setFormData] = useState({
     nif: "",
     nome: "",
-    rua: "",
-    numero: "",
-    codigoPostal: "",
-    cidade: "",
+    morada: {
+      pais: "Portugal",
+      localidade: "",
+      latitude: null,
+      longitude: null,
+      freguesia: "",
+      rua: "",
+      numero: "",
+      codigopostal: "",
+      concelho: "",
+      distrito: "",
+    },
     telefone: "",
   });
+
+  const mapRef = useRef(null);
+  const mapa = useRef(null);
+  const autocompleteRef = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+  if (!window.google) {
+    console.error("Google Maps JavaScript API não carregada");
+    return;
+  }
+  if (inputRef.current) {
+    const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
+      types: ["address"],
+      componentRestrictions: { country: "pt" }, // restringe a Portugal
+    });
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+
+      if (!place.address_components) {
+        return;
+      }
+
+      // Extrai componentes do endereço
+      const addressComponents = place.address_components;
+
+      const getComponent = (types) =>
+        addressComponents.find((component) =>
+          types.every((type) => component.types.includes(type))
+        )?.long_name || "";
+
+      setFormData((prev) => ({
+        ...prev,
+        morada: {
+          ...prev.morada,
+          rua: `${getComponent(["route"])} ${getComponent(["street_number"])}`.trim(),
+          localidade: getComponent(["locality"]) || getComponent(["sublocality"]),
+          freguesia: getComponent(["administrative_area_level_3"]),
+          concelho: getComponent(["administrative_area_level_2"]),
+          distrito: getComponent(["administrative_area_level_1"]),
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+          codigopostal: getComponent(["postal_code"]),
+          pais: getComponent(["country"]) || "Portugal",
+        },
+      }));
+    });
+  }
+}, []);
+
 
   const [metodoPagamento, setMetodoPagamento] = useState("");
   const [numeroMbway, setNumeroMbway] = useState("");
@@ -52,23 +111,26 @@ const CheckoutPagamento = () => {
   };
 
   const isFormValid = () => {
-    const camposObrigatorios = [
-      formData.nif,
-      formData.nome,
-      formData.rua,
-      formData.numero,
-      formData.codigoPostal,
-      formData.cidade,
-      formData.telefone,
-      metodoPagamento,
-    ];
+  const camposObrigatorios = [
+    formData.nif,
+    formData.nome,
+    formData.morada.rua,
+    formData.morada.numero,
+    formData.morada.codigopostal, // conserte nome no estado
+    formData.morada.localidade, // ou cidade, dependendo do seu campo, use localidade
+    formData.telefone,
+    metodoPagamento,
+  ];
 
-    if (metodoPagamento === "mbway" && !numeroMbway.match(/^9[0-9]{8}$/)) {
-      return false;
-    }
+  // valida mbway
+  if (metodoPagamento === "mbway" && !numeroMbway.match(/^9[0-9]{8}$/)) {
+    return false;
+  }
 
-    return camposObrigatorios.every((campo) => campo && campo.trim() !== "");
-  };
+  // Verifica se todos os campos estão preenchidos e não vazios
+  return camposObrigatorios.every((campo) => campo && campo.toString().trim() !== "");
+};
+
 
   const handleFinalizarCompra = async () => {
     if (!isFormValid()) {
@@ -76,25 +138,44 @@ const CheckoutPagamento = () => {
       return;
     }
 
+    console.log("Dados morada enviados:", {
+      rua: formData.morada.rua,
+      numero: formData.morada.numero,
+      codigopostal: formData.morada.codigopostal,
+      localidade: formData.morada.localidade,
+      freguesia: formData.morada.freguesia,
+      concelho: formData.morada.concelho,
+      distrito: formData.morada.distrito,
+      pais: formData.morada.pais,
+      latitude: formData.morada.latitude,
+      longitude: formData.morada.longitude,
+    });
+
     try {
       // Envia a morada
-      const responseMorada = await fetch("http://localhost:9000/morada", { 
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          rua: formData.rua,
-          numero: formData.numero,
-          codigoPostal: formData.codigoPostal,
-          cidade: formData.cidade,
-        }),
-      });
+      const responseMorada = await fetch(process.env.REACT_APP_URL_HOST+"/morada", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        rua: formData.morada.rua,
+        numero: formData.morada.numero,
+        codigopostal: formData.morada.codigopostal,
+        localidade: formData.morada.localidade,
+        freguesia: formData.morada.freguesia,
+        concelho: formData.morada.concelho,
+        distrito: formData.morada.distrito,
+        pais: formData.morada.pais,
+        latitude: formData.morada.latitude,
+        longitude: formData.morada.longitude,
+      }),
+    });
 
       if (!responseMorada.ok) throw new Error("Erro ao enviar dados da morada.");
       const dataMorada = await responseMorada.json();
       const moradaId = dataMorada.id || dataMorada.moradaId;
 
       // Envia os dados da pessoa
-      const responsePessoa = await fetch("http://localhost:9000/pessoa", {
+      const responsePessoa = await fetch(process.env.REACT_APP_URL_HOST+"/pessoa", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -115,7 +196,7 @@ const CheckoutPagamento = () => {
 
       // NOVO: evitar chamada para MBWay ao backend create-payment-intent
       if (metodoPagamento !== "mbway") {
-        const paymentIntentResponse = await fetch("http://localhost:9000/create-payment-intent", {
+        const paymentIntentResponse = await fetch(process.env.REACT_APP_URL_HOST+"/create-payment-intent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -140,7 +221,7 @@ const CheckoutPagamento = () => {
       }
 
       // Regista a venda no backend (independente do método)
-      const responseVenda = await fetch("http://localhost:9000/venda", {
+      const responseVenda = await fetch(process.env.REACT_APP_URL_HOST+"/venda", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -219,42 +300,50 @@ const CheckoutPagamento = () => {
 
                 <Grid item xs={8}>
                   <TextField
-                    label="Rua"
                     fullWidth
+                    inputRef={inputRef}
+                    label="Pesquisar Morada"
+                    value={formData.morada.rua}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, morada: { ...prev.morada, rua: e.target.value } }))
+                    }
+                    margin="normal"
                     required
-                    value={formData.rua}
-                    onChange={(e) => handleFormChange("rua", e.target.value)}
                   />
                 </Grid>
                 <Grid item xs={4}>
                   <TextField
-                    label="Número / Andar"
                     fullWidth
+                    label="Número da Porta"
+                    value={formData.morada.numero}
+                    onChange={(e) => {
+                      let valor = e.target.value.replace(/\D/g, ""); // só números
+                      valor = valor.slice(0, 4);
+                      setFormData((prev) => ({
+                        ...prev,
+                        morada: { ...prev.morada, numero: valor },
+                      }));
+                    }}
+                    margin="normal"
                     required
-                    value={formData.numero}
-                    onChange={(e) => handleFormChange("numero", e.target.value)}
+                    inputProps={{ inputMode: "numeric", maxLength: 4 }}
                   />
                 </Grid>
 
                 <Grid item xs={6}>
-                  <TextField
-                    label="Código Postal"
-                    fullWidth
-                    required
-                    value={formData.codigoPostal}
-                    onChange={(e) => handleFormChange("codigoPostal", e.target.value)}
-                  />
+                  <TextField fullWidth label="Localidade" value={formData.morada.localidade} margin="normal" disabled />
                 </Grid>
 
                 <Grid item xs={6}>
-                  <TextField
-                    label="Cidade"
-                    fullWidth
-                    required
-                    value={formData.cidade}
-                    onChange={(e) => handleFormChange("cidade", e.target.value)}
-                  />
+                  <TextField fullWidth label="Freguesia" value={formData.morada.freguesia} margin="normal" disabled />
                 </Grid>
+                <Grid item xs={6}>
+                  <TextField fullWidth label="Concelho" value={formData.morada.concelho} margin="normal" disabled />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField fullWidth label="Distrito" value={formData.morada.distrito} margin="normal" disabled />
+                </Grid>
+
 
                 <Grid item xs={12}>
                   <TextField
@@ -263,8 +352,8 @@ const CheckoutPagamento = () => {
                     required
                     value={formData.telefone}
                     onChange={(e) => {
-                      let valor = e.target.value.replace(/\D/g, "").slice(0, 9);
-                      if (valor && valor[0] !== "9") valor = "9" + valor.slice(1);
+                      let valor = e.target.value.replace(/\D/g, "").slice(0, 9); // Só números e máximo 9 dígitos
+                      if (valor && valor[0] !== "9") valor = "9" + valor.slice(1); // Força começar com 9
                       handleFormChange("telefone", valor);
                     }}
                     inputProps={{ inputMode: "numeric", maxLength: 9 }}

@@ -22,7 +22,7 @@ const ComprarPageteste = () => {
 
   // 🚀 Buscar produtos do backend
   useEffect(() => {
-    fetch("http://localhost:9000/equipamentos")
+    fetch(process.env.REACT_APP_URL_HOST+"/equipamentos")
       .then((res) => res.json())
       .then((data) => {
         console.log(data); // Verifique se os dados estão corretos
@@ -59,7 +59,7 @@ const ComprarPageteste = () => {
 
   // Função para adicionar um novo produto
   const adicionarProduto = () => {
-    fetch("http://localhost:9000/produtos", {
+    fetch(process.env.REACT_APP_URL_HOST+"/produtos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(novoProduto),
@@ -69,7 +69,7 @@ const ComprarPageteste = () => {
         alert(data.message);
         setNovoProduto({ nome: "", categoria: "", preco: "", avaliacao: "", reviews: "", imagem: "" });
         // Atualizar a lista de produtos após inserção
-        fetch("http://localhost:9000/equipamentos")
+        fetch(process.env.REACT_APP_URL_HOST+"/equipamentos")
           .then((res) => res.json())
           .then((data) => setEquipamentos(data));
       })
