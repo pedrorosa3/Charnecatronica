@@ -49,7 +49,7 @@ const Perfil = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
-  // 🔽 Carregar dados do perfil do backend
+  //Carregar dados do perfil do backend
   useEffect(() => {
     const fetchPerfil = async () => {
       if (!user?.email) return;

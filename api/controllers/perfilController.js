@@ -128,6 +128,64 @@ const getClientIdByEmail = async (req, res) => {
   }
 };
 
+const findOrCreateUserByEmail = async (req, res) => {
+  const { email, nome = "Utilizador" } = req.body;
 
-module.exports = {upsertPerfil, getPerfilByEmail, getClientIdByEmail };
+  if (!email) {
+    return res.status(400).json({ error: "Email é obrigatório" });
+  }
+
+  try {
+    // Verifica se já existe
+    const existingUser = await db.query(
+      "SELECT * FROM pessoa WHERE LOWER(email) = LOWER($1) LIMIT 1",
+      [email]
+    );
+
+    if (existingUser.rows.length > 0) {
+      console.log("Usuário já existente:", existingUser.rows[0]);
+      return res.status(200).json({
+        message: "Usuário já existente",
+        created: false,
+        usuario: existingUser.rows[0],
+      });
+    }
+
+    // Cria novo com valores padrão
+    const result = await db.query(
+      `INSERT INTO pessoa 
+        (nome, email, nif, nic, genero, telemovel, datadenascimento, password, moradaid)
+       VALUES 
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING *`,
+      [
+        nome,
+        email,
+        "000000000",         // nif padrão
+        "00000000",          // nic padrão
+        "Outro",             // género padrão
+        "910000000",         // telemóvel padrão
+        "2000-01-01",        // data nascimento padrão
+        "default",           // password padrão
+        null                 // moradaid
+      ]
+    );
+
+    console.log("Novo utilizador criado:", result.rows[0]);
+    return res.status(201).json({
+      message: "Novo utilizador criado com sucesso",
+      created: true,
+      usuario: result.rows[0],
+    });
+
+  } catch (err) {
+    console.error("Erro ao criar/buscar utilizador:", err.message);
+    return res.status(500).json({ error: "Erro no servidor ao criar/buscar utilizador" });
+  }
+};
+
+
+
+
+module.exports = {upsertPerfil, getPerfilByEmail, getClientIdByEmail, findOrCreateUserByEmail };
 

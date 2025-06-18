@@ -32,6 +32,37 @@ const Header = () => {
   const { loginWithRedirect, logout, isAuthenticated, user, isLoading } =
     useAuth0();
 
+useEffect(() => {
+  const sincronizarUsuario = async () => {
+    if (isAuthenticated && user?.email) {
+      try {
+        const response = await fetch(`http://localhost:9000/perfil/email?email=${user.email}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nome: user.name,
+            email: user.email,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Resultado da sincronização do utilizador:", data);
+      } catch (error) {
+        console.error("Erro ao sincronizar utilizador:", error);
+      }
+    }
+  };
+
+  sincronizarUsuario();
+}, [isAuthenticated, user]);
+
+
   useEffect(() => {
     fetch("http://localhost:9000/equipamentos")
       .then((res) => res.json())
