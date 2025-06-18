@@ -28,9 +28,8 @@ const fullHost = process.env.REACT_APP_URL_HOST || "http://localhost:9000";
 
 const cleanHost = fullHost.replace(/^https?:\/\//, "");
 
-let [HOST, PORT] = cleanHost.split(":");
-HOST = HOST || "localhost";
-PORT = parseInt(PORT) || 9000;
+const HOST = "0.0.0.0";
+const PORT = process.env.API_PORT || 9000;
 
 const app = express();
 
