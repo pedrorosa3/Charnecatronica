@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const equipamentosRoutes = require("./routes/equipamentos");
@@ -22,8 +24,15 @@ const vendaFisicaRouter = require("./routes/vendaFisica");
 const dashboardRouter = require("./routes/dashboard");
 const InteressesRouter = require("./routes/interesses");
 
+const fullHost = process.env.REACT_APP_URL_HOST || "http://localhost:9000";
+
+const cleanHost = fullHost.replace(/^https?:\/\//, "");
+
+let [HOST, PORT] = cleanHost.split(":");
+HOST = HOST || "localhost";
+PORT = parseInt(PORT) || 9000;
+
 const app = express();
-const PORT = 9000;
 
 app.use(cors());
 app.use(express.json());
@@ -48,11 +57,11 @@ app.use("/pecasDiagnostico", diagnosticoRoutes);
 app.use("/loginempregado", loginEmpregadoRoutes);
 app.use("/vendaFisica", vendaFisicaRouter);
 app.use("/dashboard", dashboardRouter);
-app.use("/interesses",InteressesRouter);
+app.use("/interesses", InteressesRouter);
 app.get("/testAPI", (req, res) => {
   res.json({ message: "API a funcionar corretamente!" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor ligado em http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Servidor ligado em http://${HOST}:${PORT}`);
 });

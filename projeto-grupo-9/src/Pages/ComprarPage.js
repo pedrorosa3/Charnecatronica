@@ -34,7 +34,9 @@ const ComprarPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_URL_HOST+"/equipamentos")
+    console.log("API HOST:", process.env.REACT_APP_URL_HOST);
+
+    fetch(process.env.REACT_APP_URL_HOST + "/equipamentos")
       .then((res) => res.json())
       .then((data) => {
         const dadosCorrigidos = data.map((item) => ({
