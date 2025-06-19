@@ -171,11 +171,23 @@ const findOrCreateUserByEmail = async (req, res) => {
       ]
     );
 
-    console.log("Novo utilizador criado:", result.rows[0]);
+    const newUser = result.rows[0];
+
+    // Cria cliente associado
+    const clientResult = await db.query(
+      `INSERT INTO cliente (pessoaid) VALUES ($1) RETURNING *`,
+      [newUser.id]
+    );
+
+    const newClient = clientResult.rows[0];
+
+    console.log("Novo utilizador e cliente criados:", { ...newUser, cliente: newClient });
+
     return res.status(201).json({
-      message: "Novo utilizador criado com sucesso",
+      message: "Novo utilizador e cliente criados com sucesso",
       created: true,
-      usuario: result.rows[0],
+      usuario: newUser,
+      cliente: newClient,
     });
 
   } catch (err) {
