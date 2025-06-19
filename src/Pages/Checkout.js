@@ -12,7 +12,7 @@ import StripePayment from "../Components/StripePayment";
 import { useCarrinho } from "../Context/CarrinhoContext";
 import { useAuth0 } from "@auth0/auth0-react";
 
-const stripePromise = loadStripe("pk_test_51RKNAQLGKEXi0N5ltaZh7UDV9h5BGOCUrFQ9lzbWbbu77Amax7lgJ49Pw2ZM3dgSd2pxkuErF9fTB295ExHhKvtI00UR4JHQBj"); // substitua pela sua chave real
+const stripePromise = loadStripe("pk_test_51Rbk4bQvL5RrY99cM37RBfbSyE8ariILR2U2UzYOLvEyLrQPTKYwfSFLYB1jGCqau7pRY1uXSr03wi9NKhqjtwLH00NFO6SaNx"); // substitua pela sua chave real
 
 const CheckoutPagamento = () => {
   const location = useLocation();
