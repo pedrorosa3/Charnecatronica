@@ -161,13 +161,13 @@ const findOrCreateUserByEmail = async (req, res) => {
       [
         nome,
         email,
-        "000000000",         // nif padrão
-        "00000000",          // nic padrão
-        "Outro",             // género padrão
-        "910000000",         // telemóvel padrão
-        "2000-01-01",        // data nascimento padrão
-        "default",           // password padrão
-        null                 // moradaid
+        null,         
+        null,       
+        "Outro",            
+        null,       
+        "2000-01-01",       
+        "default",           
+        null                 
       ]
     );
 
