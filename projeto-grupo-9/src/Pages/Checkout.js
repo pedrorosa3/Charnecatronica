@@ -12,7 +12,7 @@ import StripePayment from "../Components/StripePayment";
 import { useCarrinho } from "../Context/CarrinhoContext";
 import { useAuth0 } from "@auth0/auth0-react";
 
-const stripePromise = loadStripe("pk_test_51Rbk4bQvL5RrY99cM37RBfbSyE8ariILR2U2UzYOLvEyLrQPTKYwfSFLYB1jGCqau7pRY1uXSr03wi9NKhqjtwLH00NFO6SaNx");
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
 const CheckoutPagamento = () => {
   const location = useLocation();

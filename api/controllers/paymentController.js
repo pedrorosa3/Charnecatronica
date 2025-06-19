@@ -1,6 +1,7 @@
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const Stripe = require("stripe");
 const stripe = Stripe(
-  "STRIPE_SECRET_KEY_REMOVED"
+  process.env.STRIPE_SK
 );
 
 exports.createPaymentIntent = async (req, res) => {

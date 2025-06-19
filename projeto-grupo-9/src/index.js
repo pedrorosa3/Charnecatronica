@@ -7,8 +7,8 @@ import { CarrinhoProvider } from "./Context/CarrinhoContext";
 import { Auth0Provider } from "@auth0/auth0-react";
 
 //Auth0
-const domain = "dev-exhnsyvg15r6fh26.us.auth0.com";
-const clientId = "w3VK9ufCIpGwGijRhamXtdlIi6DKHx8j";
+const domain = process.env.REACT_APP_AUTH_DOMAIN;
+const clientId = process.env.REACT_APP_AUTH_CLIENTID;
 //const audience = "https://a-tua-api.com"; // opcional, só se quiseres usar JWT para o backend
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
