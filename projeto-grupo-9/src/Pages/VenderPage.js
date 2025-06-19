@@ -23,7 +23,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import StripePayment from "../Components/StripePayment";
 
 const stripePromise = loadStripe(
-  "pk_test_51RKNAQLGKEXi0N5ltaZh7UDV9h5BGOCUrFQ9lzbWbbu77Amax7lgJ49Pw2ZM3dgSd2pxkuErF9fTB295ExHhKvtI00UR4JHQBj"
+  "pk_test_51Rbk4bQvL5RrY99cM37RBfbSyE8ariILR2U2UzYOLvEyLrQPTKYwfSFLYB1jGCqau7pRY1uXSr03wi9NKhqjtwLH00NFO6SaNx"
 );
 
 const VenderPage = () => {
