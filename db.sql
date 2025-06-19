@@ -294,12 +294,12 @@ INSERT INTO morada (
 );
 
 
-INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (242068763, 86644106, 'Luciana-Érica Monteiro', 'Masculino', 964190206, 'eduardobarbosa@sapo.pt', 'p6aN%flo^R_1', '1960-11-29', 1);
+INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (242068763, 86644106, 'Luciana-Érica Monteiro', 'Masculino', 964190206, 'eduardobarbosa@sapo.pt', 'DB_PASSWORD_REMOVED', '1960-11-29', 1);
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (154318806, 97529405, 'Alexandra Baptista-Faria', 'Masculino', 921160949, 'nmorais@sapo.pt', 'a7kLJwzT!29M', '2005-02-24', 4);
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (436730606, 17672593, 'Nuno Morais', 'Masculino', 943745717, 'nascimentodinis@araujo.net', '&1&aTS7hB7)Z', '1985-06-08', 9);
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (766964667, 85563727, 'Brian Nogueira', 'Outro', 924304543, 'sergioaraujo@hotmail.com', 'n4Fza!mA^v)o', '1972-10-13', 1);
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (402533494, 91178885, 'Tomás Leal', 'Outro', 923663184, 'dferreira@gmail.com', '!jI7gbJ!_6sS', '1983-07-01', 4);
-INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (236843584, 15614174, 'Joana Andrade', 'Outro', 934012171, 'martabarros@pacheco.pt', ')2r@gCHfpl7k', '1969-05-21', 9);
+INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (236843584, 15614174, 'Joana Andrade', 'Outro', 934012171, 'martabarros@pacheco.pt', 'DB_PASSWORD_REMOVED', '1969-05-21', 9);
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (314289692, 71780854, 'Helena Esteves', 'Feminino', 924960146, 'alicejesus@araujo.org', 'yMv(x1v7^8fB', '1993-06-27', 4);
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (304095531, 44188276, 'Tiago Matias', 'Feminino', 910113499, 'beatriz15@silva.com', 'bCd4Qbjh0+In', '1995-07-14', 10);
 INSERT INTO pessoa (nif, nic, nome, genero, telemovel, email, password, dataDeNascimento, moradaId) VALUES (802984810, 53251559, 'Letícia Matos', 'Feminino', 955340576, 'kvicente@garcia.com', '$46No^IY2dHz', '2007-03-22', 1);

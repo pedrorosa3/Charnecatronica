@@ -16,7 +16,7 @@ import {
   DialogTitle,
   Stack,
 } from "@mui/material";
-import Header from "../Components/Header";
+import Sidebar from "../Components/SideBarDashboard";
 import Footer from "../Components/Footer";
 
 const FichaEquipamentoPage = () => {
@@ -58,7 +58,7 @@ const FichaEquipamentoPage = () => {
       <Box
         sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
-        <Header />
+        <Sidebar />
         <Box
           sx={{
             flex: 1,
@@ -81,11 +81,11 @@ const FichaEquipamentoPage = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header />
+      <Sidebar />
       <Box sx={{ flex: 1, p: 4, pt: "130px" }}>
         <Grid container spacing={10}>
           <Grid item xs={12} md={6}>
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", marginLeft: 30, }}>
               <List
                 sx={{
                   display: "flex",
@@ -235,7 +235,24 @@ const FichaEquipamentoPage = () => {
           </DialogActions>
         </Dialog>
       </Box>
-      <Footer />
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Footer />
+      </Box>
     </Box>
   );
 };

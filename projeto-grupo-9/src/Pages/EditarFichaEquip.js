@@ -14,7 +14,8 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import Header from "../Components/Header";
+import Sidebar from "../Components/SideBarDashboard";
+import Footer from "../Components/Footer";
 
 const EditarFichaEquip = () => {
   const { id } = useParams();
@@ -97,7 +98,7 @@ const EditarFichaEquip = () => {
 
   return (
     <>
-      <Header />
+      <Sidebar />
       <Container sx={{ mt: 15 }}>
         <Typography variant="h4" gutterBottom>
           Editar Ficha de Equipamento
@@ -201,7 +202,26 @@ const EditarFichaEquip = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          bgcolor: "#222",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1500,
+          boxShadow: "0 -2px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Footer />
+      </Box>
     </>
+    
   );
 };
 
