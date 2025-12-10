@@ -1,8 +1,8 @@
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
-const Stripe = require("stripe");
-const stripe = Stripe(
-  process.env.STRIPE_SK
-);
+//const Stripe = require("stripe");
+//const stripe = Stripe(
+  //process.env.STRIPE_SK
+//);
 
 exports.createPaymentIntent = async (req, res) => {
   const { amount, metodoPagamento } = req.body;
