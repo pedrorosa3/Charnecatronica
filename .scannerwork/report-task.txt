@@ -1,0 +1,6 @@
+projectKey=Projeto_Grupo9
+serverUrl=http://localhost:9001
+serverVersion=25.11.0.114957
+dashboardUrl=http://localhost:9001/dashboard?id=Projeto_Grupo9
+ceTaskId=4104fe76-368a-42b5-a648-8a8e136019a1
+ceTaskUrl=http://localhost:9001/api/ce/task?id=4104fe76-368a-42b5-a648-8a8e136019a1
