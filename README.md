@@ -58,7 +58,7 @@ Charnecatronica/
 
 - [Node.js](https://nodejs.org/pt) (inclui o `npm`)
 - [PostgreSQL](https://www.postgresql.org/download/)
-- Conta [Stripe](https://stripe.com) (chaves de teste) e aplicação [Auth0](https://auth0.com)
+- Contas gratuitas em [Google Cloud](https://console.cloud.google.com), [Auth0](https://auth0.com) e [Stripe](https://stripe.com) (ver [passo 3](#3-obter-as-chaves-dos-serviços-externos))
 
 Confirma a instalação no terminal:
 
@@ -88,17 +88,79 @@ psql -U postgres -d charnecatronica -f db.sql
 > (ex.: `"C:\Program Files\PostgreSQL\18\bin\psql.exe"`) ou adiciona essa pasta ao `PATH`.
 > Também podes correr o `db.sql` pelo pgAdmin.
 
-### 3. Configurar as variáveis de ambiente
+### 3. Obter as chaves dos serviços externos
+
+A aplicação usa três serviços externos. Todos têm plano gratuito ou modo de teste.
+
+<details open>
+<summary><b>🗺️ Google Maps Platform (GCP)</b>: mapas das lojas e autocomplete de moradas</summary>
+
+<br>
+
+O projeto usa a **Maps JavaScript API** (mapas nas páginas de lojas, reparações e venda) e a **Places API** (autocomplete de moradas no checkout e na criação de lojas).
+
+1. Entra na [Google Cloud Console](https://console.cloud.google.com) e cria um projeto novo (ex.: `charnecatronica`).
+2. Ativa a faturação do projeto em **Billing** → **Link a billing account**.
+   A Google pede um cartão, mas o uso em desenvolvimento cabe no crédito mensal gratuito.
+3. Em **APIs & Services** → **Library**, procura e ativa:
+   - ✅ **Maps JavaScript API**
+   - ✅ **Places API**
+   - ✅ **Geocoding API** (opcional, só usada pelo componente `MapaComEndereco`)
+4. Em **APIs & Services** → **Credentials**, clica **Create credentials** → **API key** e copia a chave (começa por `AIza…`).
+5. *(Recomendado)* Clica na chave para a restringir:
+   - **Application restrictions** → **Websites**, e adiciona `http://localhost:3000/*` (e o domínio de produção, se existir).
+   - **API restrictions** → **Restrict key**, e seleciona apenas as APIs ativadas no passo 3.
+6. Guarda a chave em `REACT_APP_GOOGLE_MAPS_KEY` (ver passo 4).
+
+> A chave é inserida automaticamente em [`projeto-grupo-9/public/index.html`](projeto-grupo-9/public/index.html) através de `%REACT_APP_GOOGLE_MAPS_KEY%`.
+> **Nunca escrevas a chave diretamente no código.**
+
+</details>
+
+<details open>
+<summary><b>🔐 Auth0</b>: login de clientes</summary>
+
+<br>
+
+1. Cria uma conta em [auth0.com](https://auth0.com). É criado um *tenant* (ex.: `o-teu-tenant.eu.auth0.com`).
+2. Em **Applications** → **Applications** → **Create Application**, escolhe **Single Page Web Applications**.
+3. No separador **Settings** da aplicação, preenche com `http://localhost:3000`:
+   - **Allowed Callback URLs**
+   - **Allowed Logout URLs**
+   - **Allowed Web Origins**
+4. Clica **Save Changes** e copia o **Domain** e o **Client ID** para `REACT_APP_AUTH_DOMAIN` e `REACT_APP_AUTH_CLIENTID`.
+
+</details>
+
+<details open>
+<summary><b>💳 Stripe</b>: pagamentos com cartão</summary>
+
+<br>
+
+1. Cria uma conta em [stripe.com](https://stripe.com). Não precisas de ativar pagamentos reais.
+2. Com o **Test mode** ligado, vai a **Developers** → **API keys**.
+3. Copia a **Publishable key** (`pk_test_…`) para `REACT_APP_STRIPE_PK` e a **Secret key** (`sk_test_…`) para `STRIPE_SK`.
+4. Para testar um pagamento, usa o cartão `4242 4242 4242 4242`, com qualquer data futura e qualquer CVC.
+
+</details>
+
+### 4. Configurar as variáveis de ambiente
 
 Copia o ficheiro [conf.env.example](conf.env.example) para `.env` e preenche os valores:
 
-| Variável | Descrição |
-| --- | --- |
-| `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | Ligação ao PostgreSQL |
-| `STRIPE_SK` | Chave secreta do Stripe (backend) |
-| `REACT_APP_STRIPE_PK` | Chave pública do Stripe (frontend) |
-| `REACT_APP_AUTH_DOMAIN`, `REACT_APP_AUTH_CLIENTID` | Configuração do Auth0 |
-| `REACT_APP_URL_HOST` | Endereço da API, ex.: `http://localhost:9000` |
+| Variável | Onde obter | Exemplo |
+| --- | --- | --- |
+| `DB_HOST` | PostgreSQL local | `localhost` |
+| `DB_PORT` | PostgreSQL local | `5432` |
+| `DB_USER` | PostgreSQL local | `postgres` |
+| `DB_PASSWORD` | Password definida ao instalar o PostgreSQL | `********` |
+| `DB_NAME` | Nome da BD criada no passo 2 | `charnecatronica` |
+| `REACT_APP_GOOGLE_MAPS_KEY` | Google Cloud → Credentials | `AIza…` |
+| `REACT_APP_AUTH_DOMAIN` | Auth0 → Application → Settings | `o-teu-tenant.eu.auth0.com` |
+| `REACT_APP_AUTH_CLIENTID` | Auth0 → Application → Settings | `aBcD1234…` |
+| `REACT_APP_STRIPE_PK` | Stripe → Developers → API keys | `pk_test_…` |
+| `STRIPE_SK` | Stripe → Developers → API keys | `sk_test_…` |
+| `REACT_APP_URL_HOST` | Endereço da API | `http://localhost:9000` |
 
 > ⚠️ O ficheiro `.env` é lido em três sítios diferentes, por isso deve existir uma cópia em cada um:
 > na **raiz** do projeto, em **`api/`** e em **`projeto-grupo-9/`**.
@@ -109,7 +171,10 @@ cp conf.env.example api/.env
 cp conf.env.example projeto-grupo-9/.env
 ```
 
-### 4. Iniciar o backend (API)
+> 🔒 Os ficheiros `.env` estão no `.gitignore`. **Nunca façam commit das chaves.**
+> Se alterares o `.env` com o frontend a correr, reinicia o `npm start` para as alterações terem efeito.
+
+### 5. Iniciar o backend (API)
 
 ```bash
 cd api
@@ -119,7 +184,7 @@ npm start
 
 A API fica disponível em **http://localhost:9000**.
 
-### 5. Iniciar o frontend
+### 6. Iniciar o frontend
 
 Num **novo terminal**:
 
@@ -147,6 +212,9 @@ A aplicação abre automaticamente em **http://localhost:3000** 🎉
 - **`npm` não é reconhecido** → reinstala o Node.js e reabre o terminal.
 - **Erro de ligação à base de dados** → confirma que o PostgreSQL está a correr e que os dados no `.env` estão corretos.
 - **Porta 3000 ou 9000 ocupada** → fecha o processo que a está a usar ou aceita a porta alternativa que o React sugere.
+- **Mapa cinzento com "This page can't load Google Maps correctly"** → a chave do Google Maps está errada, a faturação não está ativa ou as APIs não foram ativadas (ver [passo 3](#3-obter-as-chaves-dos-serviços-externos)). A consola do browser (F12) mostra o erro exato, por exemplo `ApiNotActivatedMapError` ou `RefererNotAllowedMapError`.
+- **Erro "Callback URL mismatch" no login** → falta `http://localhost:3000` nos URLs permitidos da aplicação Auth0.
+- **Alterei o `.env` mas nada mudou** → reinicia o `npm start`, porque as variáveis `REACT_APP_*` só são lidas no arranque.
 
 ---
 
