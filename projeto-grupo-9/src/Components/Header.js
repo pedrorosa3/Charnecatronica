@@ -37,7 +37,7 @@ useEffect(() => {
   const sincronizarUsuario = async () => {
     if (isAuthenticated && user?.email) {
       try {
-        const response = await fetch(`http://localhost:9000/perfil/email?email=${user.email}`, {
+        const response = await fetch(`${process.env.REACT_APP_URL_HOST}/perfil/email?email=${user.email}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

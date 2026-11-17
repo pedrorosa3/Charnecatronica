@@ -10,6 +10,7 @@
 ![MUI](https://img.shields.io/badge/MUI-6-007FFF?logo=mui&logoColor=white)
 ![Stripe](https://img.shields.io/badge/Stripe-Pagamentos-635BFF?logo=stripe&logoColor=white)
 ![Auth0](https://img.shields.io/badge/Auth0-Autenticação-EB5424?logo=auth0&logoColor=white)
+![Google Cloud](https://img.shields.io/badge/Google%20Cloud-HAProxy%20%2B%20Keepalived-4285F4?logo=googlecloud&logoColor=white)
 
 📅 **Data de entrega:** junho de 2025
 
@@ -33,7 +34,31 @@ A **Charnecatrónica** é uma aplicação web que permite a clientes e funcioná
 - ⭐ **Interesses** — ser notificado quando um equipamento desejado fica disponível
 - 📊 **Dashboard** para funcionários, com gestão de lojas, fichas de equipamento, vendas e compras
 
-O relatório completo encontra-se em [Relatório_PGP_final.pdf](Relatório_PGP_final.pdf).
+### 📸 Capturas de ecrã
+
+| Página inicial | Loja |
+| :---: | :---: |
+| ![Página inicial](docs/screenshots/home.png) | ![Loja com filtros](docs/screenshots/comprar.png) |
+| **Detalhes do produto** | **Projetos de beneficência** |
+| ![Detalhes do produto](docs/screenshots/produto.png) | ![Projetos de beneficência](docs/screenshots/doar.png) |
+
+<details>
+<summary>Área do funcionário: fichas de equipamento</summary>
+
+![Fichas de equipamento](docs/screenshots/fichas.png)
+
+</details>
+
+Em produção, a aplicação foi publicada em **https://charnecatronica.pt**, numa arquitetura distribuída e tolerante a faltas no **Google Cloud**: load balancers HAProxy + Keepalived, web servers escaláveis e PostgreSQL replicado. Os detalhes estão em [docs/ARQUITETURA_GCP.md](docs/ARQUITETURA_GCP.md).
+
+### 📚 Documentação
+
+| Documento | Conteúdo |
+| --- | --- |
+| [docs/ARQUITETURA_GCP.md](docs/ARQUITETURA_GCP.md) | Infraestrutura no GCP: redes, firewall, HAProxy, Keepalived, replicação, automação, testes e como replicar |
+| [docs/charnecatronica-api.yaml](docs/charnecatronica-api.yaml) | Especificação **OpenAPI 3.0** de todos os endpoints da API |
+| [docs/Relatorio_4aEntrega_Grupo09.pdf](docs/Relatorio_4aEntrega_Grupo09.pdf) | Relatório de PTR: requisitos não funcionais, arquitetura e testes |
+| [Relatório_PGP_final.pdf](Relatório_PGP_final.pdf) | Relatório de planeamento e gestão do projeto |
 
 ## 🗂️ Estrutura
 
@@ -50,6 +75,7 @@ Charnecatronica/
 │       ├── Components/
 │       ├── Context/
 │       └── Pages/
+├── docs/                # Arquitetura GCP, especificação OpenAPI e relatório
 ├── db.sql               # Script de criação da base de dados
 └── conf.env.example     # Modelo das variáveis de ambiente
 ```
@@ -198,6 +224,16 @@ A aplicação abre automaticamente em **http://localhost:3000** 🎉
 
 > 💡 Sempre que guardares um ficheiro, a página atualiza sozinha. Só precisas de voltar a correr `npm start` se fechares o terminal.
 
+## 🔑 Contas de teste
+
+| Área | Como entrar |
+| --- | --- |
+| **Cliente** | Botão **LOGIN** no topo da página. Cria uma conta ou entra pelo Auth0 (Google, email, …). O perfil é criado automaticamente na base de dados no primeiro login. |
+| **Funcionário** | Vai a **http://localhost:3000/loginempregado** e entra com o número interno `2` e a password `yMv(x1v7^8fB` (a funcionária fictícia Helena Esteves, do `db.sql`). Abre o **Dashboard**, com reparações, loja física, fichas de equipamento, lojas e projetos. |
+| **Administrador** | Número interno `admin` (ou `0000`) e password `admin`. Entra, mas o cartão de dados do Dashboard fica vazio, porque `admin` não existe na tabela `empregado`. Os menus laterais funcionam na mesma. |
+
+> ⚠️ **Projeto académico, só para demonstração.** O login de administrador está escrito diretamente no código ([loginEmpregadoController.js](api/controllers/loginEmpregadoController.js)), e os dados de exemplo do `db.sql` (pessoas, emails e passwords) são fictícios e estão guardados em texto simples. Não uses esta configuração com dados reais.
+
 ## 🛠️ Scripts úteis
 
 | Pasta | Comando | Descrição |
@@ -205,7 +241,45 @@ A aplicação abre automaticamente em **http://localhost:3000** 🎉
 | `api/` | `npm start` | Inicia o servidor Express |
 | `projeto-grupo-9/` | `npm start` | Inicia o React em modo de desenvolvimento |
 | `projeto-grupo-9/` | `npm run build` | Gera a versão de produção em `build/` |
-| `projeto-grupo-9/` | `npm test` | Corre os testes |
+| `projeto-grupo-9/` | `npm test` | Corre os testes unitários (Jest + Testing Library) |
+
+## 📑 Documentação da API
+
+A especificação completa (OpenAPI 3.0) está em [docs/charnecatronica-api.yaml](docs/charnecatronica-api.yaml).
+Para explorar e testar os endpoints:
+
+1. Abre o [Swagger Editor](https://editor.swagger.io/).
+2. Em **File** → **Import file**, escolhe o `charnecatronica-api.yaml`.
+3. Com a API a correr localmente (`http://localhost:9000`), usa **Try it out** em cada endpoint.
+
+## ☁️ Arquitetura em produção (GCP)
+
+Para a entrega final, a aplicação foi publicada no **Google Cloud (Compute Engine)** em **https://charnecatronica.pt**:
+
+```
+                  Cliente ── HTTPS 443 ──▶ charnecatronica.pt (34.29.89.147, IP flutuante)
+                                                     │
+                       ┌─────────────────────────────┴─────────────────────────────┐
+                       ▼                         VRRP (Keepalived)                 ▼
+              LoadBalancer 1 (ativo)  ◀──────────────────────────▶  LoadBalancer 2 (standby)
+              HAProxy · TLS (certbot)                                HAProxy · TLS
+                       │                                                     │
+                       └───────────────┬───────── HTTP 80 ───────────────────┘
+                                       ▼
+                  Web server 1 … N  (Apache · React :3000 · Express :9000)
+                  criados por script · .env vindo do Cloud Storage
+                                       │ TCP 5432
+                                       ▼
+                  PostgreSQL 17 primária  ◀── replicação + VRRP ──▶  PostgreSQL 17 réplica
+```
+
+- **Load balancers:** HAProxy faz a terminação TLS e distribui a carga. O Keepalived (VRRP) passa o IP público para o standby se o ativo falhar.
+- **Escalabilidade:** um script cria web servers novos já configurados, e um *cron* a cada minuto atualiza o `haproxy.cfg` com os web servers ativos.
+- **Base de dados:** PostgreSQL replicado, com failover automático do IP interno.
+- **Segurança:** HTTPS com Let's Encrypt, domínio próprio, duas redes VPC (`ptr` externa e `default` interna), regras de firewall mínimas e credenciais guardadas num bucket do Cloud Storage.
+- **Testes:** failover, carga (Locust), vulnerabilidades (Nmap, OWASP ZAP) e aceitação da API (Swagger).
+
+👉 Os detalhes completos e o guia para replicar a infraestrutura estão em **[docs/ARQUITETURA_GCP.md](docs/ARQUITETURA_GCP.md)**.
 
 ## ❓ Problemas comuns
 
@@ -220,6 +294,6 @@ A aplicação abre automaticamente em **http://localhost:3000** 🎉
 
 <div align="center">
 
-Feito com ❤️ pelo **Grupo 9**
+Feito com ❤️ pelo **Grupo 9** · Distribuído sob a licença [MIT](LICENSE)
 
 </div>

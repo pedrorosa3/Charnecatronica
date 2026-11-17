@@ -1,0 +1,2948 @@
+openapi: 3.0.3
+info:
+  title: Charnecatronica
+  version: 1.0.0
+  description: API para gerir equipamentos, clientes e projetos
+servers:
+  - url: http://localhost:9000
+paths:
+  /perfil:
+    post:
+      summary: Criar ou atualizar perfil
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - email
+                - nif
+                - nic
+                - genero
+                - telemovel
+                - dataNascimento
+              properties:
+                nome:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                nif:
+                  type: integer
+                nic:
+                  type: integer
+                genero:
+                  type: string
+                telemovel:
+                  type: number
+                dataNascimento:
+                  type: string
+                  format: date
+      responses:
+        '200':
+          description: Perfil atualizado
+        '201':
+          description: Perfil criado
+        '400':
+          description: Dados em falta
+        '500':
+          description: Erro no servidor
+
+    get:
+      summary: Buscar perfil por email
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: Email do utilizador
+      responses:
+        '200':
+          description: Perfil encontrado
+        '400':
+          description: Email em falta
+        '404':
+          description: Perfil não encontrado
+        '500':
+          description: Erro no servidor
+
+  /perfil/clienteId:
+    get:
+      summary: Obter ID do cliente por email
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: true
+      responses:
+        '200':
+          description: ID do cliente encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clienteId:
+                    type: integer
+        '400':
+          description: Email em falta
+        '404':
+          description: Cliente não encontrado
+        '500':
+          description: Erro no servidor
+
+  /perfil/email:
+    post:
+      summary: Buscar ou criar utilizador por email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                nome:
+                  type: string
+                  default: Utilizador
+      responses:
+        '200':
+          description: Utilizador já existente
+        '201':
+          description: Novo utilizador criado
+        '400':
+          description: Email em falta
+        '500':
+          description: Erro no servidor
+  
+  /equipamentos:
+    get:
+      summary: Obter todos os equipamentos à venda
+      responses:
+        '200':
+          description: Lista de equipamentos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    estado:
+                      type: string
+                    estadoVenda:
+                      type: string
+                    preco:
+                      type: number
+                    numeroSequenciaLoja:
+                      type: string
+                    dataDeDisponibilizacao:
+                      type: string
+                      format: date-time
+                    lojanipc:
+                      type: string
+                    marca:
+                      type: string
+                    modelo:
+                      type: string
+                    tipo:
+                      type: string
+                    codBarras:
+                      type: string
+                    imagem:
+                      type: string
+                    nome:
+                      type: string
+                    categoria:
+                      type: string
+                    avaliacao:
+                      type: number
+                    reviews:
+                      type: string
+        '500':
+          description: Erro ao buscar equipamentos
+
+    post:
+      summary: Criar novo equipamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - estado
+                - preco
+                - lojaNipc
+                - codBarras
+                - marca
+                - modelo
+                - tipo
+                - precoBase
+                - anoLancamento
+                - imagemurl
+              properties:
+                estado:
+                  type: string
+                preco:
+                  type: number
+                lojaNipc:
+                  type: integer
+                codBarras:
+                  type: string
+                marca:
+                  type: string
+                modelo:
+                  type: string
+                tipo:
+                  type: string
+                precoBase:
+                  type: number
+                anoLancamento:
+                  type: integer
+                imagemurl:
+                  type: string
+                compraId:
+                  type: integer
+      responses:
+        '201':
+          description: Equipamento criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  id:
+                    type: integer
+        '400':
+          description: Campos obrigatórios em falta
+        '500':
+          description: Erro ao criar equipamento
+
+  /equipamentos/{id}:
+    get:
+      summary: Obter equipamento por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalhes do equipamento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  estado:
+                    type: string
+                  estadoVenda:
+                    type: string
+                  preco:
+                    type: number
+                  numeroSequenciaLoja:
+                    type: string
+                  dataDeDisponibilizacao:
+                    type: string
+                    format: date-time
+                  lojanipc:
+                    type: string
+                  codBarras:
+                    type: string
+                  marca:
+                    type: string
+                  modelo:
+                    type: string
+                  tipo:
+                    type: string
+                  precoBase:
+                    type: number
+                  anoLancamento:
+                    type: integer
+                  nome:
+                    type: string
+                  categoria:
+                    type: string
+                  imagens:
+                    type: array
+                    items:
+                      type: string
+                  especificacoes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        titulo:
+                          type: string
+                        destaque:
+                          type: string
+                  avaliacao:
+                    type: number
+                  reviews:
+                    type: string
+        '404':
+          description: Equipamento não encontrado
+        '500':
+          description: Erro interno ao buscar equipamento        
+          
+  /compras:
+    post:
+      summary: Registar uma nova compra
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - estadocompra
+                - preco
+                - clienteid
+                - empregadoid
+                - lojaNipc
+                - estado
+                - metodopagamento
+                - codbarras
+              properties:
+                preco:
+                  type: number
+                clienteId:
+                  type: integer
+                empregadoId:
+                  type: integer
+                lojaNipc:
+                  type: integer
+                estado:
+                  type: string
+                modelo:
+                  type: string
+                metodoPagamento:
+                  type: string
+                estadocompra:
+                  type: string
+                  default: "Por vender"
+                
+      responses:
+        '201':
+            description: Compra registada com sucesso
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    compra:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          
+                        estadocompra:
+                          type: string
+                          
+                        data:
+                          type: string
+                          format: date-time
+                        
+                        preco:
+                          type: number
+                        clienteid:
+                          type: integer
+                        empregadoid:
+                          type: integer
+                        lojanipc:
+                          type: integer
+                        estado:
+                          type: string
+                        metodopagamento:
+                          type: string
+                        codbarras:
+                          type: string
+                        
+        '400':
+          description: Campos obrigatórios em falta
+        '404':
+          description: Modelo não encontrado
+        '500':
+          description: Erro
+          
+  /compraslista:
+    get:
+      summary: Obter lista de compras
+      responses:
+        '200':
+          description: Lista de compras obtida com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    data:
+                      type: string
+                      format: date-time
+                    preco:
+                      type: number
+                    estadocompra:
+                      type: string
+                    clienteId:
+                      type: integer
+                    clienteNome:
+                      type: string
+                    empregadoId:
+                      type: integer
+                    empregadoNome:
+                      type: string
+                    lojaNome:
+                      type: string
+                    lojaNipc:
+                      type: string
+                    equipamentoCodBarras:
+                      type: string
+                    equipamentoMarca:
+                      type: string
+                    equipamentoModelo:
+                      type: string
+        '500':
+          description: Erro ao buscar compras
+
+  /compraslista/{id}:
+    get:
+      summary: Obter detalhes de uma compra por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalhes da compra
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  data:
+                    type: string
+                    format: date-time
+                  preco:
+                    type: number
+                  estado:
+                    type: string
+                  metodoPagamento:
+                    type: string
+                  estadocompra:
+                    type: string
+                  clienteId:
+                    type: integer
+                  clienteNome:
+                    type: string
+                  clienteEmail:
+                    type: string
+                  clienteTelemovel:
+                    type: string
+                  clienteRua:
+                    type: string
+                  clienteLocalidade:
+                    type: string
+                  empregadoId:
+                    type: integer
+                  empregadoNome:
+                    type: string
+                  empregadoEmail:
+                    type: string
+                  empregadoTelemovel:
+                    type: string
+                  lojaNome:
+                    type: string
+                  lojaNipc:
+                    type: string
+                  lojaTelefone:
+                    type: string
+                  lojaRua:
+                    type: string
+                  lojaNumero:
+                    type: string
+                  lojaLocalidade:
+                    type: string
+                  lojaConcelho:
+                    type: string
+                  lojaDistrito:
+                    type: string
+                  lojaCodigoPostal:
+                    type: string
+                  equipamentoCodBarras:
+                    type: string
+                  equipamentoMarca:
+                    type: string
+                  equipamentoModelo:
+                    type: string
+                  equipamentoTipo:
+                    type: string
+                  equipamentoAnoLancamento:
+                    type: integer
+                  equipamentoImagemUrl:
+                    type: string
+        '404':
+          description: Compra não encontrada
+        '500':
+          description: Erro ao buscar compra por ID        
+          
+  /login:
+    post:
+      summary: Efetuar login
+      description: Autentica um utilizador com email e password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: joao.silva@example.com
+                password:
+                  type: string
+                  format: password
+                  example: 123456
+      responses:
+        '200':
+          description: Login bem-sucedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Login bem-sucedido
+                  userId:
+                    type: integer
+                    example: 12
+                  nome:
+                    type: string
+                    example: João Silva
+                  email:
+                    type: string
+                    format: email
+                    example: joao.silva@example.com
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Senha incorreta ou E-mail não encontrado
+        '500':
+          description: Erro interno ao tentar fazer login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Erro ao fazer login        
+          
+  /projetos_beneficencia:
+    get:
+      summary: Listar todos os projetos de beneficência
+      description: Retorna uma lista de todos os projetos de beneficência com informações da loja e organizador.
+      responses:
+        '200':
+          description: Lista de projetos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjetoBeneficenciaResumo'
+        '500':
+          description: Erro ao buscar projetos
+
+  /projetos_beneficencia/{id}:
+    get:
+      summary: Obter detalhes de um projeto de beneficência por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Projeto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjetoBeneficenciaDetalhado'
+        '400':
+          description: ID inválido
+        '404':
+          description: Projeto não encontrado
+        '500':
+          description: Erro no servidor
+
+ 
+  /adicionar-projeto:
+    post:
+      summary: Criar um novo projeto de beneficência
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - descricao
+                - datalimite
+                - quantidadeequipamentos
+                - nomeorganizador
+                - nomeloja
+                - fichaequipamentocodbarras
+              properties:
+                nome:
+                  type: string
+                  example: "Projeto Solidário"
+                descricao:
+                  type: string
+                  example: "Descrição do projeto de beneficência"
+                datalimite:
+                  type: string
+                  format: date
+                  example: "2025-12-31"
+                quantidadeequipamentos:
+                  type: integer
+                  example: 50
+                nomeorganizador:
+                  type: string
+                  example: "Maria Fernandes"
+                nomeloja:
+                  type: string
+                  example: "Loja Central"
+                fichaequipamentocodbarras:
+                  type: string
+                  example: "1234567890123"
+                imagem:
+                  type: string
+                  example: "https://exemplo.com/imagem.jpg"
+      responses:
+        '201':
+          description: Projeto registrado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Projeto registrado com sucesso!"
+                  projeto:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      nome:
+                        type: string
+                        example: "Projeto Solidário"
+                      descricao:
+                        type: string
+                        example: "Descrição do projeto de beneficência"
+                      datalimite:
+                        type: string
+                        format: date
+                        example: "2025-12-31"
+                      quantidadeequipamentos:
+                        type: integer
+                        example: 50
+                      organizadorid:
+                        type: integer
+                        example: 3
+                      lojanipc:
+                        type: string
+                        example: "509876321"
+                      fichaequipamentocodbarras:
+                        type: string
+                        example: "1234567890123"
+                      imagem:
+                        type: string
+                        example: "https://exemplo.com/imagem.jpg"
+        '400':
+          description: Campos obrigatórios em falta ou organizador/loja não encontrados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Todos os campos são obrigatórios"
+        '500':
+          description: Erro interno ao registrar projeto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao registrar projeto" 
+
+  /lojas:
+    post:
+      summary: Criar uma nova loja com morada
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - numerotelefone
+                - email
+                - horarioabertura
+                - horariofecho
+                - morada
+              properties:
+                nome:
+                  type: string
+                  example: "Loja Central"
+                numerotelefone:
+                  type: string
+                  example: "+351912345678"
+                email:
+                  type: string
+                  format: email
+                  example: "contato@lojacentral.pt"
+                horarioabertura:
+                  type: string
+                  example: "09:00"
+                horariofecho:
+                  type: string
+                  example: "18:00"
+                morada:
+                  type: object
+                  required:
+                    - pais
+                    - localidade
+                    - rua
+                  properties:
+                    pais:
+                      type: string
+                      example: "Portugal"
+                    localidade:
+                      type: string
+                      example: "Lisboa"
+                    latitude:
+                      type: number
+                      format: float
+                      example: 38.7169
+                    longitude:
+                      type: number
+                      format: float
+                      example: -9.1399
+                    freguesia:
+                      type: string
+                      example: "Santo António"
+                    rua:
+                      type: string
+                      example: "Rua Augusta"
+                    codigopostal:
+                      type: string
+                      example: "1100-048"
+                    concelho:
+                      type: string
+                      example: "Lisboa"
+                    numero:
+                      type: string
+                      example: "45"
+                    distrito:
+                      type: string
+                      example: "Lisboa"
+      responses:
+        '201':
+          description: Loja criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Loja criada com sucesso!"
+                  loja:
+                    type: object
+                    properties:
+                      nipc:
+                        type: string
+                        example: "123456789"
+                      nome:
+                        type: string
+                        example: "Loja Central"
+                      numerotelefone:
+                        type: string
+                        example: "+351912345678"
+                      email:
+                        type: string
+                        format: email
+                        example: "contato@lojacentral.pt"
+                      moradaid:
+                        type: integer
+                        example: 10
+                      horaabertura:
+                        type: string
+                        example: "09:00"
+                      horafecho:
+                        type: string
+                        example: "18:00"
+        '400':
+          description: Campos obrigatórios em falta ou inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Campos obrigatórios em falta."
+        '500':
+          description: Erro interno ao criar loja
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro interno ao criar loja"
+
+    get:
+      summary: Obter todas as lojas com detalhes e morada
+      responses:
+        '200':
+          description: Lista de lojas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nipc:
+                      type: string
+                      example: "123456789"
+                    nome:
+                      type: string
+                      example: "Loja Central"
+                    telefone:
+                      type: string
+                      example: "+351912345678"
+                    email:
+                      type: string
+                      format: email
+                      example: "contato@lojacentral.pt"
+                    horario:
+                      type: string
+                      example: "09:00 - 18:00"
+                    morada:
+                      type: string
+                      example: "Rua Augusta, 45, Lisboa"
+                    posicao:
+                      type: object
+                      properties:
+                        lat:
+                          type: number
+                          format: float
+                          example: 38.7169
+                        lng:
+                          type: number
+                          format: float
+                          example: -9.1399
+        '500':
+          description: Erro ao buscar lojas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao buscar lojas"
+
+  /lojas/{nipc}/empregados:
+    get:
+      summary: Obter empregados de uma loja pelo NIPC
+      parameters:
+        - name: nipc
+          in: path
+          required: true
+          schema:
+            type: string
+          description: NIPC da loja
+      responses:
+        '200':
+          description: Lista de empregados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 5
+                    nome:
+                      type: string
+                      example: "José Silva"
+        '500':
+          description: Erro ao buscar empregados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao buscar empregados da loja"
+
+  /lojas/{nipc}/equipamentos:
+    get:
+      summary: Obter equipamentos à venda de uma loja pelo NIPC
+      parameters:
+        - name: nipc
+          in: path
+          required: true
+          schema:
+            type: string
+          description: NIPC da loja
+      responses:
+        '200':
+          description: Lista de equipamentos à venda
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1001
+                    estadovenda:
+                      type: string
+                      example: "À venda"
+                    estado:
+                      type: string
+                      example: "Usado"
+                    preco:
+                      type: number
+                      format: float
+                      example: 299.99
+                    numerosequencialoja:
+                      type: string
+                      example: "00123"
+                    datadedisponibilizacao:
+                      type: string
+                      format: date-time
+                      example: "2025-06-19T12:00:00Z"
+                    codBarras:
+                      type: string
+                      example: "1234567890123"
+                    marca:
+                      type: string
+                      example: "MarcaX"
+                    modelo:
+                      type: string
+                      example: "ModeloY"
+                    tipo:
+                      type: string
+                      example: "Smartphone"
+                    precoBase:
+                      type: number
+                      format: float
+                      example: 399.99
+                    anoLancamento:
+                      type: integer
+                      example: 2023
+        '500':
+          description: Erro ao buscar equipamentos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao buscar equipamentos da loja"
+
+
+  /clientes:
+    get:
+      summary: Obter lista de clientes com informações da pessoa
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    clienteId:
+                      type: integer
+                      example: 123
+                    nome:
+                      type: string
+                      example: "João Silva"
+                    email:
+                      type: string
+                      format: email
+                      example: "joao.silva@example.com"
+                    telefone:
+                      type: string
+                      example: "+351912345678"
+        '500':
+          description: Erro ao buscar clientes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao buscar clientes"
+
+  /fichas:
+    get:
+      summary: Obter lista de fichas de equipamento
+      responses:
+        '200':
+          description: Lista de fichas de equipamento
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    codBarras:
+                      type: string
+                      example: "1234567890123"
+                    marca:
+                      type: string
+                      example: "Sony"
+                    modelo:
+                      type: string
+                      example: "Alpha 7"
+                    tipo:
+                      type: string
+                      example: "Câmera"
+                    precoBase:
+                      type: number
+                      format: float
+                      example: 1500.5
+                    anoLancamento:
+                      type: integer
+                      example: 2021
+                    url:
+                      type: string
+                      format: uri
+                      example: "https://example.com/imagem.jpg"
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Criar uma nova ficha de equipamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - codBarras
+                - marca
+                - modelo
+                - tipo
+                - precoBase
+                - anoLancamento
+              properties:
+                codBarras:
+                  type: string
+                  description: Código de barras com 13 dígitos numéricos
+                  example: "1234567890123"
+                marca:
+                  type: string
+                  example: "Sony"
+                modelo:
+                  type: string
+                  example: "Alpha 7"
+                tipo:
+                  type: string
+                  example: "Câmera"
+                precoBase:
+                  type: number
+                  format: float
+                  example: 1500.5
+                anoLancamento:
+                  type: integer
+                  example: 2021
+      responses:
+        '201':
+          description: Ficha criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ficha criada com sucesso."
+        '400':
+          description: Dados inválidos ou em falta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Código de barras já existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /fichas/tipos:
+    get:
+      summary: Obter lista de tipos de equipamento distintos
+      responses:
+        '200':
+          description: Lista de tipos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: "Câmera"
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /fichas/{id}:
+    get:
+      summary: Obter ficha de equipamento por código de barras
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Código de barras da ficha (13 dígitos)
+          example: "1234567890123"
+      responses:
+        '200':
+          description: Ficha de equipamento encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  codBarras:
+                    type: string
+                    example: "1234567890123"
+                  marca:
+                    type: string
+                    example: "Sony"
+                  modelo:
+                    type: string
+                    example: "Alpha 7"
+                  tipo:
+                    type: string
+                    example: "Câmera"
+                  precoBase:
+                    type: number
+                    format: float
+                    example: 1500.5
+                  anoLancamento:
+                    type: integer
+                    example: 2021
+                  nome:
+                    type: string
+                    example: "Sony Alpha 7"
+                  categoria:
+                    type: string
+                    example: "Câmera"
+                  imagens:
+                    type: array
+                    items:
+                      type: string
+                      format: uri
+                  especificacoes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        titulo:
+                          type: string
+                        destaque:
+                          type: string
+                  imagemUrl:
+                    type: string
+                    format: uri
+                    nullable: true
+                  avaliacao:
+                    type: number
+                    format: float
+                    example: 4.2
+                  reviews:
+                    type: string
+                    example: "837 Reviews"
+        '404':
+          description: Ficha não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Atualizar ficha de equipamento pelo código de barras
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Código de barras da ficha
+          example: "1234567890123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - marca
+                - modelo
+                - tipo
+                - precoBase
+                - anoLancamento
+              properties:
+                marca:
+                  type: string
+                  example: "Sony"
+                modelo:
+                  type: string
+                  example: "Alpha 7"
+                tipo:
+                  type: string
+                  example: "Câmera"
+                precoBase:
+                  type: number
+                  format: float
+                  example: 1500.5
+                anoLancamento:
+                  type: integer
+                  example: 2021
+      responses:
+        '200':
+          description: Ficha atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ficha atualizada com sucesso."
+        '400':
+          description: Dados inválidos ou em falta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Apagar ficha de equipamento pelo código de barras
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Código de barras da ficha
+          example: "1234567890123"
+      responses:
+        '200':
+          description: Ficha apagada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ficha apagada com sucesso."
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /morada:
+    post:
+      summary: Adicionar uma nova morada
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rua
+                - numero
+                - codigopostal
+                - localidade
+              properties:
+                pais:
+                  type: string
+                  description: País (opcional, padrão "Portugal")
+                  example: "Portugal"
+                localidade:
+                  type: string
+                  description: Localidade da morada
+                  example: "Lisboa"
+                latitude:
+                  type: number
+                  format: float
+                  nullable: true
+                  example: 38.7169
+                longitude:
+                  type: number
+                  format: float
+                  nullable: true
+                  example: -9.1399
+                freguesia:
+                  type: string
+                  nullable: true
+                  example: "Santa Maria Maior"
+                rua:
+                  type: string
+                  description: Nome da rua
+                  example: "Rua Augusta"
+                codigopostal:
+                  type: string
+                  description: Código postal
+                  example: "1100-048"
+                concelho:
+                  type: string
+                  nullable: true
+                  example: "Lisboa"
+                numero:
+                  type: integer
+                  description: Número da porta
+                  example: 45
+                distrito:
+                  type: string
+                  nullable: true
+                  example: "Lisboa"
+      responses:
+        '201':
+          description: Morada inserida com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Morada inserida com sucesso"
+                  id:
+                    type: integer
+                    example: 123
+        '400':
+          description: Campos obrigatórios em falta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Os campos rua, número, código postal e localidade são obrigatórios."
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Erro interno do servidor"
+
+  /pessoa:
+    post:
+      summary: Adicionar uma nova pessoa e cliente, ou atualizar se já existir
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nif
+                - nome
+                - telefone
+                - email
+                - moradaId
+              properties:
+                nif:
+                  type: integer
+                  description: Número de Identificação Fiscal
+                  example: 123456789
+                nome:
+                  type: string
+                  description: Nome completo da pessoa
+                  example: "João Silva"
+                telefone:
+                  type: string
+                  description: Número de telefone (telemóvel)
+                  example: "912345678"
+                email:
+                  type: string
+                  format: email
+                  description: Email da pessoa
+                  example: "joao.silva@example.com"
+                moradaId:
+                  type: integer
+                  description: ID da morada associada
+                  example: 42
+      responses:
+        '201':
+          description: Pessoa e cliente inseridos ou atualizados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Pessoa e cliente inseridos com sucesso."
+                  pessoaId:
+                    type: integer
+                    example: 101
+                  clienteId:
+                    type: integer
+                    example: 202
+        '400':
+          description: Dados inválidos ou campos obrigatórios faltando
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Todos os campos são obrigatórios (incluindo moradaId)."
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Erro interno do servidor"
+
+  /venda:
+    post:
+      summary: Criar uma nova venda com itens do carrinho
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tipo
+                - clienteId
+                - carrinho
+              properties:
+                tipo:
+                  type: string
+                  description: Tipo de pagamento
+                  example: "Cartão"
+                custoTransporte:
+                  type: number
+                  format: float
+                  nullable: true
+                  description: Custo do transporte
+                  example: 15.5
+                lojaNipc:
+                  type: integer
+                  nullable: true
+                  description: NIPC da loja onde a venda foi realizada
+                  example: 123456789
+                empregadoId:
+                  type: integer
+                  nullable: true
+                  description: ID do empregado que efetuou a venda
+                  example: 12
+                clienteId:
+                  type: integer
+                  description: ID do cliente que realizou a compra
+                  example: 34
+                carrinho:
+                  type: array
+                  description: Lista de produtos no carrinho
+                  items:
+                    type: object
+                    required:
+                      - id
+                      - quantidade
+                      - preco
+                    properties:
+                      id:
+                        type: integer
+                        description: ID do equipamento
+                        example: 101
+                      quantidade:
+                        type: integer
+                        description: Quantidade do equipamento comprado
+                        example: 2
+                      preco:
+                        type: number
+                        format: float
+                        description: Preço unitário do equipamento
+                        example: 250.75
+      responses:
+        '201':
+          description: Venda criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Venda inserida com sucesso."
+                  vendaId:
+                    type: integer
+                    example: 55
+        '400':
+          description: Dados obrigatórios em falta ou cliente não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "ClienteId, tipo de pagamento e carrinho são obrigatórios."
+        '500':
+          description: Erro interno do servidor ao inserir a venda
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Erro ao inserir venda."
+
+
+  /vendaslista:
+    get:
+      summary: Listar todas as vendas com equipamentos
+      responses:
+        '200':
+          description: Lista de vendas com equipamentos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    numerovenda:
+                      type: integer
+                      example: 101
+                    data:
+                      type: string
+                      format: date
+                      example: 2025-06-19
+                    tipo:
+                      type: string
+                      example: "Cartão"
+                    estadovenda:
+                      type: string
+                      example: "Pendente"
+                    clientenome:
+                      type: string
+                      example: "João Silva"
+                    custotransporte:
+                      type: number
+                      format: float
+                      example: 10.5
+                    equipamentos:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 15
+                          marca:
+                            type: string
+                            example: "Sony"
+                          modelo:
+                            type: string
+                            example: "Xperia"
+                          precounitario:
+                            type: number
+                            format: float
+                            example: 499.99
+                          quantidade:
+                            type: integer
+                            example: 1
+        '500':
+          description: Erro ao buscar vendas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /vendaslista/cliente/{clienteId}:
+    get:
+      summary: Listar vendas de um cliente específico
+      parameters:
+        - name: clienteId
+          in: path
+          required: true
+          description: ID do cliente
+          schema:
+            type: integer
+            example: 34
+      responses:
+        '200':
+          description: Lista de vendas do cliente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    numerovenda:
+                      type: integer
+                    data:
+                      type: string
+                      format: date
+                    tipo:
+                      type: string
+                    estadovenda:
+                      type: string
+                    clienteid:
+                      type: integer
+        '500':
+          description: Erro ao buscar vendas do cliente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /vendaslista/{numerovenda}:
+    get:
+      summary: Obter detalhes de uma venda específica
+      parameters:
+        - name: numerovenda
+          in: path
+          required: true
+          description: Número da venda
+          schema:
+            type: integer
+            example: 101
+      responses:
+        '200':
+          description: Detalhes da venda
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  numerovenda:
+                    type: integer
+                    example: 101
+                  datavenda:
+                    type: string
+                    format: date
+                    example: 2025-06-19
+                  tipo:
+                    type: string
+                    example: "Cartão"
+                  estadovenda:
+                    type: string
+                    example: "Pendente"
+                  clientenome:
+                    type: string
+                    example: "João Silva"
+                  clienteemail:
+                    type: string
+                    format: email
+                    example: "joao@example.com"
+                  clientetelemovel:
+                    type: string
+                    example: "+351912345678"
+                  clienterua:
+                    type: string
+                    example: "Rua das Flores"
+                  clientelocalidade:
+                    type: string
+                    example: "Lisboa"
+                  custotransporte:
+                    type: number
+                    format: float
+                    example: 10.5
+                  equipamentos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 15
+                        marca:
+                          type: string
+                          example: "Sony"
+                        modelo:
+                          type: string
+                          example: "Xperia"
+                        precounitario:
+                          type: number
+                          format: float
+                          example: 499.99
+                        quantidade:
+                          type: integer
+                          example: 1
+                        imagemurl:
+                          type: string
+                          format: uri
+                          example: "http://example.com/image.jpg"
+        '404':
+          description: Venda não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro ao buscar detalhes da venda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /vendaslista/{numerovenda}/estado:
+    post:
+      summary: Atualizar o estado de uma venda
+      parameters:
+        - name: numerovenda
+          in: path
+          required: true
+          description: Número da venda
+          schema:
+            type: integer
+            example: 101
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - estadovenda
+              properties:
+                estadovenda:
+                  type: string
+                  description: Novo estado da venda
+                  example: "Enviado"
+      responses:
+        '200':
+          description: Estado da venda atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Estado da venda atualizado com sucesso."
+        '400':
+          description: Parâmetro estadovenda obrigatório
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro ao atualizar estado da venda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /reparacoes:
+    get:
+      summary: Obter todas as reparações
+      responses:
+        '200':
+          description: Lista de todas as reparações
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReparacaoSimples'
+        '500':
+          description: Erro ao obter reparações
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Criar uma nova reparação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReparacaoInput'
+      responses:
+        '201':
+          description: Reparação criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReparacaoCompleta'
+        '500':
+          description: Erro ao criar reparação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /reparacoes/lista:
+    get:
+      summary: Obter lista detalhada de reparações
+      responses:
+        '200':
+          description: Lista detalhada de reparações
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReparacaoDetalhada'
+        '500':
+          description: Erro ao obter lista detalhada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /reparacoes/{id}:
+    get:
+      summary: Obter detalhes de uma reparação pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID da reparação
+          schema:
+            type: integer
+            example: 123
+      responses:
+        '200':
+          description: Detalhes da reparação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReparacaoCompleta'
+        '404':
+          description: Reparação não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro ao obter reparação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Atualizar reparação existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID da reparação a atualizar
+          schema:
+            type: integer
+            example: 123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReparacaoInputComEstado'
+      responses:
+        '200':
+          description: Reparação atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReparacaoCompleta'
+        '404':
+          description: Reparação não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro ao atualizar reparação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Eliminar reparação pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID da reparação a eliminar
+          schema:
+            type: integer
+            example: 123
+      responses:
+        '200':
+          description: Reparação eliminada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Reparação eliminada com sucesso"
+        '404':
+          description: Reparação não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erro ao eliminar reparação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /pecasDiagnostico/{id}:
+    post:
+      summary: Registar ou atualizar diagnóstico de uma reparação
+      description: Atualiza o diagnóstico, incluindo o estado do equipamento e peças a substituir para uma reparação específica.
+      parameters:
+        - name: id
+          in: path
+          description: ID da reparação a diagnosticar
+          required: true
+          schema:
+            type: integer
+            example: 123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - estadoEquipamento
+                - pecas
+              properties:
+                estadoEquipamento:
+                  type: string
+                  description: Estado atual do equipamento na reparação
+                  example: "Defeituoso"
+                pecas:
+                  type: array
+                  description: Lista de peças a substituir
+                  items:
+                    type: object
+                    required:
+                      - nome
+                      - preco
+                    properties:
+                      nome:
+                        type: string
+                        description: Nome da peça
+                        example: "Ecrã LCD"
+                      preco:
+                        type: number
+                        format: float
+                        description: Custo da peça
+                        example: 120.50
+      responses:
+        '201':
+          description: Diagnóstico atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Diagnóstico atualizado com sucesso."
+        '400':
+          description: Dados incompletos ou inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Dados incompletos."
+        '500':
+          description: Erro interno ao submeter diagnóstico
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao submeter diagnóstico."
+
+  /loginempregado:
+    post:
+      summary: Login de empregado
+      description: Autentica um empregado usando numInterno e password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - numInterno
+                - password
+              properties:
+                numInterno:
+                  type: string
+                  description: Número interno do empregado (pode ser 'admin' ou '0000' para login admin)
+                  example: "1234"
+                password:
+                  type: string
+                  description: Senha do empregado
+                  example: "senha123"
+      responses:
+        '200':
+          description: Login bem-sucedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Login bem-sucedido"
+                  numInterno:
+                    type: string
+                    example: "1234"
+                  nome:
+                    type: string
+                    example: "João Silva"
+                  email:
+                    type: string
+                    example: "joao.silva@empresa.com"
+        '401':
+          description: Falha na autenticação (empregado não encontrado ou senha incorreta)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Senha incorreta"
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Erro interno do servidor"
+
+  /vendaFisica:
+    post:
+      summary: Criar uma venda física
+      description: Registra uma venda realizada fisicamente na loja.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - clienteId
+                - empregadoId
+                - lojaNipc
+                - Cod_barras
+                - marca
+                - modelo
+                - metodoPagamento
+                - preco
+              properties:
+                preco:
+                  type: number
+                  format: float
+                  example: 1500.50
+                  description: Preço unitário do equipamento vendido
+                clienteId:
+                  type: integer
+                  example: 123
+                  description: ID do cliente comprador
+                empregadoId:
+                  type: integer
+                  example: 456
+                  description: ID do empregado que realizou a venda
+                lojaNipc:
+                  type: string
+                  example: "123456789"
+                  description: NIPC da loja onde a venda ocorreu
+                Cod_barras:
+                  type: string
+                  example: "9781234567890"
+                  description: Código de barras do equipamento vendido
+                marca:
+                  type: string
+                  example: "Sony"
+                  description: Marca do equipamento
+                modelo:
+                  type: string
+                  example: "Xperia Z"
+                  description: Modelo do equipamento
+                metodoPagamento:
+                  type: string
+                  example: "Dinheiro"
+                  description: Método de pagamento utilizado
+      responses:
+        '201':
+          description: Venda criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Venda física realizada com sucesso."
+                  vendaId:
+                    type: integer
+                    example: 789
+        '400':
+          description: Dados inválidos ou recursos não encontrados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Cliente não encontrado."
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Erro interno ao criar venda física."
+  
+  /dashboard:
+    post:
+      summary: Obter informações do empregado e dados do dashboard
+      description: Retorna dados do empregado e estatísticas gerais para exibir no dashboard.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - numeroEmpregado
+              properties:
+                numeroEmpregado:
+                  type: string
+                  example: "1234"
+                  description: Número interno do empregado
+      responses:
+        '200':
+          description: Dados do empregado e dashboard retornados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  numInterno:
+                    type: string
+                    example: "1234"
+                  nome:
+                    type: string
+                    example: "João Silva"
+                  email:
+                    type: string
+                    format: email
+                    example: "joao.silva@example.com"
+                  telemovel:
+                    type: string
+                    example: "+351912345678"
+                  nomeloja:
+                    type: string
+                    example: "Loja Central"
+                  produtosStock:
+                    type: integer
+                    example: 100
+                    description: Total de produtos em stock
+                  reparacoes:
+                    type: integer
+                    example: 5
+                    description: Total de reparações por orçamentar
+                  clientes:
+                    type: integer
+                    example: 200
+                    description: Total de clientes
+                  projetosBeneficencia:
+                    type: integer
+                    example: 2
+                    description: Total de projetos de beneficência
+        '400':
+          description: Parâmetro obrigatório ausente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Número do empregado é obrigatório."
+        '404':
+          description: Empregado não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Funcionário não encontrado"
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Erro ao buscar dados do funcionário e dashboard"
+  
+  
+  /interesses:
+    get:
+      summary: Obter interesses do cliente pelo email
+      description: Retorna lista de interesses associados ao cliente identificado pelo email, incluindo disponibilidade dos equipamentos.
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: Email do cliente
+      responses:
+        '200':
+          description: Lista de interesses retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  disponiveis:
+                    type: integer
+                    description: Número de interesses disponíveis para venda
+                    example: 3
+                  interesses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        data:
+                          type: string
+                          format: date-time
+                          example: "2025-06-19T12:34:56Z"
+                        lojanipc:
+                          type: string
+                          example: "123456789"
+                        codbarras:
+                          type: string
+                          example: "ABC123XYZ"
+                        marca:
+                          type: string
+                          example: "Samsung"
+                        modelo:
+                          type: string
+                          example: "Galaxy S20"
+                        tipo:
+                          type: string
+                          example: "Smartphone"
+                        precobase:
+                          type: number
+                          format: float
+                          example: 599.99
+                        anolancamento:
+                          type: integer
+                          example: 2020
+                        disponivel:
+                          type: boolean
+                          description: Indica se o equipamento está disponível para venda
+                          example: true
+        '400':
+          description: Email não fornecido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Email não fornecido"
+        '404':
+          description: Pessoa ou cliente não encontrados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Pessoa não encontrada"
+        '500':
+          description: Erro interno ao buscar interesses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao buscar interesses"
+
+    post:
+      summary: Adicionar novo interesse para um cliente
+      description: Adiciona um interesse de equipamento (marca + modelo) para o cliente identificado pelo email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - marca
+                - modelo
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "cliente@example.com"
+                marca:
+                  type: string
+                  example: "Apple"
+                modelo:
+                  type: string
+                  example: "iPhone 13"
+      responses:
+        '201':
+          description: Interesse adicionado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Interesse adicionado com sucesso"
+        '400':
+          description: Campos obrigatórios em falta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Campos obrigatórios em falta."
+        '404':
+          description: Pessoa, cliente ou equipamento não encontrados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Pessoa não encontrada"
+        '500':
+          description: Erro interno ao adicionar interesse
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao adicionar interesse"
+
+  /interesses/{id}:
+    delete:
+      summary: Remover interesse pelo ID
+      description: Remove o interesse especificado pelo seu ID.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do interesse a remover
+      responses:
+        '200':
+          description: Interesse removido com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Interesse removido com sucesso."
+        '500':
+          description: Erro interno ao remover interesse
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao remover interesse."
+                    
+  /create-payment-intent:
+    post:
+      summary: Cria um PaymentIntent Stripe para pagamento com cartão
+      description: |
+        Cria um PaymentIntent para pagamentos com cartão via Stripe. Para outros métodos (ex: mbway), retorna mensagem indicando que não é necessário PaymentIntent.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - metodoPagamento
+              properties:
+                amount:
+                  type: number
+                  description: Montante do pagamento em euros
+                  example: 49.99
+                metodoPagamento:
+                  type: string
+                  description: Método de pagamento
+                  example: "cartao"
+      responses:
+        '200':
+          description: PaymentIntent criado ou mensagem de método alternativo
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      clientSecret:
+                        type: string
+                        description: Client secret do PaymentIntent Stripe
+                        example: pi_1JRKLkL6a...
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Método não necessita PaymentIntent."
+        '400':
+          description: Parâmetros inválidos ou em falta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Montante ou método não fornecido."
+        '500':
+          description: Erro interno no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao processar pagamento."                  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+components:
+  schemas:
+    ProjetoBeneficenciaResumo:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        descricao:
+          type: string
+        datalimite:
+          type: string
+          format: date
+        quantidadeequipamentos:
+          type: integer
+        organizadorid:
+          type: integer
+        lojanipc:
+          type: string
+        fichaequipamentocodbarras:
+          type: string
+        imagem:
+          type: string
+        nomeorganizador:
+          type: string
+        nomeloja:
+          type: string
+
+    ProjetoBeneficenciaDetalhado:
+      allOf:
+        - $ref: '#/components/schemas/ProjetoBeneficenciaResumo'
+        - type: object
+          properties:
+            imagens:
+              type: array
+              items:
+                type: string   
+    
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Mensagem de erro"
+          
+    ReparacaoSimples:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        dataRececaoEquipamento:
+          type: string
+          format: date
+          example: "2025-06-19"
+        dataEntregaAoCliente:
+          type: string
+          format: date
+          example: "2025-06-25"
+        numPedidoOrcamento:
+          type: integer
+          example: 10
+        descNaoFunciona:
+          type: string
+          example: "O equipamento não liga"
+        estado:
+          type: string
+          example: "Pendente"
+        orcamentoReparacao:
+          type: number
+          format: float
+          example: 100.50
+        clienteId:
+          type: integer
+          example: 45
+        empregadoId:
+          type: integer
+          example: 12
+        codBarras:
+          type: string
+          example: "1234567890123"
+        lojaNipc:
+          type: string
+          example: "123456789"
+        compraId:
+          type: integer
+          example: 7
+
+    ReparacaoInput:
+      type: object
+      required:
+        - dataRececaoEquipamento
+        - descNaoFunciona
+        - clienteId
+        - empregadoId
+        - codBarras
+        - lojaNipc
+      properties:
+        dataRececaoEquipamento:
+          type: string
+          format: date
+          example: "2025-06-19"
+        dataEntregaAoCliente:
+          type: string
+          format: date
+          nullable: true
+          example: "2025-06-25"
+        descNaoFunciona:
+          type: string
+          example: "O equipamento não liga"
+        orcamentoReparacao:
+          type: number
+          format: float
+          nullable: true
+          example: 100.50
+        clienteId:
+          type: integer
+          example: 45
+        empregadoId:
+          type: integer
+          example: 12
+        codBarras:
+          type: string
+          example: "1234567890123"
+        lojaNipc:
+          type: string
+          example: "123456789"
+        compraId:
+          type: integer
+          nullable: true
+          example: 7
+        estado:
+          type: string
+          example: "Pendente"
+
+    ReparacaoInputComEstado:
+      allOf:
+        - $ref: '#/components/schemas/ReparacaoInput'
+        - type: object
+          required:
+            - estado
+          properties:
+            estado:
+              type: string
+              example: "Em progresso"
+    ReparacaoDetalhada:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        dataRececaoEquipamento:
+          type: string
+          format: date
+          example: "2025-06-19"
+        numPedidoOrcamento:
+          type: integer
+          example: 10
+        descNaoFunciona:
+          type: string
+          example: "O equipamento não liga"
+        estado:
+          type: string
+          example: "Pendente"
+        orcamentoReparacao:
+          type: number
+          format: float
+          example: 100.50
+        codBarras:
+          type: string
+          example: "1234567890123"
+        lojaNipc:
+          type: string
+          example: "123456789"
+        empregadoId:
+          type: integer
+          example: 12
+        empregadonome:
+          type: string
+          example: "Carlos Pereira"
+        lojanome:
+          type: string
+          example: "Loja Central"
+        marca:
+          type: string
+          example: "Sony"
+        modelo:
+          type: string
+          example: "Xperia Z"
+        tipo:
+          type: string
+          example: "Smartphone"
+    
+    
+    ReparacaoCompleta:
+      allOf:
+        - $ref: '#/components/schemas/ReparacaoSimples'
+        - type: object
+          properties:
+            marca:
+              type: string
+              example: "Sony"
+            modelo:
+              type: string
+              example: "Xperia Z"
+            tipo:
+              type: string
+              example: "Smartphone"
+            imagemurl:
+              type: string
+              format: uri
+              example: "http://example.com/image.jpg"
+            lojanome:
+              type: string
+              example: "Loja Central"
+            lojaemail:
+              type: string
+              format: email
+              example: "loja@example.com"
+            lojatelefone:
+              type: string
+              example: "+351912345678"
+            lojarua:
+              type: string
+              example: "Rua A"
+            lojanumero:
+              type: string
+              example: "123"
+            lojalocalidade:
+              type: string
+              example: "Lisboa"
+            lojaconcelho:
+              type: string
+              example: "Lisboa"
+            lojadistrito:
+              type: string
+              example: "Lisboa"
+            lojacodigopostal:
+              type: string
+              example: "1000-100"
+            clientenome:
+              type: string
+              example: "João Silva"
+            clienteemail:
+              type: string
+              format: email
+              example: "joao@example.com"
+            clientetelemovel:
+              type: string
+              example: "+351912345678"
+            clienterua:
+              type: string
+              example: "Rua das Flores"
+            clientenumero:
+              type: string
+              example: "10"
+            clientelocalidade:
+              type: string
+              example: "Lisboa"
+            clienteconcelho:
+              type: string
+              example: "Lisboa"
+            clientedistrito:
+              type: string
+              example: "Lisboa"
+            clientecodigopostal:
+              type: string
+              example: "1000-200"
+            empregadonome:
+              type: string
+              example: "Carlos Pereira"
+            empregadoemail:
+              type: string
+              format: email
+              example: "carlos@example.com"
+            empregadotelemovel:
+              type: string
+              example: "+351912345679"
+            pecasSubstituir:
+              type: array
+              items:
+                type: object
+                properties:
+                  nome:
+                    type: string
+                    example: "Tela"
+                  preco:
+                    type: number
+                    format: float
+                    example: 45.5
+            estadoDiagnostico:
+              type: string
+              example: "Defeito na tela"
